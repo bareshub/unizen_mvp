@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-Future main() async {
-  await dotenv.load(fileName: '.env.dev');
-  runApp(const MyApp());
-}
+import 'main_dev.dart' as dev;
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+/// Default main method
+/// Launches development config by default
+Future main() async => await dev.main();
+
+class UnizenApp extends StatelessWidget {
+  const UnizenApp({super.key});
 
   @override
   Widget build(BuildContext context) {
