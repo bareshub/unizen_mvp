@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'main_dev.dart' as dev;
-import 'package:unizen/data/repositories/auth/auth_repository_dev.dart';
+import 'package:unizen/data/repositories/auth/auth_repository.dart';
 import 'package:unizen/routing/router.dart';
 
 /// Default main method
@@ -13,7 +14,8 @@ class UnizenApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authRepository = AuthRepositoryDev(); // TODO use provider instead
-    return MaterialApp.router(routerConfig: router(authRepository));
+    return MaterialApp.router(
+      routerConfig: router(context.read<AuthRepository>()),
+    );
   }
 }
