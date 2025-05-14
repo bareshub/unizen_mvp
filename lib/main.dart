@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:unizen/ui/core/localization/applocalization.dart';
 
 import 'main_dev.dart' as dev;
 import 'package:unizen/data/repositories/auth/auth_repository.dart';
@@ -19,6 +20,7 @@ class UnizenApp extends StatelessWidget {
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
+        AppLocalizationDelegate(),
       ],
       supportedLocales: [
         Locale('en'), // English
