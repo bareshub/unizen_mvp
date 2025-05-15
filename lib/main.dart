@@ -20,7 +20,7 @@ class UnizenApp extends StatelessWidget {
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
-        AppLocalizationDelegate(),
+        AppLocalization.delegate,
       ],
       supportedLocales: [
         Locale('en'), // English

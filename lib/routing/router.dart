@@ -1,9 +1,10 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:unizen/data/repositories/auth/auth_repository.dart';
 import 'package:unizen/routing/routes.dart';
+import 'package:unizen/ui/core/localization/applocalization.dart';
 
 /// Top go_router entry point.
 ///
@@ -17,7 +18,9 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
     GoRoute(
       path: Routes.login,
       builder: (context, state) {
-        return Container(); // TODO replace with LoginScreen
+        return Scaffold(
+          appBar: AppBar(title: Text(AppLocalization.of(context).title)),
+        ); // TODO replace with LoginScreen
       },
     ),
     GoRoute(
