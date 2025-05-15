@@ -2,6 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class AppLocalization {
+  static const LocalizationsDelegate<AppLocalization> delegate =
+      _AppLocalizationDelegate();
+
   final Locale locale;
 
   AppLocalization(this.locale);
@@ -11,26 +14,19 @@ class AppLocalization {
   }
 
   static const _localizedValues = <String, Map<String, String>>{
-    // Add your localized strings here
-    // 'en': {
-    //    'hello': 'Hello',
-    //    'login': 'Login',
-    // },
-    // 'it': {
-    //   'hello': 'Ciao',
-    //   'login': 'Accedi',
-    // },
+    'en': {'title': 'Welcome to UniZen!'},
+    'it': {'title': 'Benvenuto in UniZen!'},
   };
 
   String _get(String key) =>
       _localizedValues[locale.languageCode]?[key] ?? '[${key.toUpperCase()}]';
 
-  // Add your string getters here
-  // String get hello => _get('hello');
-  // String get login => _get('login');
+  String get title => _get('title');
 }
 
-class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalization> {
+class _AppLocalizationDelegate extends LocalizationsDelegate<AppLocalization> {
+  const _AppLocalizationDelegate();
+
   @override
   bool isSupported(Locale locale) =>
       _supportedLanguages.contains(locale.languageCode);
