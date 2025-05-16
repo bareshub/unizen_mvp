@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:unizen/ui/core/localization/applocalization.dart';
+import 'package:unizen/ui/core/themes/theme.dart';
 
 import 'main_dev.dart' as dev;
 import 'package:unizen/data/repositories/auth/auth_repository.dart';
@@ -26,6 +27,9 @@ class UnizenApp extends StatelessWidget {
         Locale('en'), // English
         Locale('it'), // Italian
       ],
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
       routerConfig: router(context.read<AuthRepository>()),
     );
   }
