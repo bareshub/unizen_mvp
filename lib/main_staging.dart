@@ -10,7 +10,7 @@ import 'package:unizen/main.dart';
 /// Development config entry point.
 /// Launch with `flutter run --target lib/main_staging.dart`.
 Future main() async {
-  await dotenv.load(fileName: '.env.staging', isOptional: true);
+  await dotenv.load(fileName: '.env.staging');
 
   Logger.root.level = Level.INFO;
   Logger.root.onRecord.listen((record) {
