@@ -9,7 +9,7 @@ import 'package:unizen/main.dart';
 /// Development config entry point.
 /// Launch with `flutter run --target lib/main_prod.dart`.
 Future main() async {
-  await dotenv.load(fileName: '.env.prod');
+  await dotenv.load(fileName: '.env.prod', isOptional: true);
 
   Logger.root.level = Level.SEVERE;
 
