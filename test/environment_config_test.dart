@@ -1,7 +1,13 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-void mainDev() {
+void main() {
+  group('Dev environment', _testDevEnv);
+  group('Staging environment', _testStagingEnv);
+  group('Prod environment', _testProdEnv);
+}
+
+void _testDevEnv() {
   setUpAll(() async {
     await dotenv.load(fileName: ".env.dev");
   });
@@ -11,7 +17,7 @@ void mainDev() {
   });
 }
 
-void mainStaging() {
+void _testStagingEnv() {
   setUpAll(() async {
     await dotenv.load(fileName: ".env.staging");
   });
@@ -21,7 +27,7 @@ void mainStaging() {
   });
 }
 
-void mainProd() {
+void _testProdEnv() {
   setUpAll(() async {
     await dotenv.load(fileName: ".env.prod");
   });
