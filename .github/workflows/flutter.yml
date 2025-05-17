@@ -13,6 +13,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Create .env.staging file
+        run: |
+          echo "ENVIRONMENT=${{ secrets.STAGING__ENVIRONMENT }}" >> .env.staging
+
+      - name: Create .env.prod file
+        run: |
+          echo "ENVIRONMENT=${{ secrets.PROD__ENVIRONMENT }}" >> .env.prod
+
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
