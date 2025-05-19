@@ -129,7 +129,7 @@ packages:
     source: hosted
     version: "0.9.2-0"
   flutter_scene_importer:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: flutter_scene_importer
       sha256: "81c544627dcbfc7227625b41abeaf23054fec5c36c57d2d6cb61518b3bd8a6cd"
@@ -416,7 +416,7 @@ packages:
     source: hosted
     version: "1.4.0"
   vector_math:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: vector_math
       sha256: "80b3257d1492ce4d091729e3a67a60407d227c27241d6927be0130c98e741803"
