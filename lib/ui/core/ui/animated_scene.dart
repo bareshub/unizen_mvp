@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_scene/scene.dart';
 import 'package:vector_math/vector_math.dart' as vm;
 
@@ -18,12 +19,33 @@ class _AnimatedSceneState extends State<AnimatedScene> {
   AnimationClip? walkClip;
   AnimationClip? attackClip;
 
+  late Ticker ticker;
+  double elapsedSeconds = 0;
+
+  void printNodeHierarchy(Node node, [String indent = '']) {
+    debugPrint('$indent- ${node.name}');
+    for (final child in node.children) {
+      printNodeHierarchy(child, '$indent  ');
+    }
+  }
+
   @override
   void initState() {
-    final model = Node.fromAsset('assets/toilet.glb').then((modelNode) {
+    ticker = Ticker((elapsed) {
+      setState(() {
+        elapsedSeconds = elapsed.inMilliseconds.toDouble() / 1000;
+      });
+    });
+    ticker.start();
+
+    final model = Node.fromAsset(
+      'build/models/zombie_after_blender.model',
+    ).then((modelNode) {
       for (final animation in modelNode.parsedAnimations) {
         debugPrint('Animation: ${animation.name}');
       }
+
+      printNodeHierarchy(modelNode);
 
       scene.add(modelNode);
 
@@ -32,23 +54,24 @@ class _AnimatedSceneState extends State<AnimatedScene> {
             ..loop = true
             ..play();
 
-      walkClip =
-          modelNode.createAnimationClip(modelNode.findAnimationByName('walk')!)
-            ..loop = true
-            ..play();
-
-      attackClip =
-          modelNode.createAnimationClip(
-              modelNode.findAnimationByName('attack')!,
-            )
-            ..loop = true
-            ..play();
+      // walkClip =
+      //     modelNode.createAnimationClip(modelNode.findAnimationByName('walk')!)
+      //       ..loop = true
+      //       ..play();
+      // attackClip =
+      //     modelNode.createAnimationClip(
+      //         modelNode.findAnimationByName('attack')!,
+      //       )
+      //       ..loop = true
+      //       ..play();
     });
 
     Future.wait([model]).then((_) {
       debugPrint('Scene loaded');
-      setState(() {
-        loaded = true;
+      Scene.initializeStaticResources().then((_) {
+        setState(() {
+          loaded = true;
+        });
       });
     });
 
@@ -66,25 +89,28 @@ class _AnimatedSceneState extends State<AnimatedScene> {
     if (!loaded) {
       return Center(child: CircularProgressIndicator());
     }
-    return SizedBox.expand(child: CustomPaint(painter: _ScenePainter(scene)));
+    return SizedBox.expand(
+      child: CustomPaint(painter: _ScenePainter(scene, elapsedSeconds)),
+    );
   }
 }
 
 class _ScenePainter extends CustomPainter {
-  _ScenePainter(this.scene);
+  _ScenePainter(this.scene, this.elapsedTime);
   Scene scene;
+  double elapsedTime;
 
   @override
   void paint(Canvas canvas, Size size) {
-    const double rotationAmount = 0;
-    const double distance = 6;
+    double rotationAmount = elapsedTime * 0.5;
+    const double distance = 10;
     final camera = PerspectiveCamera(
       position: vm.Vector3(
         sin(rotationAmount) * distance,
         2,
         cos(rotationAmount) * distance,
       ),
-      target: vm.Vector3(0, 1.5, 0),
+      target: vm.Vector3(0, 1, 0),
     );
 
     scene.render(camera, canvas, viewport: Offset.zero & size);
