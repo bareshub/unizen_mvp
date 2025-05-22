@@ -6,7 +6,8 @@ void main(List<String> args) {
     buildModels(
       buildInput: config,
       inputFilePaths: [
-        'zombie_after_blender.glb',
+        'zombie_after_blender.glb', //
+        'toilet_after_blender.glb', //
       ],
     );
   });
