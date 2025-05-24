@@ -43,6 +43,7 @@ dependencies:
   native_assets_cli: ^0.13.0
   provider: ^6.1.5
   vector_math: ^2.1.4
+  flutter_command: ^7.2.2
 
 dev_dependencies:
   flutter_test:
