@@ -19,7 +19,7 @@ class UnizenApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
         GlobalWidgetsLocalizations.delegate,
         AppLocalization.delegate,
       ],
