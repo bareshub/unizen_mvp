@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Enable Native Assets
+        run: flutter config --enable-native-assets
+
       - name: Analyze project source
         run: flutter analyze
 
