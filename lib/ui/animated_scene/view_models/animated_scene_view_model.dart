@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_command/flutter_command.dart';
 import 'package:flutter_scene/scene.dart';
 
-import '../models/scene_config.dart';
+import '../configs/scene_config.dart';
 
 class AnimatedSceneViewModel extends ChangeNotifier {
   final Scene scene = Scene();
