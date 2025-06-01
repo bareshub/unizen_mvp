@@ -4,7 +4,10 @@ import 'package:provider/provider.dart';
 
 import 'package:unizen/data/repositories/auth/auth_repository.dart';
 import 'package:unizen/routing/routes.dart';
+import 'package:unizen/ui/animated_scene/animated_scene.dart';
 import 'package:unizen/ui/core/localization/applocalization.dart';
+import 'package:unizen/ui/core/ui/zcard.dart';
+import 'package:unizen/ui/health_bar/widgets/health_bar_widget.dart';
 
 /// Top go_router entry point.
 ///
@@ -20,13 +23,59 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(title: Text(AppLocalization.of(context).title)),
-        ); // TODO replace with LoginScreen
+        );
       },
     ),
     GoRoute(
       path: Routes.home,
       builder: (context, state) {
-        return Container(); // TODO replace with HomeScreen
+        return Scaffold(
+          backgroundColor: Color.fromRGBO(184, 202, 203, 1),
+          // body: Center(child: AnimatedScene()),
+          body: SafeArea(
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 100),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: AnimatedScene(
+                      viewModel: AnimatedSceneViewModel(
+                        config: SceneConfig(
+                          modelAssetPath:
+                              'build/models/zombie_after_blender.model',
+                          environmentIntensity: 3,
+                          cameraDistance: 10,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: MediaQuery.of(context).size.height / 2 - 100,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 12),
+                        HealthBar(),
+                        const SizedBox(height: 24),
+                        Flexible(
+                          fit: FlexFit.tight,
+                          child: ZCard(
+                            margin: EdgeInsets.fromLTRB(60, 10, 60, 30),
+                            child: Expanded(
+                              child: Container(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ); // TODO replace with HomeScreen
       },
       routes: [],
     ),
