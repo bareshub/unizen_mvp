@@ -43,6 +43,7 @@ abstract final class AppTheme {
   /// Light theme data
   static final ThemeData lightTheme = ThemeData(
     colorScheme: AppColors.lightColorScheme,
+    shadowColor: AppColors.lightColorScheme.shadow,
     brightness: Brightness.light,
     scaffoldBackgroundColor: AppColors.lightColorScheme.surface,
     inputDecorationTheme: _inputDecorationTheme,
@@ -58,6 +59,7 @@ abstract final class AppTheme {
   /// Dark theme data
   static final ThemeData darkTheme = ThemeData(
     colorScheme: AppColors.darkColorScheme,
+    shadowColor: AppColors.darkColorScheme.shadow,
     brightness: Brightness.dark,
     scaffoldBackgroundColor: AppColors.darkColorScheme.surface,
     inputDecorationTheme: _inputDecorationTheme,
