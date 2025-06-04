@@ -6,10 +6,10 @@ abstract final class AppColors {
   static const Color black1 = Color(0xFF101010);
   static const Color white1 = Color(0xFFFFF7FA);
   static const Color grey1 = Color(0xFFF2F2F2);
-  static const Color grey2 = Color(0xFF4D4D4D);
+  static const Color grey2 = Color(0xFFBDBDBD);
   static const Color grey3 = Color(0xFFA4A4A4);
-  static const Color grey4 = Color(0xFFBDBDBD);
-  static const Color grey5 = Color(0xFF757575);
+  static const Color grey4 = Color(0xFF757575);
+  static const Color grey5 = Color(0xFF4D4D4D);
 
   // Transparent Variants
   static const Color whiteTransparent = Color(0x4DFFFFFF); // 30% opacity
@@ -43,9 +43,10 @@ abstract final class AppColors {
     secondary: secondary,
     onSecondary: white1,
     surface: grey1,
-    onSurface: grey2,
+    onSurface: grey5,
     error: red1,
     onError: white1,
+    shadow: grey3,
   );
 
   /// Dark Theme ColorScheme
@@ -56,9 +57,10 @@ abstract final class AppColors {
     onPrimaryContainer: primaryDark,
     secondary: secondaryDark,
     onSecondary: white1,
-    surface: grey2,
+    surface: grey5,
     onSurface: grey1,
     error: red1,
     onError: black1,
+    shadow: grey2,
   );
 }
