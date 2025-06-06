@@ -33,7 +33,7 @@ class OverlayText extends StatelessWidget {
           child: Text(
             text,
             style: GoogleFonts.sixCaps(
-              color: color.withAlpha(opacity * 255 as int),
+              color: color.withAlpha((opacity * 255).toInt()),
               fontWeight: FontWeight.w500,
               height: 1.0,
               letterSpacing: 0,
