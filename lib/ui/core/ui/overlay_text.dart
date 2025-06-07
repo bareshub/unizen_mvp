@@ -14,7 +14,7 @@ class OverlayText extends StatelessWidget {
     this.text, {
     super.key,
     this.opacity = 0.25,
-    this.maxHeight = 100,
+    this.maxHeight = 200,
     this.alignment = Alignment.center,
     this.color = Colors.white,
     this.margin,
@@ -23,21 +23,19 @@ class OverlayText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: margin,
       width: double.infinity,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: maxHeight),
-        child: FittedBox(
-          alignment: Alignment.bottomCenter,
-          fit: BoxFit.fitWidth,
-          child: Text(
-            text,
-            style: GoogleFonts.sixCaps(
-              color: color.withAlpha((opacity * 255).toInt()),
-              fontWeight: FontWeight.w500,
-              height: 1.0,
-              letterSpacing: 0,
-            ),
+      constraints: BoxConstraints(maxHeight: maxHeight),
+      margin: margin,
+      child: FittedBox(
+        fit: BoxFit.contain,
+        alignment: Alignment.bottomCenter,
+        child: Text(
+          text,
+          style: GoogleFonts.sixCaps(
+            color: color.withAlpha((opacity * 255).toInt()),
+            fontWeight: FontWeight.w500,
+            height: 1.0,
+            letterSpacing: 0,
           ),
         ),
       ),
