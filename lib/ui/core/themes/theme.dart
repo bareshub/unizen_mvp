@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'colors.dart';
 
-/// Application themes configured with a productivity-based Google Font (Inter).
+/// Application themes configured with a productivity-based Google Font (Rubik).
 abstract final class AppTheme {
   static const TextTheme _baseTextTheme = TextTheme(
     headlineLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
@@ -28,7 +28,7 @@ abstract final class AppTheme {
     ),
   );
 
-  static final TextTheme _textTheme = GoogleFonts.interTextTheme(
+  static final TextTheme _textTheme = GoogleFonts.rubikTextTheme(
     _baseTextTheme,
   );
 
