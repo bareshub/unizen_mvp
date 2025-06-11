@@ -33,17 +33,7 @@ class FrostedGlassBox extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(borderRadius),
-                gradient: const LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  colors: [
-                    Colors.white30,
-                    Colors.white60,
-                    Colors.white60,
-                    Colors.white60,
-                    Colors.white30,
-                  ],
-                ),
+                color: Colors.white30,
               ),
             ),
             BackdropFilter(
@@ -62,7 +52,7 @@ class FrostedGlassBox extends StatelessWidget {
                   bottomRight: Radius.circular(borderRadius),
                   bottomLeft: Radius.circular(borderRadius - 3),
                 ),
-                border: Border.all(color: Colors.white30, width: 1.5),
+                border: Border.all(color: Colors.white24, width: 1.5),
               ),
             ),
             child,
