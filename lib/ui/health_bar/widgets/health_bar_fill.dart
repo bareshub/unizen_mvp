@@ -18,18 +18,16 @@ class HealthBarFill extends StatelessWidget {
       widthFactor: widthFactor.clamp(0.0, 1.0),
       child: FrostedGlassBox(
         child: Container(
-          width: double.infinity,
-          height: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 5.0),
           decoration: BoxDecoration(
             color: Colors.deepOrange.withAlpha(
-              192,
+              152,
             ), // todo update based on health
             border: Border.all(
-              color: Colors.deepOrange,
+              color: Colors.deepOrange.withAlpha(192),
               width: 1.5,
             ), // todo update based on health
-            borderRadius: BorderRadius.circular(6.0),
+            borderRadius: BorderRadius.circular(24.0),
           ),
           child: child,
         ),
