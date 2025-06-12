@@ -22,26 +22,22 @@ class FrostedGlassBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadiusGeometry.circular(borderRadius),
-      child: Container(
-        width: width,
-        height: height,
-        margin: margin,
+    return Container(
+      width: width,
+      height: height,
+      margin: margin,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius),
         child: Stack(
           children: [
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(borderRadius),
-                color: Colors.white24,
+                color: Colors.white30,
               ),
             ),
             BackdropFilter(
-              filter: ImageFilter.blur(
-                sigmaX: blurSigma,
-                sigmaY: blurSigma,
-                tileMode: TileMode.decal,
-              ),
+              filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
               child: Container(),
             ),
             Container(
