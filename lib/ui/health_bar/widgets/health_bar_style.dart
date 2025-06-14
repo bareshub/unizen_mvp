@@ -1,11 +1,11 @@
 import 'dart:ui' show Color;
 
-import 'package:unizen/ui/core/themes/colors.dart';
-
 class HealthBarStyle {
-  static const _fullHealthColor = AppColors.green1;
-  static const _mediumHealthColor = AppColors.orange1;
-  static const _lowHealthColor = AppColors.red1;
+  // Health Bar Palette
+  static const Color _healthHigh = Color(0xFF61A764);
+  static const Color _healthModerate = Color(0xFFF9A825);
+  static const Color _healthLow = Color(0xFFF57C00);
+  static const Color _healthCritical = Color(0xFFC62828);
 
   static Color backgroundColor(double percentage) {
     return _lerpColor(percentage).withAlpha(152);
@@ -15,13 +15,10 @@ class HealthBarStyle {
     return _lerpColor(percentage).withAlpha(192);
   }
 
-  static Color _lerpColor(double percentage) {
-    if (percentage >= 0.7) {
-      return _fullHealthColor;
-    } else if (percentage >= 0.3) {
-      return _mediumHealthColor;
-    } else {
-      return _lowHealthColor;
-    }
-  }
+  static Color _lerpColor(double percentage) => switch (percentage) {
+    >= 0.7 => _healthHigh,
+    >= 0.5 => _healthModerate,
+    >= 0.3 => _healthLow,
+    _ => _healthCritical,
+  };
 }
