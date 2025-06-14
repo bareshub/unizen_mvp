@@ -23,7 +23,7 @@ class HealthBar extends StatelessWidget {
           final healthFactor = (maxHealth == 0) ? 0.0 : health / maxHealth;
 
           return HealthBarFill(
-            widthFactor: healthFactor,
+            healthPercentage: healthFactor,
             child: HealthBarContent(health: health),
           );
         },
