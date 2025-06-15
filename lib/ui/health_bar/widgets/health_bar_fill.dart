@@ -37,13 +37,9 @@ class HealthBarFill extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 4.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24.0),
-                color: HealthBarStyle.backgroundColor(
-                  healthPercentage,
-                ).withAlpha((0.7 * 255).toInt()),
+                color: HealthBarStyle.backgroundColor(healthPercentage),
                 border: Border.all(
-                  color: HealthBarStyle.borderColor(
-                    healthPercentage,
-                  ).withAlpha((0.9 * 255).toInt()),
+                  color: HealthBarStyle.borderColor(healthPercentage),
                   width: 1.5,
                 ),
               ),
