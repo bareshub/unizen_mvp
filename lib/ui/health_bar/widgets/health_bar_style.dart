@@ -5,7 +5,7 @@ class HealthBarStyle {
   static const Color _healthHigh = Color(0xFF61A764);
   static const Color _healthModerate = Color(0xFFF9A825);
   static const Color _healthLow = Color(0xFFF57C00);
-  static const Color _healthCritical = Color(0xFFC62828);
+  static const Color _healthCritical = Color(0xFFF34D3E);
 
   static Color backgroundColor(double percentage) {
     return _lerpColor(percentage).withAlpha(152);
