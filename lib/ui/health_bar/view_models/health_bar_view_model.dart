@@ -9,6 +9,7 @@ import '../configs/health_bar_config.dart';
 class HealthBarViewModel extends ChangeNotifier {
   final HealthBarConfig config;
 
+  // TODO move to Timer Widget, replace with "decreaseHealthComamand"
   late final Command<void, void> startTimerCommand;
   late final Command<void, void> stopTimerCommand;
 
