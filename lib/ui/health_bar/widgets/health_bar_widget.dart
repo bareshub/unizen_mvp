@@ -20,10 +20,10 @@ class HealthBar extends StatelessWidget {
         valueListenable: viewModel.health,
         builder: (context, health, _) {
           final maxHealth = viewModel.maxHealth.value;
-          final healthFactor = (maxHealth == 0) ? 0.0 : health / maxHealth;
 
           return HealthBarFill(
-            healthPercentage: healthFactor,
+            health: health,
+            maxHealth: maxHealth,
             child: HealthBarContent(health: health),
           );
         },
