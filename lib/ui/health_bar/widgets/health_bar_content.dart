@@ -11,11 +11,11 @@ class HealthBarContent extends StatelessWidget {
     return Container(
       margin: margin,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 4.0,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 2.0,
         children: [
           Container(
-            margin: const EdgeInsets.symmetric(vertical: 2.0),
+            margin: const EdgeInsets.symmetric(vertical: 4.0),
             child: const FittedBox(
               fit: BoxFit.contain,
               child: Icon(Icons.favorite_rounded, color: Colors.white),
@@ -24,7 +24,7 @@ class HealthBarContent extends StatelessWidget {
           FittedBox(
             child: Text(
               health.toString(),
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
