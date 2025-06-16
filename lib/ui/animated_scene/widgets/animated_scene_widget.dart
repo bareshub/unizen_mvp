@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:unizen/ui/animated_scene/view_models/animated_scene_view_model.dart';
-import 'package:unizen/ui/animated_scene/widgets/scene_painter.dart';
+
+import '../view_models/animated_scene_view_model.dart';
+import '../widgets/scene_painter.dart';
 
 class AnimatedScene extends StatefulWidget {
   const AnimatedScene({super.key, required this.viewModel});
