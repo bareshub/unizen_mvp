@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:unizen/ui/health_bar/widgets/health_bar_background.dart';
-import 'package:unizen/ui/health_bar/widgets/health_bar_content.dart';
-import 'package:unizen/ui/health_bar/widgets/health_bar_fill.dart';
 
+import './health_bar_background.dart';
+import './health_bar_content.dart';
+import './health_bar_fill.dart';
 import '../view_models/health_bar_view_model.dart';
 
 class HealthBar extends StatelessWidget {

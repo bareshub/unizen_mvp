@@ -2,7 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:unizen/ui/core/ui/frosted_glass_box.dart';
-import 'package:unizen/ui/health_bar/widgets/health_bar_style.dart';
+
+import './health_bar_style.dart';
 
 class HealthBarFill extends StatelessWidget {
   const HealthBarFill({

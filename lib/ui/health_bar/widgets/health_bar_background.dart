@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:unizen/ui/core/ui/frosted_glass_box.dart';
 
 class HealthBarBackground extends StatelessWidget {
