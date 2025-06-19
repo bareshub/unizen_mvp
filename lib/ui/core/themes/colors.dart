@@ -10,6 +10,7 @@ abstract final class AppColors {
   static const Color grey3 = Color(0xFFA4A4A4);
   static const Color grey4 = Color(0xFF757575);
   static const Color grey5 = Color(0xFF4D4D4D);
+  static const Color grey6 = Color(0xFF2B2B2B);
 
   // Transparent Variants
   static const Color whiteTransparent = Color(0x4DFFFFFF); // 30% opacity
@@ -43,7 +44,7 @@ abstract final class AppColors {
     secondary: secondary,
     onSecondary: white1,
     surface: grey1,
-    onSurface: grey5,
+    onSurface: grey6,
     error: red1,
     onError: white1,
     shadow: grey3,
