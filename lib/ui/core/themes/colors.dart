@@ -25,15 +25,18 @@ abstract final class AppColors {
   static const Color purple1 = Color(0xFF9B59B6);
 
   // Primary Palette (Light Blue Gray)
-  static const Color primary = Color(0xFF90A4AE); // Blue Gray 300
-  static const Color primaryLight = Color(0xFFCFD8DC); // Blue Gray 100
-  static const Color primaryDark = Color(0xFF546E7A); // Blue Gray 600
+  static const Color primary = Color(0xFFBED4D5); // Blue Gray 300
+  static const Color primaryLight = Color(0xFFCFE5E6); // Blue Gray 100
+  static const Color primaryDark = Color(0xFF324B4C); // Blue Gray 600
   static const Color primaryVariant = primaryDark;
 
   // Secondary Palette (Accent)
-  static const Color secondary = blue1;
+  static const Color secondary = Color(0xFF79B5B8);
   static const Color secondaryLight = Color(0xFF85C1E9);
   static const Color secondaryDark = Color(0xFF21618C);
+
+  // Tertiary Palette
+  static const Color tertiary = Color(0xFFCECDE7);
 
   /// Light Theme ColorScheme
   static const ColorScheme lightColorScheme = ColorScheme(
@@ -43,6 +46,7 @@ abstract final class AppColors {
     onPrimaryContainer: primaryDark,
     secondary: secondary,
     onSecondary: white1,
+    tertiary: tertiary,
     surface: grey1,
     onSurface: grey6,
     error: red1,
@@ -58,6 +62,7 @@ abstract final class AppColors {
     onPrimaryContainer: primaryDark,
     secondary: secondaryDark,
     onSecondary: white1,
+    tertiary: tertiary,
     surface: grey5,
     onSurface: grey1,
     error: red1,
