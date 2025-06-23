@@ -26,7 +26,7 @@ class StudyTimerStart extends StatelessWidget {
           Icon(Icons.play_arrow_rounded, size: 24.0),
           SizedBox(width: 4.0),
           Text(
-            'Start Session',
+            'Start',
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
               color: Theme.of(context).colorScheme.onPrimary,
             ),
