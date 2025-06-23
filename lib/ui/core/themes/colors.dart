@@ -5,6 +5,7 @@ abstract final class AppColors {
   // Core Neutrals
   static const Color black1 = Color(0xFF101010);
   static const Color white1 = Color(0xFFFFF7FA);
+  static const Color white2 = Color(0x62FFFFFF);
   static const Color grey1 = Color(0xFFF2F2F2);
   static const Color grey2 = Color(0xFFBDBDBD);
   static const Color grey3 = Color(0xFFA4A4A4);
@@ -43,6 +44,7 @@ abstract final class AppColors {
     brightness: Brightness.light,
     primary: primary,
     onPrimary: white1,
+    primaryContainer: white2,
     onPrimaryContainer: primaryDark,
     secondary: secondary,
     onSecondary: white1,
@@ -58,6 +60,7 @@ abstract final class AppColors {
   static const ColorScheme darkColorScheme = ColorScheme(
     brightness: Brightness.dark,
     primary: primaryDark,
+    primaryContainer: white2,
     onPrimary: white1,
     onPrimaryContainer: primaryDark,
     secondary: secondaryDark,

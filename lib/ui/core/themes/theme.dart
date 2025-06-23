@@ -35,16 +35,16 @@ abstract final class AppTheme {
     labelLarge: TextStyle(
       fontSize: 18,
       color: AppColors.grey3,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w300,
     ),
     labelMedium: TextStyle(
-      fontSize: 14,
+      fontSize: 16,
       color: AppColors.grey3,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w300,
     ),
     labelSmall: TextStyle(
       fontSize: 14,
-      color: AppColors.grey4,
+      color: AppColors.grey3,
       fontWeight: FontWeight.w300,
     ),
   );
