@@ -14,13 +14,13 @@ abstract final class AppTheme {
     ),
     headlineMedium: TextStyle(
       fontSize: 20,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w600,
       height: 1,
       color: AppColors.grey6,
     ),
     headlineSmall: TextStyle(
       fontSize: 16,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w600,
       height: 1,
       color: AppColors.grey6,
     ),
