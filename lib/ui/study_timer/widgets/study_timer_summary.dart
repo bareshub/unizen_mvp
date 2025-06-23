@@ -8,9 +8,17 @@ class StudyTimerSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      'total studied: ${hours}h ${minutes}m',
-      style: Theme.of(context).textTheme.labelSmall,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text('Total Studied: ', style: Theme.of(context).textTheme.labelSmall),
+        Text(
+          '${hours}h ${minutes}m',
+          style: Theme.of(
+            context,
+          ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold),
+        ),
+      ],
     );
   }
 }
