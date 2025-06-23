@@ -59,20 +59,27 @@ class StudyTimerControls extends StatelessWidget {
     BuildContext context,
     IconData icon,
     StudyTimerAction? action,
-  ) => IconButton(
-    onPressed: action,
-    style: IconButton.styleFrom(
-      backgroundColor: Colors.white38,
-      shadowColor: Theme.of(context).colorScheme.shadow.withAlpha(32),
-      elevation: 2,
-      padding: EdgeInsets.all(0),
-      minimumSize: Size.fromRadius(16.0),
-      highlightColor: Theme.of(context).colorScheme.onPrimary.withAlpha(128),
-    ),
-    icon: Icon(
-      icon,
-      size: 24.0,
-      color: Theme.of(context).colorScheme.secondary,
-    ),
-  );
+  ) {
+    final isDisabled = action == null;
+    return IconButton(
+      onPressed: action,
+      style: IconButton.styleFrom(
+        backgroundColor: Colors.white38,
+        shadowColor:
+            isDisabled
+                ? null
+                : Theme.of(context).colorScheme.shadow.withAlpha(32),
+        elevation: 2,
+        padding: EdgeInsets.all(0),
+        minimumSize: Size.fromRadius(16.0),
+        highlightColor: Theme.of(context).colorScheme.onPrimary.withAlpha(128),
+        disabledBackgroundColor: Colors.white10,
+      ),
+      icon: Icon(
+        icon,
+        size: 24.0,
+        color: Theme.of(context).colorScheme.secondary,
+      ),
+    );
+  }
 }
