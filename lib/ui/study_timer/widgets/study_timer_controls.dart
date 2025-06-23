@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:unizen/ui/core/ui/frosted_glass_icon_button.dart';
 
 typedef StudyTimerAction = void Function();
 
@@ -16,69 +17,44 @@ class StudyTimerControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildIconButton(context, Icons.remove, onMinusClick),
-        Spacer(),
-        Column(
-          children: [
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 100),
-              transitionBuilder: (child, animation) {
-                return FadeTransition(
-                  opacity: animation,
-                  child: ScaleTransition(
-                    scale: Tween<double>(
-                      begin: 0.9,
-                      end: 1.0,
-                    ).animate(animation),
-                    child: child,
-                  ),
-                );
-              },
-              child: Text(
-                '$minutes',
-                key: ValueKey<int>(minutes),
-                style: Theme.of(
-                  context,
-                ).textTheme.headlineLarge?.copyWith(fontSize: 40.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 0.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FrostedGlassIconButton(icon: Icons.remove, action: onMinusClick),
+          Spacer(),
+          Column(
+            children: [
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 100),
+                transitionBuilder: (child, animation) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: ScaleTransition(
+                      scale: Tween<double>(
+                        begin: 0.9,
+                        end: 1.0,
+                      ).animate(animation),
+                      child: child,
+                    ),
+                  );
+                },
+                child: Text(
+                  '$minutes',
+                  key: ValueKey<int>(minutes),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.headlineLarge?.copyWith(fontSize: 40.0),
+                ),
               ),
-            ),
-            SizedBox(width: 4.0),
-            Text('minutes', style: Theme.of(context).textTheme.labelSmall),
-          ],
-        ),
-        Spacer(),
-        _buildIconButton(context, Icons.add, onPlusClick),
-      ],
-    );
-  }
-
-  Widget _buildIconButton(
-    BuildContext context,
-    IconData icon,
-    StudyTimerAction? action,
-  ) {
-    final isDisabled = action == null;
-    return IconButton(
-      onPressed: action,
-      style: IconButton.styleFrom(
-        backgroundColor: Colors.white38,
-        shadowColor:
-            isDisabled
-                ? null
-                : Theme.of(context).colorScheme.shadow.withAlpha(32),
-        elevation: 2,
-        padding: EdgeInsets.all(0),
-        minimumSize: Size.fromRadius(16.0),
-        highlightColor: Theme.of(context).colorScheme.onPrimary.withAlpha(128),
-        disabledBackgroundColor: Colors.white10,
-      ),
-      icon: Icon(
-        icon,
-        size: 24.0,
-        color: Theme.of(context).colorScheme.secondary,
+              SizedBox(width: 4.0),
+              Text('Minutes', style: Theme.of(context).textTheme.labelSmall),
+            ],
+          ),
+          Spacer(),
+          FrostedGlassIconButton(icon: Icons.add, action: onPlusClick),
+        ],
       ),
     );
   }
