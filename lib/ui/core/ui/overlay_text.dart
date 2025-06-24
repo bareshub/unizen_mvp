@@ -13,7 +13,7 @@ class OverlayText extends StatelessWidget {
   const OverlayText(
     this.text, {
     super.key,
-    this.opacity = 0.25,
+    this.opacity = 0.35,
     this.maxHeight = 200,
     this.alignment = Alignment.center,
     this.color = Colors.white,

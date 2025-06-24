@@ -6,18 +6,18 @@ class FrostedGlassBox extends StatelessWidget {
   const FrostedGlassBox({
     super.key,
     required this.child,
-    this.borderRadius = 24.0,
+    this.borderRadius = 32.0,
     this.blurSigma = 8.0,
-    this.width,
-    this.height,
+    this.width = double.infinity,
+    this.height = double.infinity,
     this.margin,
   });
 
   final Widget child;
   final double borderRadius;
   final double blurSigma;
-  final double? width;
-  final double? height;
+  final double width;
+  final double height;
   final EdgeInsetsGeometry? margin;
 
   @override
@@ -33,7 +33,7 @@ class FrostedGlassBox extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(borderRadius),
-                color: Colors.white30,
+                color: Theme.of(context).colorScheme.primaryContainer,
               ),
             ),
             BackdropFilter(

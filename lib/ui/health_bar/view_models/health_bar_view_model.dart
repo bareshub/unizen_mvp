@@ -7,17 +7,6 @@ import 'package:flutter_command/flutter_command.dart';
 import '../configs/health_bar_config.dart';
 
 class HealthBarViewModel extends ChangeNotifier {
-  final HealthBarConfig config;
-
-  // TODO move to Timer Widget, replace with "decreaseHealthComamand"
-  late final Command<void, void> startTimerCommand;
-  late final Command<void, void> stopTimerCommand;
-
-  late final ValueNotifier<int> maxHealth;
-  late final ValueNotifier<int> health;
-
-  Timer? _timer;
-
   HealthBarViewModel({
     required this.config,
     required maxHealth,
@@ -29,6 +18,17 @@ class HealthBarViewModel extends ChangeNotifier {
     startTimerCommand = Command.createSyncNoParamNoResult(_startTimer);
     stopTimerCommand = Command.createSyncNoParamNoResult(_stopTimer);
   }
+
+  final HealthBarConfig config;
+
+  // TODO move to Timer Widget, replace with "decreaseHealthComamand"
+  late final Command<void, void> startTimerCommand;
+  late final Command<void, void> stopTimerCommand;
+
+  late final ValueNotifier<int> maxHealth;
+  late final ValueNotifier<int> health;
+
+  Timer? _timer;
 
   void _startTimer() {
     Timer.periodic(Duration(minutes: 1), (_) {
