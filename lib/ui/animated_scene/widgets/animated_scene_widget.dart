@@ -42,43 +42,26 @@ class _AnimatedSceneState extends State<AnimatedScene> {
           (_, isLoaded, _) =>
               isLoaded
                   ? CircularProgressIndicator()
-                  : SizedBox.expand(
-                    child: GestureDetector(
-                      onHorizontalDragUpdate:
-                          (details) => _onHorizontalDragUpdate(details),
-                      child: ValueListenableBuilder<double>(
-                        valueListenable: widget.viewModel.elapsedFrames,
-                        builder: (_, elapsed, _) {
-                          return ValueListenableBuilder<double>(
-                            valueListenable: widget.viewModel.rotationX,
-                            builder:
-                                (_, rotX, _) => RepaintBoundary(
-                                  child: CustomPaint(
-                                    painter: ScenePainter(
-                                      scene: widget.viewModel.scene,
-                                      elapsedTime: elapsed,
-                                      rotationX: rotX,
-                                      cameraDistance:
-                                          widget
-                                              .viewModel
-                                              .config
-                                              .cameraDistance,
-                                    ),
-                                  ),
+                  : ValueListenableBuilder<double>(
+                    valueListenable: widget.viewModel.elapsedFrames,
+                    builder: (_, elapsed, _) {
+                      return ValueListenableBuilder<double>(
+                        valueListenable: widget.viewModel.rotationX,
+                        builder:
+                            (_, rotX, _) => RepaintBoundary(
+                              child: CustomPaint(
+                                painter: ScenePainter(
+                                  scene: widget.viewModel.scene,
+                                  elapsedTime: elapsed,
+                                  rotationX: rotX,
+                                  cameraDistance:
+                                      widget.viewModel.config.cameraDistance,
                                 ),
-                          );
-                        },
-                      ),
-                    ),
+                              ),
+                            ),
+                      );
+                    },
                   ),
     );
-  }
-
-  void _onHorizontalDragUpdate(DragUpdateDetails? details) {
-    if ((details?.primaryDelta ?? 0) > 0) {
-      widget.viewModel.turnRightCommand.execute();
-    } else if ((details?.primaryDelta ?? 0) < 0) {
-      widget.viewModel.turnLeftCommand.execute();
-    }
   }
 }
