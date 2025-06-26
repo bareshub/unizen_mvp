@@ -19,83 +19,63 @@ class HomePage extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 0),
           child: LayoutBuilder(
             builder: (context, constraints) {
-              return Stack(
+              const spaceBetweenAnimatedSceneAndHealthBar = 8.0;
+              const spaceBetweenHealthBarAndStudyTimer = 24.0;
+
+              const horizontalMarginHealthBar = 96.0;
+              const horizontalMarginStudyTimer = 72.0;
+
+              final animatedSceneHeight =
+                  constraints.maxHeight / 2 -
+                  HealthBarSize.medium.height -
+                  spaceBetweenAnimatedSceneAndHealthBar -
+                  spaceBetweenHealthBarAndStudyTimer;
+
+              return Column(
                 children: [
-                  // Positioned.fill(
-                  //   top: constraints.maxHeight / 2,
-                  //   child: Container(
-                  //     width: double.infinity,
-                  //     height: 1.0,
-                  //     color: Colors.red,
-                  //   ),
-                  // ),
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: Center(child: UnizenLogo()),
-                  ),
-                  Positioned.fill(
-                    bottom: 340,
-                    child: Column(
-                      children: [
-                        Spacer(),
-                        OverlayText(
-                          'AUTOMATION',
-                          margin: EdgeInsets.symmetric(horizontal: 100),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned.fill(
-                    // child: Container(),
-                    child: AnimatedScene(
-                      viewModel: AnimatedSceneViewModel(
-                        config: SceneConfig(
-                          modelAssetPath:
-                              'build/models/zombie_after_blender.model',
-                          environmentIntensity: 3,
-                          cameraDistance: 11.5,
+                  UnizenLogo(),
+                  Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      OverlayText(
+                        'AUTOMATION',
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 96.0,
+                          vertical: 8.0,
                         ),
                       ),
-                    ),
-                  ),
-                  Positioned.fill(
-                    bottom:
-                        constraints.maxHeight / 2 + HealthBarSize.medium.height,
-                    child: Column(
-                      children: [
-                        HealthBar(
-                          viewModel: HealthBarViewModel(
-                            config: HealthBarConfig(size: HealthBarSize.medium),
-                            maxHealth: 5000,
-                            health: 1850,
-                          ), //..startTimerCommand.execute(),
-                          margin: const EdgeInsets.symmetric(horizontal: 100),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    top: MediaQuery.of(context).size.height / 2,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 24),
-                        Align(
-                          alignment: Alignment.topCenter,
-                          child: StudyTimer(
-                            viewModel: StudyTimerViewModel(
-                              config: StudyTimerConfig(),
+                      SizedBox(
+                        height: animatedSceneHeight,
+                        width: double.infinity,
+                        child: AnimatedScene(
+                          viewModel: AnimatedSceneViewModel(
+                            config: SceneConfig(
+                              modelAssetPath:
+                                  'build/models/zombie_after_blender.model',
+                              environmentIntensity: 3,
+                              cameraDistance: 10,
                             ),
-                            examName: 'AUTOMATION',
-                            margin: EdgeInsets.all(72.0),
                           ),
                         ),
-                      ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: spaceBetweenAnimatedSceneAndHealthBar),
+                  HealthBar(
+                    viewModel: HealthBarViewModel(
+                      config: HealthBarConfig(size: HealthBarSize.medium),
+                      maxHealth: 5000,
+                      health: 1850,
+                    ), //..startTimerCommand.execute(),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: horizontalMarginHealthBar,
                     ),
+                  ),
+                  const SizedBox(height: spaceBetweenHealthBarAndStudyTimer),
+                  StudyTimer(
+                    viewModel: StudyTimerViewModel(config: StudyTimerConfig()),
+                    examName: 'AUTOMATION',
+                    margin: EdgeInsets.all(horizontalMarginStudyTimer),
                   ),
                 ],
               );
