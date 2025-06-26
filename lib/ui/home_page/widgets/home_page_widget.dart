@@ -10,6 +10,11 @@ import 'package:unizen/ui/study_timer/study_timer.dart';
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
+  static const _spaceBetweenAnimatedSceneAndHealthBar = 8.0;
+  static const _spaceBetweenHealthBarAndStudyTimer = 24.0;
+  static const _horizontalMarginHealthBar = 96.0;
+  static const _horizontalMarginStudyTimer = 72.0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,63 +24,27 @@ class HomePage extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 0),
           child: LayoutBuilder(
             builder: (context, constraints) {
-              const spaceBetweenAnimatedSceneAndHealthBar = 8.0;
-              const spaceBetweenHealthBarAndStudyTimer = 24.0;
-
-              const horizontalMarginHealthBar = 96.0;
-              const horizontalMarginStudyTimer = 72.0;
-
               final animatedSceneHeight =
                   constraints.maxHeight / 2 -
                   HealthBarSize.medium.height -
-                  spaceBetweenAnimatedSceneAndHealthBar -
-                  spaceBetweenHealthBarAndStudyTimer;
+                  _spaceBetweenAnimatedSceneAndHealthBar -
+                  _spaceBetweenHealthBarAndStudyTimer;
 
               return Column(
                 children: [
                   UnizenLogo(),
-                  Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: [
-                      OverlayText(
-                        'AUTOMATION',
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 96.0,
-                          vertical: 8.0,
-                        ),
-                      ),
-                      SizedBox(
-                        height: animatedSceneHeight,
-                        width: double.infinity,
-                        child: AnimatedScene(
-                          viewModel: AnimatedSceneViewModel(
-                            config: SceneConfig(
-                              modelAssetPath:
-                                  'build/models/zombie_after_blender.model',
-                              environmentIntensity: 3,
-                              cameraDistance: 10,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                  _AnimatedSceneSection(height: animatedSceneHeight),
+                  const SizedBox(
+                    height: _spaceBetweenAnimatedSceneAndHealthBar,
                   ),
-                  const SizedBox(height: spaceBetweenAnimatedSceneAndHealthBar),
-                  HealthBar(
-                    viewModel: HealthBarViewModel(
-                      config: HealthBarConfig(size: HealthBarSize.medium),
-                      maxHealth: 5000,
-                      health: 1850,
-                    ), //..startTimerCommand.execute(),
+                  _HealthBarSection(
                     margin: const EdgeInsets.symmetric(
-                      horizontal: horizontalMarginHealthBar,
+                      horizontal: _horizontalMarginHealthBar,
                     ),
                   ),
-                  const SizedBox(height: spaceBetweenHealthBarAndStudyTimer),
-                  StudyTimer(
-                    viewModel: StudyTimerViewModel(config: StudyTimerConfig()),
-                    examName: 'AUTOMATION',
-                    margin: EdgeInsets.all(horizontalMarginStudyTimer),
+                  const SizedBox(height: _spaceBetweenHealthBarAndStudyTimer),
+                  _StudyTimerSection(
+                    margin: EdgeInsets.all(_horizontalMarginStudyTimer),
                   ),
                 ],
               );
@@ -83,6 +52,74 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _AnimatedSceneSection extends StatelessWidget {
+  const _AnimatedSceneSection({required this.height});
+
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        OverlayText(
+          'AUTOMATION', // TODO: get from Exam object
+          margin: const EdgeInsets.symmetric(horizontal: 96.0, vertical: 8.0),
+        ),
+        SizedBox(
+          height: height,
+          width: double.infinity,
+          child: AnimatedScene(
+            viewModel: AnimatedSceneViewModel(
+              // TODO: get from Exam object
+              config: SceneConfig(
+                modelAssetPath: 'build/models/zombie_after_blender.model',
+                environmentIntensity: 3,
+                cameraDistance: 10,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _HealthBarSection extends StatelessWidget {
+  const _HealthBarSection({this.margin});
+
+  final EdgeInsets? margin;
+
+  @override
+  Widget build(BuildContext context) {
+    return HealthBar(
+      viewModel: HealthBarViewModel(
+        config: HealthBarConfig(size: HealthBarSize.medium),
+        // TODO: get from Exam object
+        maxHealth: 5000,
+        // TODO: get from Exam object
+        health: 1850,
+      ),
+      margin: margin,
+    );
+  }
+}
+
+class _StudyTimerSection extends StatelessWidget {
+  const _StudyTimerSection({this.margin});
+
+  final EdgeInsets? margin;
+
+  @override
+  Widget build(BuildContext context) {
+    return StudyTimer(
+      viewModel: StudyTimerViewModel(config: StudyTimerConfig()),
+      examName: 'AUTOMATION',
+      margin: margin,
     );
   }
 }
