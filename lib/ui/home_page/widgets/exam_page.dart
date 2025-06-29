@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:unizen/ui/animated_scene/animated_scene.dart';
+import 'package:unizen/ui/core/ui/vertical_text.dart';
 import 'package:unizen/ui/health_bar/health_bar.dart';
 import 'package:unizen/ui/study_timer/study_timer.dart';
 import 'package:unizen/ui/core/ui/overlay_text.dart';
@@ -8,9 +9,16 @@ import 'package:unizen/ui/core/ui/overlay_text.dart';
 import '../models/exam.dart';
 
 class ExamPage extends StatelessWidget {
-  const ExamPage({super.key, required this.exam});
+  const ExamPage({
+    super.key,
+    required this.exam,
+    this.lVerticalText,
+    this.rVerticalText,
+  });
 
   final Exam exam;
+  final String? lVerticalText;
+  final String? rVerticalText;
 
   static const _spaceBetweenAnimatedSceneAndHealthBar = 8.0;
   static const _spaceBetweenHealthBarAndStudyTimer = 24.0;
@@ -29,21 +37,40 @@ class ExamPage extends StatelessWidget {
               _spaceBetweenAnimatedSceneAndHealthBar -
               _spaceBetweenHealthBarAndStudyTimer;
 
-          return Column(
+          return Stack(
             children: [
-              _AnimatedSceneSection(exam: exam, height: animatedSceneHeight),
-              const SizedBox(height: _spaceBetweenAnimatedSceneAndHealthBar),
-              _HealthBarSection(
-                exam: exam,
-                margin: EdgeInsets.symmetric(
-                  horizontal: _horizontalMarginHealthBar,
+              if ((lVerticalText ?? '').isNotEmpty)
+                VerticalText(
+                  text: lVerticalText!,
+                  alignment: Alignment.centerLeft,
                 ),
+              Column(
+                children: [
+                  _AnimatedSceneSection(
+                    exam: exam,
+                    height: animatedSceneHeight,
+                  ),
+                  const SizedBox(
+                    height: _spaceBetweenAnimatedSceneAndHealthBar,
+                  ),
+                  _HealthBarSection(
+                    exam: exam,
+                    margin: EdgeInsets.symmetric(
+                      horizontal: _horizontalMarginHealthBar,
+                    ),
+                  ),
+                  const SizedBox(height: _spaceBetweenHealthBarAndStudyTimer),
+                  _StudyTimerSection(
+                    exam: exam,
+                    margin: EdgeInsets.all(_horizontalMarginStudyTimer),
+                  ),
+                ],
               ),
-              const SizedBox(height: _spaceBetweenHealthBarAndStudyTimer),
-              _StudyTimerSection(
-                exam: exam,
-                margin: EdgeInsets.all(_horizontalMarginStudyTimer),
-              ),
+              if ((rVerticalText ?? '').isNotEmpty)
+                VerticalText(
+                  text: rVerticalText!,
+                  alignment: Alignment.centerRight,
+                ),
             ],
           );
         },
