@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class VerticalText extends StatelessWidget {
   const VerticalText({
@@ -6,7 +7,7 @@ class VerticalText extends StatelessWidget {
     required this.text,
     required this.alignment,
     this.color,
-    this.padding = const EdgeInsets.all(4.0),
+    this.padding = const EdgeInsets.all(8.0),
   });
 
   final Alignment alignment;
@@ -24,18 +25,19 @@ class VerticalText extends StatelessWidget {
         alignment: WrapAlignment.center,
         children:
             text
-                .split("")
+                .toUpperCase()
+                .split('')
                 .map(
                   (string) => Text(
                     string,
-                    style: TextStyle(
-                      color: color ?? Theme.of(context).colorScheme.onSurface,
-                      fontFamily: "monospace",
-                      fontSize: 12.0,
-                      fontFamilyFallback: const <String>["Courier"],
-                      height: 0.8,
-                      letterSpacing: 0,
-                    ),
+                    style: GoogleFonts.jetBrainsMonoTextTheme().labelSmall
+                        ?.copyWith(
+                          color:
+                              color ?? Theme.of(context).colorScheme.onSurface,
+                          fontSize: 12.0,
+                          height: 1,
+                          fontWeight: FontWeight.w500,
+                        ),
                   ),
                 )
                 .toList(),
