@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_scene/scene.dart';
 
 import '../view_models/animated_scene_view_model.dart';
 import '../widgets/scene_painter.dart';
@@ -9,12 +10,17 @@ class AnimatedScene extends StatefulWidget {
 
   final AnimatedSceneViewModel viewModel;
 
+  static Future<void> initialize() async {
+    await Scene.initializeStaticResources();
+  }
+
   @override
   State<AnimatedScene> createState() => _AnimatedSceneState();
 }
 
 class _AnimatedSceneState extends State<AnimatedScene> {
   late Ticker _ticker;
+  bool _sceneReady = false;
 
   @override
   void initState() {
@@ -24,6 +30,10 @@ class _AnimatedSceneState extends State<AnimatedScene> {
       _ticker = Ticker((elapsed) {
         widget.viewModel.update(elapsed);
       })..start();
+
+      setState(() {
+        _sceneReady = true;
+      });
     });
   }
 
@@ -36,32 +46,26 @@ class _AnimatedSceneState extends State<AnimatedScene> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: widget.viewModel.loadCommand.isExecuting,
-      builder:
-          (_, isLoaded, _) =>
-              isLoaded
-                  ? CircularProgressIndicator()
-                  : ValueListenableBuilder<double>(
-                    valueListenable: widget.viewModel.elapsedFrames,
-                    builder: (_, elapsed, _) {
-                      return ValueListenableBuilder<double>(
-                        valueListenable: widget.viewModel.rotationX,
-                        builder:
-                            (_, rotX, _) => RepaintBoundary(
-                              child: CustomPaint(
-                                painter: ScenePainter(
-                                  scene: widget.viewModel.scene,
-                                  elapsedTime: elapsed,
-                                  rotationX: rotX,
-                                  cameraDistance:
-                                      widget.viewModel.config.cameraDistance,
-                                ),
-                              ),
-                            ),
-                      );
-                    },
+    return !_sceneReady
+        ? CircularProgressIndicator()
+        : ValueListenableBuilder<double>(
+          valueListenable: widget.viewModel.elapsedFrames,
+          builder: (_, elapsed, _) {
+            return ValueListenableBuilder<double>(
+              valueListenable: widget.viewModel.rotationX,
+              builder:
+                  (_, rotX, _) => RepaintBoundary(
+                    child: CustomPaint(
+                      painter: ScenePainter(
+                        scene: widget.viewModel.scene,
+                        elapsedTime: elapsed,
+                        rotationX: rotX,
+                        cameraDistance: widget.viewModel.config.cameraDistance,
+                      ),
+                    ),
                   ),
-    );
+            );
+          },
+        );
   }
 }
