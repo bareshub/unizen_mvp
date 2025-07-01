@@ -11,10 +11,13 @@ import '../models/exam.dart';
 class ExamPage extends StatelessWidget {
   const ExamPage({
     super.key,
+    required this.animatedSceneViewModel,
     required this.exam,
     this.lVerticalText,
     this.rVerticalText,
   });
+
+  final AnimatedSceneViewModel animatedSceneViewModel;
 
   final Exam exam;
   final String? lVerticalText;
@@ -47,6 +50,7 @@ class ExamPage extends StatelessWidget {
               Column(
                 children: [
                   _AnimatedSceneSection(
+                    viewModel: animatedSceneViewModel,
                     exam: exam,
                     height: animatedSceneHeight,
                   ),
@@ -80,10 +84,15 @@ class ExamPage extends StatelessWidget {
 }
 
 class _AnimatedSceneSection extends StatelessWidget {
-  const _AnimatedSceneSection({required this.exam, required this.height});
+  const _AnimatedSceneSection({
+    required this.viewModel,
+    required this.exam,
+    required this.height,
+  });
 
   final Exam exam;
   final double height;
+  final AnimatedSceneViewModel viewModel;
 
   @override
   Widget build(BuildContext context) {
@@ -97,15 +106,7 @@ class _AnimatedSceneSection extends StatelessWidget {
         SizedBox(
           height: height,
           width: double.infinity,
-          child: AnimatedScene(
-            viewModel: AnimatedSceneViewModel(
-              config: SceneConfig(
-                modelAssetPath: exam.modelAssetPath,
-                environmentIntensity: 3,
-                cameraDistance: 10,
-              ),
-            ),
-          ),
+          child: AnimatedScene(viewModel: viewModel),
         ),
       ],
     );
