@@ -5,18 +5,6 @@ import 'package:flutter_scene/scene.dart';
 import '../configs/scene_config.dart';
 
 class AnimatedSceneViewModel extends ChangeNotifier {
-  AnimatedSceneViewModel({required this.config}) {
-    loadCommand = Command.createAsyncNoParamNoResult(_loadScene);
-
-    turnRightCommand = Command.createSyncNoParamNoResult(_turnRight);
-    turnLeftCommand = Command.createSyncNoParamNoResult(_turnLeft);
-    turnOffsetCommand = Command.createSyncNoResult(_turnOffsetCommand);
-
-    playClipCommand = Command.createSyncNoResult<String>(
-      (String clipName) => _play(clipName),
-    );
-  }
-
   final Scene scene = Scene();
   final SceneConfig config;
 
@@ -24,6 +12,7 @@ class AnimatedSceneViewModel extends ChangeNotifier {
   late final Command<void, void> turnRightCommand;
   late final Command<void, void> turnLeftCommand;
   late final Command<double, void> turnOffsetCommand;
+  late final Command<double, void> rotateCommand;
   late final Command<void, void> playClipCommand;
 
   final ValueNotifier<double> elapsedFrames = ValueNotifier(0);
@@ -32,6 +21,20 @@ class AnimatedSceneViewModel extends ChangeNotifier {
   double _destinationX = 0;
 
   final Map<String, AnimationClip> _animationMap = {};
+
+  AnimatedSceneViewModel({required this.config}) {
+    loadCommand = Command.createAsyncNoParamNoResult(_loadScene);
+
+    turnRightCommand = Command.createSyncNoParamNoResult(_turnRight);
+    turnLeftCommand = Command.createSyncNoParamNoResult(_turnLeft);
+    turnOffsetCommand = Command.createSyncNoResult(_turnOffsetCommand);
+
+    rotateCommand = Command.createSyncNoResult<double>(_rotate);
+
+    playClipCommand = Command.createSyncNoResult<String>(
+      (String clipName) => _play(clipName),
+    );
+  }
 
   void update(Duration elapsed) {
     elapsedFrames.value = elapsed.inMilliseconds / 1000 * config.fps;
@@ -85,6 +88,10 @@ class AnimatedSceneViewModel extends ChangeNotifier {
   void _turnOffsetCommand(double offset) {
     final destinationX = config.turnOffset.radians;
     rotationX.value = offset.clamp(0.0, 1.0) * destinationX;
+  }
+
+  void _rotate(double rotation) {
+    rotationX.value = rotation;
   }
 
   void _play(String clipName) {
