@@ -12,8 +12,8 @@ class SceneConfig {
   const SceneConfig({
     required this.modelAssetPath,
     this.defaultAnimation = Animation.idle,
-    this.turnOffset = TurnOffset.turn45,
-    this.environmentIntensity = 1.0,
+    this.turnOffset = TurnOffset.turn30,
+    this.environmentIntensity = 3.0,
     this.environmentExposure = 4.0,
     this.cameraDistance = 10.0,
     this.fps = 60.0,
@@ -23,9 +23,9 @@ class SceneConfig {
 enum Animation { idle, walk, attack, death }
 
 enum TurnOffset {
-  turn45(pi / 4),
-  turn90(pi / 2),
-  turn180(pi);
+  turn15(pi / 24),
+  turn30(pi / 12),
+  turn45(pi / 8);
 
   const TurnOffset(this.radians);
 
