@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -28,21 +30,30 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     _pageController = PageController(initialPage: 1);
-    /* TODO WIP
 
     _pageController.addListener(() {
-      final position = _pageController.page ?? 0.0;
+      final page = _pageController.page ?? 0.0;
 
-      if (position > 2.3) {
-        debugPrint(_pageController.toString());
+      final intPart = page.floor();
+
+      final decimalPart = page - intPart;
+
+      if (decimalPart != 0 &&
+          widget.viewModel.examNodes.elementAtOrNull(intPart + 1) != null) {
+        var lIndex = intPart - 1;
+        var rIndex = intPart;
+
+        animatedSceneViewModels
+            .elementAt(lIndex)
+            .rotateCommand
+            .execute(decimalPart * pi / 3);
+
+        animatedSceneViewModels
+            .elementAt(rIndex)
+            .rotateCommand
+            .execute(-(1 - decimalPart) * pi / 3);
       }
-      final currentExamIntex = _pageController.page ?? 1 - 1;
-
-      widget.viewModel.exams.elementAt(currentExamIntex.toInt());
-
-      debugPrint('_pageController.page ${position.toString()}');
     });
-    */
 
     AnimatedScene.initialize().then((_) {
       setState(() {
@@ -70,39 +81,30 @@ class _HomePageState extends State<HomePage> {
                             controller: _pageController,
                             children: [
                               AddExamPage(),
-                              ...widget.viewModel.exams.map((exam) {
-                                var indexOfExam = widget.viewModel.exams
-                                    .indexOf(exam);
+                              ...widget.viewModel.examNodes.map((examNode) {
+                                var lVerticalText =
+                                    examNode.previous == null
+                                        ? 'NEW EXAM'
+                                        : examNode.exam.name;
+
+                                var rVerticalText =
+                                    examNode.next == null
+                                        ? ''
+                                        : examNode.exam.name;
 
                                 var animatedSceneViewModel =
                                     AnimatedSceneViewModel(
-                                      config: SceneConfig(
-                                        modelAssetPath: exam.modelAssetPath,
-                                        environmentIntensity:
-                                            exam.environmentIntensity,
-                                        cameraDistance: exam.cameraDistance,
-                                      ),
+                                      config: examNode.exam.sceneConfig,
                                     );
 
-                                var lVerticalText =
-                                    indexOfExam == 0
-                                        ? 'NEW EXAM'
-                                        : widget.viewModel.exams
-                                            .elementAt(indexOfExam - 1)
-                                            .name;
-                                var rVerticalText =
-                                    indexOfExam + 1 >=
-                                            widget.viewModel.exams.length
-                                        ? ''
-                                        : widget.viewModel.exams
-                                            .elementAt(indexOfExam + 1)
-                                            .name
-                                            .toUpperCase();
+                                animatedSceneViewModels.add(
+                                  animatedSceneViewModel,
+                                );
 
                                 return ExamPage(
                                   animatedSceneViewModel:
                                       animatedSceneViewModel,
-                                  exam: exam,
+                                  exam: examNode.exam,
                                   lVerticalText: lVerticalText,
                                   rVerticalText: rVerticalText,
                                 );
@@ -117,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 SmoothPageIndicator(
                   controller: _pageController,
-                  count: widget.viewModel.exams.length + 1,
+                  count: widget.viewModel.examNodes.length + 1,
                   effect: ScrollingDotsEffect(
                     activeDotColor: Theme.of(context).colorScheme.secondary,
                     dotColor: Theme.of(context).colorScheme.primaryContainer,
