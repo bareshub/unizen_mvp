@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_command/flutter_command.dart';
-import 'package:unizen/ui/home_page/models/exam.dart';
+
+import '../models/exam_node.dart';
 
 class HomePageViewModel extends ChangeNotifier {
   late final Command<void, void> addExamCommand;
   late final Command<void, void> deleteExamCommand;
 
-  final List<Exam> exams; // TODO replace behaviour through repository
+  final List<ExamNode> examNodes; // TODO replace behaviour through repository
 
-  HomePageViewModel({required this.exams}) {
+  HomePageViewModel({required this.examNodes}) {
     addExamCommand = Command.createSyncNoParamNoResult(() {});
     deleteExamCommand = Command.createSyncNoParamNoResult(() {});
   }
