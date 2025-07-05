@@ -35,7 +35,6 @@ class _HomePageState extends State<HomePage> {
       final page = _pageController.page ?? 0.0;
 
       final intPart = page.floor();
-
       final decimalPart = page - intPart;
 
       if (decimalPart != 0 &&
