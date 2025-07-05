@@ -18,16 +18,16 @@ class AnimatedSceneViewModel extends ChangeNotifier {
   final ValueNotifier<double> elapsedFrames = ValueNotifier(0);
   final ValueNotifier<double> rotationX = ValueNotifier(0);
 
-  double _destinationX = 0;
+  // double _destinationX = 0;
 
   final Map<String, AnimationClip> _animationMap = {};
 
   AnimatedSceneViewModel({required this.config}) {
     loadCommand = Command.createAsyncNoParamNoResult(_loadScene);
 
-    turnRightCommand = Command.createSyncNoParamNoResult(_turnRight);
-    turnLeftCommand = Command.createSyncNoParamNoResult(_turnLeft);
-    turnOffsetCommand = Command.createSyncNoResult(_turnOffsetCommand);
+    // turnRightCommand = Command.createSyncNoParamNoResult(_turnRight);
+    // turnLeftCommand = Command.createSyncNoParamNoResult(_turnLeft);
+    // turnOffsetCommand = Command.createSyncNoResult(_turnOffsetCommand);
 
     rotateCommand = Command.createSyncNoResult<double>(_rotate);
 
@@ -38,20 +38,20 @@ class AnimatedSceneViewModel extends ChangeNotifier {
 
   void update(Duration elapsed) {
     elapsedFrames.value = elapsed.inMilliseconds / 1000 * config.fps;
-    final current = rotationX.value;
-    final step = config.turnOffset.radians / config.fps * 10;
+    // final current = rotationX.value;
+    // final step = config.turnOffset.radians / config.fps * 10;
 
-    if (_destinationX > 0 && current < _destinationX) {
-      rotationX.value = (current + step).clamp(
-        -config.turnOffset.radians.toDouble(),
-        _destinationX,
-      );
-    } else if (_destinationX < 0 && current > _destinationX) {
-      rotationX.value = (current - step).clamp(
-        _destinationX,
-        config.turnOffset.radians.toDouble(),
-      );
-    }
+    // if (_destinationX > 0 && current < _destinationX) {
+    //   rotationX.value = (current + step).clamp(
+    //     -config.turnOffset.radians.toDouble(),
+    //     _destinationX,
+    //   );
+    // } else if (_destinationX < 0 && current > _destinationX) {
+    //   rotationX.value = (current - step).clamp(
+    //     _destinationX,
+    //     config.turnOffset.radians.toDouble(),
+    //   );
+    // }
   }
 
   Future<void> _loadScene() async {
@@ -80,15 +80,14 @@ class AnimatedSceneViewModel extends ChangeNotifier {
       ..weight = 0;
   }
 
-  void _turnRight() => _destinationX = config.turnOffset.radians.toDouble();
+  // void _turnRight() => _destinationX = config.turnOffset.radians.toDouble();
 
-  void _turnLeft() => _destinationX = -config.turnOffset.radians.toDouble();
+  // void _turnLeft() => _destinationX = -config.turnOffset.radians.toDouble();
 
-  // TODO: WIP
-  void _turnOffsetCommand(double offset) {
-    final destinationX = config.turnOffset.radians;
-    rotationX.value = offset.clamp(0.0, 1.0) * destinationX;
-  }
+  // void _turnOffsetCommand(double offset) {
+  //   final destinationX = config.turnOffset.radians;
+  //   rotationX.value = offset.clamp(0.0, 1.0) * destinationX;
+  // }
 
   void _rotate(double rotation) {
     rotationX.value = rotation;
