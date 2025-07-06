@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:unizen/ui/animated_scene/animated_scene.dart';
+import 'package:unizen/ui/animated_scene/view_models/rotation_view_model.dart';
 import 'package:unizen/ui/core/ui/vertical_text.dart';
 import 'package:unizen/ui/health_bar/health_bar.dart';
 import 'package:unizen/ui/study_timer/study_timer.dart';
@@ -11,13 +12,15 @@ import '../models/exam.dart';
 class ExamPage extends StatelessWidget {
   const ExamPage({
     super.key,
-    required this.animatedSceneViewModel,
+    required this.sceneConfig,
+    required this.rotationViewModel,
     required this.exam,
     this.lVerticalText,
     this.rVerticalText,
   });
 
-  final AnimatedSceneViewModel animatedSceneViewModel;
+  final SceneConfig sceneConfig;
+  final RotationViewModel rotationViewModel;
 
   final Exam exam;
   final String? lVerticalText;
@@ -50,7 +53,8 @@ class ExamPage extends StatelessWidget {
               Column(
                 children: [
                   _AnimatedSceneSection(
-                    viewModel: animatedSceneViewModel,
+                    sceneConfig: sceneConfig,
+                    rotationViewModel: rotationViewModel,
                     exam: exam,
                     height: animatedSceneHeight,
                   ),
@@ -85,14 +89,16 @@ class ExamPage extends StatelessWidget {
 
 class _AnimatedSceneSection extends StatelessWidget {
   const _AnimatedSceneSection({
-    required this.viewModel,
+    required this.sceneConfig,
+    required this.rotationViewModel,
     required this.exam,
     required this.height,
   });
 
   final Exam exam;
   final double height;
-  final AnimatedSceneViewModel viewModel;
+  final SceneConfig sceneConfig;
+  final RotationViewModel rotationViewModel;
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +112,10 @@ class _AnimatedSceneSection extends StatelessWidget {
         SizedBox(
           height: height,
           width: double.infinity,
-          child: AnimatedScene(viewModel: viewModel),
+          child: AnimatedScene(
+            sceneConfig: sceneConfig,
+            rotationViewModel: rotationViewModel,
+          ),
         ),
       ],
     );
