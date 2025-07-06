@@ -7,7 +7,7 @@ class VerticalText extends StatelessWidget {
     required this.text,
     required this.alignment,
     this.color,
-    this.padding = const EdgeInsets.all(8.0),
+    this.padding = const EdgeInsets.all(2.0),
   });
 
   final Alignment alignment;
