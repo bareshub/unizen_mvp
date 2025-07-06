@@ -16,7 +16,7 @@ class AnimatedSceneViewModel extends ChangeNotifier {
   late final Command<void, void> playClipCommand;
 
   final ValueNotifier<double> elapsedFrames = ValueNotifier(0);
-  final ValueNotifier<double> rotationX = ValueNotifier(0);
+  // final ValueNotifier<double> rotationX = ValueNotifier(0);
 
   // double _destinationX = 0;
 
@@ -90,7 +90,7 @@ class AnimatedSceneViewModel extends ChangeNotifier {
   // }
 
   void _rotate(double rotation) {
-    rotationX.value = rotation;
+    // rotationX.value = rotation;
   }
 
   void _play(String clipName) {
@@ -111,7 +111,7 @@ class AnimatedSceneViewModel extends ChangeNotifier {
   void dispose() {
     scene.removeAll();
     elapsedFrames.dispose();
-    rotationX.dispose();
+    // rotationX.dispose();
     super.dispose();
   }
 }
