@@ -2,13 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_scene/scene.dart';
 
+import '../configs/scene_config.dart';
+import '../view_models/rotation_view_model.dart';
 import '../view_models/animated_scene_view_model.dart';
 import '../widgets/scene_painter.dart';
 
 class AnimatedScene extends StatefulWidget {
-  const AnimatedScene({super.key, required this.viewModel});
+  final SceneConfig sceneConfig;
+  final RotationViewModel rotationViewModel;
 
-  final AnimatedSceneViewModel viewModel;
+  const AnimatedScene({
+    super.key,
+    required this.sceneConfig,
+    required this.rotationViewModel,
+  });
 
   static Future<void> initialize() async {
     await Scene.initializeStaticResources();
@@ -20,15 +27,17 @@ class AnimatedScene extends StatefulWidget {
 
 class _AnimatedSceneState extends State<AnimatedScene> {
   late Ticker _ticker;
+  late AnimatedSceneViewModel _viewModel;
   bool _sceneReady = false;
 
   @override
   void initState() {
     super.initState();
 
-    Future.wait([widget.viewModel.loadCommand.executeWithFuture()]).then((_) {
+    _viewModel = AnimatedSceneViewModel(config: widget.sceneConfig);
+    Future.wait([_viewModel.loadCommand.executeWithFuture()]).then((_) {
       _ticker = Ticker((elapsed) {
-        widget.viewModel.update(elapsed);
+        _viewModel.update(elapsed);
       })..start();
 
       setState(() {
@@ -40,7 +49,7 @@ class _AnimatedSceneState extends State<AnimatedScene> {
   @override
   void dispose() {
     _ticker.dispose();
-    widget.viewModel.dispose();
+    _viewModel.dispose();
     super.dispose();
   }
 
@@ -49,18 +58,18 @@ class _AnimatedSceneState extends State<AnimatedScene> {
     return !_sceneReady
         ? CircularProgressIndicator()
         : ValueListenableBuilder<double>(
-          valueListenable: widget.viewModel.elapsedFrames,
+          valueListenable: _viewModel.elapsedFrames,
           builder: (_, elapsed, _) {
             return ValueListenableBuilder<double>(
-              valueListenable: widget.viewModel.rotationX,
+              valueListenable: widget.rotationViewModel.rotationX,
               builder:
-                  (_, rotX, _) => RepaintBoundary(
+                  (_, rotationX, _) => RepaintBoundary(
                     child: CustomPaint(
                       painter: ScenePainter(
-                        scene: widget.viewModel.scene,
+                        scene: _viewModel.scene,
                         elapsedTime: elapsed,
-                        rotationX: rotX,
-                        cameraDistance: widget.viewModel.config.cameraDistance,
+                        rotationX: rotationX,
+                        cameraDistance: _viewModel.config.cameraDistance,
                       ),
                     ),
                   ),
