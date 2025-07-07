@@ -12,14 +12,12 @@ import '../models/exam.dart';
 class ExamPage extends StatelessWidget {
   const ExamPage({
     super.key,
-    required this.sceneConfig,
     required this.rotationViewModel,
     required this.exam,
     this.lVerticalText,
     this.rVerticalText,
   });
 
-  final SceneConfig sceneConfig;
   final RotationViewModel rotationViewModel;
 
   final Exam exam;
@@ -53,7 +51,6 @@ class ExamPage extends StatelessWidget {
               Column(
                 children: [
                   _AnimatedSceneSection(
-                    sceneConfig: sceneConfig,
                     rotationViewModel: rotationViewModel,
                     exam: exam,
                     height: animatedSceneHeight,
@@ -89,7 +86,6 @@ class ExamPage extends StatelessWidget {
 
 class _AnimatedSceneSection extends StatelessWidget {
   const _AnimatedSceneSection({
-    required this.sceneConfig,
     required this.rotationViewModel,
     required this.exam,
     required this.height,
@@ -97,7 +93,6 @@ class _AnimatedSceneSection extends StatelessWidget {
 
   final Exam exam;
   final double height;
-  final SceneConfig sceneConfig;
   final RotationViewModel rotationViewModel;
 
   @override
@@ -113,7 +108,7 @@ class _AnimatedSceneSection extends StatelessWidget {
           height: height,
           width: double.infinity,
           child: AnimatedScene(
-            sceneConfig: sceneConfig,
+            sceneConfig: exam.sceneConfig,
             rotationViewModel: rotationViewModel,
           ),
         ),
