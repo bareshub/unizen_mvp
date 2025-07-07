@@ -36,7 +36,7 @@ class VerticalText extends StatelessWidget {
                               color ?? Theme.of(context).colorScheme.onSurface,
                           fontSize: 12.0,
                           height: 1,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w600,
                         ),
                   ),
                 )
