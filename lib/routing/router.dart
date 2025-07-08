@@ -8,7 +8,6 @@ import 'package:unizen/ui/animated_scene/configs/scene_config.dart';
 import 'package:unizen/ui/core/localization/applocalization.dart';
 import 'package:unizen/ui/home_page/home_page.dart';
 import 'package:unizen/ui/home_page/models/exam.dart';
-import 'package:unizen/ui/home_page/models/exam_node.dart';
 import 'package:unizen/ui/home_page/view_models/home_page_view_model.dart';
 
 /// Top go_router entry point.
@@ -67,33 +66,7 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
           ),
         ];
 
-        List<ExamNode> examNodes = [];
-
-        for (var i = 0; i < exams.length; i++) {
-          examNodes.add(
-            ExamNode(
-              exam: exams[i],
-              previous: examNodes.elementAtOrNull(i > 0 ? i - 1 : 0),
-              next: examNodes.elementAtOrNull(i + 1),
-            ),
-          );
-        }
-
-        return HomePage(
-          viewModel: HomePageViewModel(
-            examNodes: [
-              for (var i = 0; i < exams.length; i++)
-                ExamNode(
-                  exam: exams[i],
-                  previous: i > 0 ? ExamNode(exam: exams[i - 1]) : null,
-                  next:
-                      i < exams.length - 1
-                          ? ExamNode(exam: exams[i + 1])
-                          : null,
-                ),
-            ],
-          ),
-        );
+        return HomePage(viewModel: HomePageViewModel(exams: exams));
       },
       routes: [],
     ),
