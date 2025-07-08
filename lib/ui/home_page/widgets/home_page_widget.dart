@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import 'package:unizen/ui/animated_scene/animated_scene.dart';
+import 'package:unizen/ui/animated_scene/view_models/rotation_view_model.dart';
 import 'package:unizen/ui/core/ui/unizen_logo.dart';
 
 import '../view_models/home_page_view_model.dart';
@@ -20,7 +21,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<AnimatedSceneViewModel> animatedSceneViewModels = [];
+  List<RotationViewModel> rotationViewModels = [];
 
   late final PageController _pageController;
   bool _sceneReady = false;
@@ -28,6 +29,14 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
+    AnimatedScene.initialize().then((_) {
+      rotationViewModels =
+          widget.viewModel.exams.map((_) => RotationViewModel()).toList();
+      setState(() {
+        _sceneReady = true;
+      });
+    });
 
     _pageController = PageController(initialPage: 1);
 
@@ -38,26 +47,21 @@ class _HomePageState extends State<HomePage> {
       final decimalPart = page - intPart;
 
       if (decimalPart != 0 &&
-          widget.viewModel.examNodes.elementAtOrNull(intPart + 1) != null) {
+          widget.viewModel.exams.elementAtOrNull(intPart) != null) {
+        // setState(() {});
         var lIndex = intPart - 1;
         var rIndex = intPart;
 
-        animatedSceneViewModels
+        rotationViewModels
             .elementAt(lIndex)
             .rotateCommand
             .execute(decimalPart * pi / 3);
 
-        animatedSceneViewModels
+        rotationViewModels
             .elementAt(rIndex)
             .rotateCommand
             .execute(-(1 - decimalPart) * pi / 3);
       }
-    });
-
-    AnimatedScene.initialize().then((_) {
-      setState(() {
-        _sceneReady = true;
-      });
     });
   }
 
@@ -80,30 +84,44 @@ class _HomePageState extends State<HomePage> {
                             controller: _pageController,
                             children: [
                               AddExamPage(),
-                              ...widget.viewModel.examNodes.map((examNode) {
-                                var lVerticalText =
-                                    examNode.previous == null
-                                        ? 'NEW EXAM'
-                                        : examNode.exam.name;
+                              ...widget.viewModel.exams.asMap().entries.map((
+                                entry,
+                              ) {
+                                final index = entry.key;
+                                final exam = entry.value;
 
-                                var rVerticalText =
-                                    examNode.next == null
+                                final lVerticalText = switch (index) {
+                                  0 => 'NEW EXAM',
+                                  _ =>
+                                    widget.viewModel.exams
+                                        .elementAt(index - 1)
+                                        .name,
+                                };
+
+                                final rVerticalText =
+                                    index == widget.viewModel.exams.length - 1
                                         ? ''
-                                        : examNode.exam.name;
+                                        : widget.viewModel.exams
+                                            .elementAt(index + 1)
+                                            .name;
 
-                                var animatedSceneViewModel =
-                                    AnimatedSceneViewModel(
-                                      config: examNode.exam.sceneConfig,
-                                    );
-
-                                animatedSceneViewModels.add(
-                                  animatedSceneViewModel,
-                                );
+                                // if (animatedSceneViewModels.length > index) {
+                                //   debugPrint('updated $index');
+                                //   animatedSceneViewModels[index] =
+                                //       AnimatedSceneViewModel(
+                                //         config: examNode.exam.sceneConfig,
+                                //       );
+                                // } else {
+                                //   animatedSceneViewModels.add(
+                                //     AnimatedSceneViewModel(
+                                //       config: examNode.exam.sceneConfig,
+                                //     ),
+                                //   );
+                                // }
 
                                 return ExamPage(
-                                  animatedSceneViewModel:
-                                      animatedSceneViewModel,
-                                  exam: examNode.exam,
+                                  rotationViewModel: rotationViewModels[index],
+                                  exam: exam,
                                   lVerticalText: lVerticalText,
                                   rVerticalText: rVerticalText,
                                 );
@@ -118,7 +136,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 SmoothPageIndicator(
                   controller: _pageController,
-                  count: widget.viewModel.examNodes.length + 1,
+                  count: widget.viewModel.exams.length + 1,
                   effect: ScrollingDotsEffect(
                     activeDotColor: Theme.of(context).colorScheme.secondary,
                     dotColor: Theme.of(context).colorScheme.primaryContainer,
@@ -136,6 +154,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
+    for (var vm in rotationViewModels) {
+      vm.dispose();
+    }
     _pageController.dispose();
     super.dispose();
   }
