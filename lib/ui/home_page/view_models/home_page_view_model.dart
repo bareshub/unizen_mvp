@@ -29,10 +29,12 @@ class HomePageViewModel extends ChangeNotifier {
       if (decimalPart != 0 && exams.elementAtOrNull(intPart) != null) {
         var lIndex = intPart - 1;
         var rIndex = intPart;
+
         rotationViewModels
             .elementAt(lIndex)
             .rotateCommand
             .execute(decimalPart * pi / 3);
+
         rotationViewModels
             .elementAt(rIndex)
             .rotateCommand
@@ -49,10 +51,12 @@ class HomePageViewModel extends ChangeNotifier {
       ...exams.asMap().entries.map((entry) {
         final index = entry.key;
         final exam = entry.value;
+
         final lVerticalText =
             index == 0 ? 'NEW EXAM' : exams.elementAt(index - 1).name;
         final rVerticalText =
             index == exams.length - 1 ? '' : exams.elementAt(index + 1).name;
+
         return ExamPage(
           rotationViewModel: rotationViewModels[index],
           exam: exam,
