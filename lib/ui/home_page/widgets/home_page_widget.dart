@@ -38,18 +38,17 @@ class _HomePageState extends State<HomePage> {
                   child: AnimatedBuilder(
                     animation: widget.viewModel,
                     builder: (context, _) {
-                      if (!widget.viewModel.sceneReady) {
-                        return Center(
-                          child: CircularProgressIndicator(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
-                        );
-                      }
-                      return PageView(
-                        allowImplicitScrolling: true,
-                        controller: _pageController,
-                        children: widget.viewModel.buildPages(),
-                      );
+                      return widget.viewModel.sceneReady
+                          ? PageView(
+                            allowImplicitScrolling: true,
+                            controller: _pageController,
+                            children: widget.viewModel.buildPages(),
+                          )
+                          : Center(
+                            child: CircularProgressIndicator(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                          );
                     },
                   ),
                 ),
