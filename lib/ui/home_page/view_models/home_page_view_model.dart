@@ -1,5 +1,7 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
+
 import 'package:unizen/ui/animated_scene/animated_scene.dart';
 import 'package:unizen/ui/animated_scene/view_models/rotation_view_model.dart';
 
@@ -10,9 +12,10 @@ import '../widgets/exam_page.dart';
 class HomePageViewModel extends ChangeNotifier {
   final List<Exam> exams;
   late List<RotationViewModel> rotationViewModels;
+  late TurnOffset turnOffset;
   bool sceneReady = false;
 
-  HomePageViewModel({required this.exams});
+  HomePageViewModel({required this.exams, this.turnOffset = TurnOffset.turn60});
 
   void init(PageController pageController) {
     AnimatedScene.initialize().then((_) {
@@ -33,12 +36,12 @@ class HomePageViewModel extends ChangeNotifier {
         rotationViewModels
             .elementAt(lIndex)
             .rotateCommand
-            .execute(decimalPart * pi / 3);
+            .execute(decimalPart * turnOffset.radians);
 
         rotationViewModels
             .elementAt(rIndex)
             .rotateCommand
-            .execute(-(1 - decimalPart) * pi / 3);
+            .execute(-(1 - decimalPart) * turnOffset.radians);
       }
     });
   }
@@ -74,4 +77,14 @@ class HomePageViewModel extends ChangeNotifier {
     }
     super.dispose();
   }
+}
+
+enum TurnOffset {
+  turn45(pi / 4),
+  turn60(pi / 3),
+  turn90(pi / 2);
+
+  const TurnOffset(this.radians);
+
+  final num radians;
 }
