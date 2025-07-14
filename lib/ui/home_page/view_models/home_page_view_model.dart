@@ -29,7 +29,7 @@ class HomePageViewModel extends ChangeNotifier {
       final intPart = page.floor();
       final decimalPart = page - intPart;
 
-      if (decimalPart != 0 && exams.elementAtOrNull(intPart) != null) {
+      if (decimalPart != 0 && intPart > 0 && intPart < exams.length) {
         var lIndex = intPart - 1;
         var rIndex = intPart;
 
@@ -50,15 +50,20 @@ class HomePageViewModel extends ChangeNotifier {
 
   List<Widget> buildPages() {
     return [
-      AddExamPage(),
+      AddExamPage(rVerticalText: exams.firstOrNull?.name ?? ''),
       ...exams.asMap().entries.map((entry) {
         final index = entry.key;
         final exam = entry.value;
 
-        final lVerticalText =
-            index == 0 ? 'NEW EXAM' : exams.elementAt(index - 1).name;
-        final rVerticalText =
-            index == exams.length - 1 ? '' : exams.elementAt(index + 1).name;
+        final lVerticalText = switch (index) {
+          0 => 'NEW EXAM',
+          _ => exams.elementAt(index - 1).name,
+        };
+
+        var rVerticalText = '';
+        if (index + 1 < exams.length) {
+          rVerticalText = exams.elementAt(index + 1).name;
+        }
 
         return ExamPage(
           rotationViewModel: rotationViewModels[index],
