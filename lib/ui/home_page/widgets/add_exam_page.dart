@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AddExamPage extends StatelessWidget {
-  const AddExamPage({super.key});
+  final String rVerticalText;
+
+  const AddExamPage({super.key, required this.rVerticalText});
 
   @override
   Widget build(BuildContext context) {
