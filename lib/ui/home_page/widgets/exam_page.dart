@@ -4,6 +4,7 @@ import 'package:unizen/ui/animated_scene/animated_scene.dart';
 import 'package:unizen/ui/animated_scene/view_models/rotation_view_model.dart';
 import 'package:unizen/ui/core/ui/vertical_text.dart';
 import 'package:unizen/ui/health_bar/health_bar.dart';
+import 'package:unizen/ui/home_page/view_models/exam_page_view_model.dart';
 import 'package:unizen/ui/study_timer/study_timer.dart';
 import 'package:unizen/ui/core/ui/overlay_text.dart';
 
@@ -19,33 +20,31 @@ class ExamPage extends StatelessWidget {
   });
 
   final RotationViewModel rotationViewModel;
-
   final Exam exam;
   final String? lVerticalText;
   final String? rVerticalText;
 
-  static const _spaceBetweenAnimatedSceneAndHealthBar = 8.0;
-  static const _spaceBetweenHealthBarAndStudyTimer = 24.0;
-  static const _horizontalMarginHealthBar = 96.0;
-  static const _horizontalMarginStudyTimer = 72.0;
-
   @override
   Widget build(BuildContext context) {
+    final viewModel = ExamPageViewModel(
+      exam: exam,
+      lVerticalText: lVerticalText,
+      rVerticalText: rVerticalText,
+    );
+
     return Container(
       margin: const EdgeInsets.only(bottom: 0),
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final animatedSceneHeight =
-              constraints.maxHeight / 2 -
-              HealthBarSize.medium.height -
-              _spaceBetweenAnimatedSceneAndHealthBar -
-              _spaceBetweenHealthBarAndStudyTimer;
+          final animatedSceneHeight = viewModel.calculateAnimatedSceneHeight(
+            constraints.maxHeight,
+          );
 
           return Stack(
             children: [
-              if ((lVerticalText ?? '').isNotEmpty)
+              if (viewModel.hasLeftVerticalText)
                 VerticalText(
-                  text: lVerticalText!,
+                  text: viewModel.lVerticalText!,
                   alignment: Alignment.centerLeft,
                 ),
               Column(
@@ -56,24 +55,30 @@ class ExamPage extends StatelessWidget {
                     height: animatedSceneHeight,
                   ),
                   const SizedBox(
-                    height: _spaceBetweenAnimatedSceneAndHealthBar,
+                    height:
+                        ExamPageViewModel.spaceBetweenAnimatedSceneAndHealthBar,
                   ),
                   _HealthBarSection(
                     exam: exam,
                     margin: EdgeInsets.symmetric(
-                      horizontal: _horizontalMarginHealthBar,
+                      horizontal: ExamPageViewModel.horizontalMarginHealthBar,
                     ),
                   ),
-                  const SizedBox(height: _spaceBetweenHealthBarAndStudyTimer),
+                  const SizedBox(
+                    height:
+                        ExamPageViewModel.spaceBetweenHealthBarAndStudyTimer,
+                  ),
                   _StudyTimerSection(
                     exam: exam,
-                    margin: EdgeInsets.all(_horizontalMarginStudyTimer),
+                    margin: EdgeInsets.all(
+                      ExamPageViewModel.horizontalMarginStudyTimer,
+                    ),
                   ),
                 ],
               ),
-              if ((rVerticalText ?? '').isNotEmpty)
+              if (viewModel.hasRightVerticalText)
                 VerticalText(
-                  text: rVerticalText!,
+                  text: viewModel.rVerticalText!,
                   alignment: Alignment.centerRight,
                 ),
             ],
