@@ -70,7 +70,7 @@ abstract final class AppTheme {
     inputDecorationTheme: _inputDecorationTheme,
     textTheme: _textTheme,
     appBarTheme: AppBarTheme(
-      color: AppColors.primary,
+      backgroundColor: AppColors.primary,
       titleTextStyle: _textTheme.headlineSmall?.copyWith(
         color: AppColors.black1,
       ),
@@ -86,7 +86,7 @@ abstract final class AppTheme {
     inputDecorationTheme: _inputDecorationTheme,
     textTheme: _textTheme,
     appBarTheme: AppBarTheme(
-      color: AppColors.primaryDark,
+      backgroundColor: AppColors.primaryDark,
       titleTextStyle: _textTheme.headlineSmall?.copyWith(
         color: AppColors.white1,
       ),
