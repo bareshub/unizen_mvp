@@ -28,7 +28,9 @@ class ScenePainter extends CustomPainter {
       target: vm.Vector3.zero(),
     );
 
-    scene.render(camera, canvas, viewport: Offset.zero & size);
+    final viewport = Rect.fromLTRB(0, 0, size.width, size.height * 2);
+
+    scene.render(camera, canvas, viewport: viewport);
   }
 
   @override
