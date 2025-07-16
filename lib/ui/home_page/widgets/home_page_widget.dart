@@ -33,35 +33,9 @@ class _HomePageState extends State<HomePage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(width: double.infinity, child: const UnizenLogo()),
-                Expanded(
-                  child: AnimatedBuilder(
-                    animation: widget.viewModel,
-                    builder: (context, _) {
-                      return widget.viewModel.sceneReady
-                          ? PageView(
-                            allowImplicitScrolling: true,
-                            controller: _pageController,
-                            children: widget.viewModel.buildPages(),
-                          )
-                          : Center(
-                            child: CircularProgressIndicator(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                            ),
-                          );
-                    },
-                  ),
-                ),
-                SmoothPageIndicator(
-                  controller: _pageController,
-                  count: widget.viewModel.pageCount,
-                  effect: ScrollingDotsEffect(
-                    activeDotColor: Theme.of(context).colorScheme.secondary,
-                    dotColor: Theme.of(context).colorScheme.primaryContainer,
-                    dotHeight: 8.0,
-                    dotWidth: 8.0,
-                  ),
-                ),
+                _HomePageHeader(),
+                _HomePageBody(widget: widget, pageController: _pageController),
+                _PageIndicator(pageController: _pageController, widget: widget),
               ],
             ),
           ],
@@ -75,5 +49,70 @@ class _HomePageState extends State<HomePage> {
     widget.viewModel.dispose();
     _pageController.dispose();
     super.dispose();
+  }
+}
+
+class _HomePageHeader extends StatelessWidget {
+  const _HomePageHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(width: double.infinity, child: const UnizenLogo());
+  }
+}
+
+class _HomePageBody extends StatelessWidget {
+  const _HomePageBody({
+    required this.widget,
+    required PageController pageController,
+  }) : _pageController = pageController;
+
+  final HomePage widget;
+  final PageController _pageController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: AnimatedBuilder(
+        animation: widget.viewModel,
+        builder: (context, _) {
+          return widget.viewModel.sceneReady
+              ? PageView(
+                allowImplicitScrolling: true,
+                controller: _pageController,
+                children: widget.viewModel.buildPages(),
+              )
+              : Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              );
+        },
+      ),
+    );
+  }
+}
+
+class _PageIndicator extends StatelessWidget {
+  const _PageIndicator({
+    required PageController pageController,
+    required this.widget,
+  }) : _pageController = pageController;
+
+  final PageController _pageController;
+  final HomePage widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return SmoothPageIndicator(
+      controller: _pageController,
+      count: widget.viewModel.pageCount,
+      effect: ScrollingDotsEffect(
+        activeDotColor: Theme.of(context).colorScheme.secondary,
+        dotColor: Theme.of(context).colorScheme.primaryContainer,
+        dotHeight: 8.0,
+        dotWidth: 8.0,
+      ),
+    );
   }
 }
