@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:unizen/ui/core/localization/applocalization.dart';
@@ -18,13 +17,7 @@ class UnizenApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-
     return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
       localizationsDelegates: [
         ...GlobalMaterialLocalizations.delegates,
         GlobalWidgetsLocalizations.delegate,
