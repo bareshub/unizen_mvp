@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:unizen/ui/animated_scene/animated_scene.dart';
 import 'package:unizen/ui/animated_scene/view_models/rotation_view_model.dart';
 
-import '../models/exam.dart';
+import '../../../domain/models/exam/exam.dart';
 import '../widgets/add_exam_page.dart';
 import '../widgets/exam_page.dart';
 

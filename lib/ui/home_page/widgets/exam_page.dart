@@ -8,7 +8,7 @@ import 'package:unizen/ui/home_page/view_models/exam_page_view_model.dart';
 import 'package:unizen/ui/study_timer/study_timer.dart';
 import 'package:unizen/ui/core/ui/overlay_text.dart';
 
-import '../models/exam.dart';
+import '../../../domain/models/exam/exam.dart';
 
 class ExamPage extends StatelessWidget {
   const ExamPage({

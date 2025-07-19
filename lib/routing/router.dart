@@ -7,7 +7,7 @@ import 'package:unizen/routing/routes.dart';
 import 'package:unizen/ui/animated_scene/configs/scene_config.dart';
 import 'package:unizen/ui/core/localization/applocalization.dart';
 import 'package:unizen/ui/home_page/home_page.dart';
-import 'package:unizen/ui/home_page/models/exam.dart';
+import 'package:unizen/domain/models/exam/exam.dart';
 import 'package:unizen/ui/home_page/view_models/home_page_view_model.dart';
 
 /// Top go_router entry point.
