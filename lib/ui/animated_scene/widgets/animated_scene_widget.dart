@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_scene/scene.dart';
 
+import '../configs/scene_config.dart';
+import '../view_models/rotation_view_model.dart';
 import '../view_models/animated_scene_view_model.dart';
 import '../widgets/scene_painter.dart';
 
 class AnimatedScene extends StatefulWidget {
-  const AnimatedScene({super.key, required this.viewModel});
+  final SceneConfig sceneConfig;
+  final RotationViewModel rotationViewModel;
 
-  final AnimatedSceneViewModel viewModel;
+  const AnimatedScene({
+    super.key,
+    required this.sceneConfig,
+    required this.rotationViewModel,
+  });
+
+  static Future<void> initialize() async {
+    await Scene.initializeStaticResources();
+  }
 
   @override
   State<AnimatedScene> createState() => _AnimatedSceneState();
@@ -15,70 +27,54 @@ class AnimatedScene extends StatefulWidget {
 
 class _AnimatedSceneState extends State<AnimatedScene> {
   late Ticker _ticker;
+  late AnimatedSceneViewModel _viewModel;
+  bool _sceneReady = false;
 
   @override
   void initState() {
     super.initState();
 
-    Future.wait([widget.viewModel.loadCommand.executeWithFuture()]).then((_) {
+    _viewModel = AnimatedSceneViewModel(config: widget.sceneConfig);
+    Future.wait([_viewModel.loadCommand.executeWithFuture()]).then((_) {
       _ticker = Ticker((elapsed) {
-        widget.viewModel.update(elapsed);
+        _viewModel.update(elapsed);
       })..start();
+
+      setState(() {
+        _sceneReady = true;
+      });
     });
   }
 
   @override
   void dispose() {
     _ticker.dispose();
-    widget.viewModel.dispose();
+    _viewModel.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: widget.viewModel.loadCommand.isExecuting,
-      builder:
-          (_, isLoaded, _) =>
-              isLoaded
-                  ? CircularProgressIndicator()
-                  : SizedBox.expand(
-                    child: GestureDetector(
-                      onHorizontalDragUpdate:
-                          (details) => _onHorizontalDragUpdate(details),
-                      child: ValueListenableBuilder<double>(
-                        valueListenable: widget.viewModel.elapsedFrames,
-                        builder: (_, elapsed, _) {
-                          return ValueListenableBuilder<double>(
-                            valueListenable: widget.viewModel.rotationX,
-                            builder:
-                                (_, rotX, _) => RepaintBoundary(
-                                  child: CustomPaint(
-                                    painter: ScenePainter(
-                                      scene: widget.viewModel.scene,
-                                      elapsedTime: elapsed,
-                                      rotationX: rotX,
-                                      cameraDistance:
-                                          widget
-                                              .viewModel
-                                              .config
-                                              .cameraDistance,
-                                    ),
-                                  ),
-                                ),
-                          );
-                        },
+    return !_sceneReady
+        ? CircularProgressIndicator()
+        : ValueListenableBuilder<double>(
+          valueListenable: _viewModel.elapsedFrames,
+          builder: (_, elapsed, _) {
+            return ValueListenableBuilder<double>(
+              valueListenable: widget.rotationViewModel.rotationX,
+              builder:
+                  (_, rotationX, _) => RepaintBoundary(
+                    child: CustomPaint(
+                      painter: ScenePainter(
+                        scene: _viewModel.scene,
+                        elapsedTime: elapsed,
+                        rotationX: rotationX,
+                        cameraDistance: _viewModel.config.cameraDistance,
                       ),
                     ),
                   ),
-    );
-  }
-
-  void _onHorizontalDragUpdate(DragUpdateDetails? details) {
-    if ((details?.primaryDelta ?? 0) > 0) {
-      widget.viewModel.turnRightCommand.execute();
-    } else if ((details?.primaryDelta ?? 0) < 0) {
-      widget.viewModel.turnLeftCommand.execute();
-    }
+            );
+          },
+        );
   }
 }
