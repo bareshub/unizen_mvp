@@ -9,62 +9,66 @@ class AnimatedSceneViewModel extends ChangeNotifier {
   final SceneConfig config;
 
   late final Command<void, void> loadCommand;
+  late final Command<void, void> turnRightCommand;
+  late final Command<void, void> turnLeftCommand;
   late final Command<void, void> playClipCommand;
 
   final ValueNotifier<double> elapsedFrames = ValueNotifier(0);
-  final Map<String, AnimationClip> _animationMap = {};
+  final ValueNotifier<double> rotationX = ValueNotifier(0);
 
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
+  double _destinationX = 0;
+
+  Map<String, AnimationClip> animationMap = {};
 
   AnimatedSceneViewModel({required this.config}) {
     loadCommand = Command.createAsyncNoParamNoResult(_loadScene);
-    playClipCommand = Command.createSyncNoResult<String>(_play);
+
+    turnRightCommand = Command.createSyncNoParamNoResult(_turnRight);
+    turnLeftCommand = Command.createSyncNoParamNoResult(_turnLeft);
+
+    playClipCommand = Command.createSyncNoResult<String>(
+      (String clipName) => _play(clipName),
+    );
   }
 
-  /// Returns the list of available animation names.
-  List<String> get availableClips => _animationMap.keys.toList();
-
-  /// Updates the elapsed frames for the animation.
   void update(Duration elapsed) {
     elapsedFrames.value = elapsed.inMilliseconds / 1000 * config.fps;
-  }
+    final current = rotationX.value;
+    final step = config.turnOffset.radians / config.fps * 10;
 
-  /// Loads the scene and its animations.
-  Future<void> _loadScene() async {
-    _isLoading = true;
-    notifyListeners();
-    try {
-      final node = await Node.fromAsset(config.modelAssetPath);
-
-      for (final animation in node.parsedAnimations) {
-        _animationMap[animation.name] = _createClip(node, animation.name);
-      }
-
-      var defaultClip = _animationMap[config.defaultAnimation.name];
-      if (defaultClip != null) {
-        defaultClip
-          ..weight = 1
-          ..play();
-      } else {
-        debugPrint(
-          'Default animation "${config.defaultAnimation.name}" not found.',
-        );
-      }
-
-      scene.add(node);
-      scene.environment
-        ..exposure = config.environmentExposure
-        ..intensity = config.environmentIntensity;
-    } catch (e, stack) {
-      debugPrint('Error loading scene: $e\n$stack');
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+    if (_destinationX > 0 && current < _destinationX) {
+      rotationX.value = (current + step).clamp(
+        -config.turnOffset.radians.toDouble(),
+        _destinationX,
+      );
+    } else if (_destinationX < 0 && current > _destinationX) {
+      rotationX.value = (current - step).clamp(
+        _destinationX,
+        config.turnOffset.radians.toDouble(),
+      );
     }
   }
 
-  /// Creates an animation clip for the given node and animation name.
+  Future<void> _loadScene() async {
+    final node = await Node.fromAsset(config.modelAssetPath);
+
+    for (final animation in node.parsedAnimations) {
+      animationMap[animation.name] = _createClip(node, animation.name);
+    }
+
+    var defaultClip = animationMap[config.defaultAnimation.name];
+    defaultClip
+      ?..weight = 1
+      ..play();
+
+    scene.add(node);
+    scene.environment
+      ..exposure = config.environmentExposure
+      ..intensity = config.environmentIntensity;
+
+    await Scene.initializeStaticResources();
+  }
+
   AnimationClip _createClip(Node node, String name) {
     var animation = node.findAnimationByName(name);
     if (animation == null) throw Exception('Animation $name not found.');
@@ -73,13 +77,12 @@ class AnimatedSceneViewModel extends ChangeNotifier {
       ..weight = 0;
   }
 
-  /// Plays the specified animation clip by name.
+  void _turnRight() => _destinationX = config.turnOffset.radians.toDouble();
+
+  void _turnLeft() => _destinationX = -config.turnOffset.radians.toDouble();
+
   void _play(String clipName) {
-    if (!_animationMap.containsKey(clipName)) {
-      debugPrint('Animation "$clipName" not found.');
-      return;
-    }
-    _animationMap.forEach((key, clip) {
+    animationMap.forEach((key, clip) {
       if (key == clipName) {
         clip
           ..weight = 1
@@ -90,21 +93,13 @@ class AnimatedSceneViewModel extends ChangeNotifier {
           ..stop();
       }
     });
-    notifyListeners();
-  }
-
-  /// Resets the scene and all animations.
-  void reset() {
-    scene.removeAll();
-    _animationMap.clear();
-    elapsedFrames.value = 0;
-    notifyListeners();
   }
 
   @override
   void dispose() {
     scene.removeAll();
     elapsedFrames.dispose();
+    rotationX.dispose();
     super.dispose();
   }
 }
