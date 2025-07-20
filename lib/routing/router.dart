@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import 'package:unizen/data/repositories/auth/auth_repository.dart';
-import 'package:unizen/routing/routes.dart';
-import 'package:unizen/ui/animated_scene/configs/scene_config.dart';
-import 'package:unizen/ui/core/localization/applocalization.dart';
-import 'package:unizen/ui/home_page/home_page.dart';
-import 'package:unizen/domain/models/exam/exam.dart';
-import 'package:unizen/ui/home_page/view_models/home_page_view_model.dart';
+import '../data/repositories/auth/auth_repository.dart';
+import '../domain/models/exam/exam.dart';
+import '../domain/models/animated_scene/animated_scene.dart';
+import '../ui/core/localization/applocalization.dart';
+import '../ui/home_page/home_page.dart';
+import '../ui/home_page/view_models/home_page_view_model.dart';
+import 'routes.dart';
 
 /// Top go_router entry point.
 ///
@@ -36,7 +36,7 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
             name: 'AUTOMATION',
             maxHealth: 5000,
             health: 2780,
-            sceneConfig: SceneConfig(
+            animatedScene: AnimatedScene(
               modelAssetPath: 'build/models/zombie_after_blender.model',
             ),
           ),
@@ -44,7 +44,7 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
             name: 'PHYSICS',
             maxHealth: 5000,
             health: 4878,
-            sceneConfig: SceneConfig(
+            animatedScene: AnimatedScene(
               modelAssetPath: 'build/models/toilet_after_blender.model',
             ),
           ),
@@ -52,7 +52,7 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
             name: 'COMPUTER SCIENCE',
             maxHealth: 5000,
             health: 1280,
-            sceneConfig: SceneConfig(
+            animatedScene: AnimatedScene(
               modelAssetPath: 'build/models/zombie_after_blender.model',
             ),
           ),
@@ -60,13 +60,13 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
             name: 'AUTOMATION',
             maxHealth: 5000,
             health: 2780,
-            sceneConfig: SceneConfig(
+            animatedScene: AnimatedScene(
               modelAssetPath: 'build/models/zombie_after_blender.model',
             ),
           ),
         ];
 
-        return HomePage(viewModel: HomePageViewModel(exams: exams));
+        return HomePageWidget(viewModel: HomePageViewModel(exams: exams));
       },
       routes: [],
     ),

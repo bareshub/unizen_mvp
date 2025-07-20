@@ -50,7 +50,6 @@ The app follows the MVVM pattern. Each UI feature (e.g., homepage, model viewer)
 
 - `widgets/` – reusable widgets
 - `view_models/` – state management logic
-- `configs/` – configurable values and shared constants
 
 ## 📱 Themes
 
