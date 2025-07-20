@@ -18,7 +18,7 @@ class HomePageViewModel extends ChangeNotifier {
   HomePageViewModel({required this.exams, this.turnOffset = TurnOffset.turn60});
 
   void init(PageController pageController) {
-    AnimatedScene.initialize().then((_) {
+    AnimatedSceneWidget.initialize().then((_) {
       rotationViewModels = exams.map((_) => RotationViewModel()).toList();
       sceneReady = true;
       notifyListeners();

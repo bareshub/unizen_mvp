@@ -1,4 +1,4 @@
-class SceneConfig {
+class AnimatedScene {
   final String modelAssetPath;
   final Animation defaultAnimation;
   final double environmentIntensity;
@@ -6,7 +6,7 @@ class SceneConfig {
   final double cameraDistance;
   final double fps;
 
-  const SceneConfig({
+  const AnimatedScene({
     required this.modelAssetPath,
     this.defaultAnimation = Animation.idle,
     this.environmentIntensity = 3.0,
