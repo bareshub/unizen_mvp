@@ -1,6 +1,5 @@
-import 'package:unizen/ui/health_bar/health_bar.dart';
-
 import '../../../domain/models/exam/exam.dart';
+import '../../../domain/models/health_bar/health_bar.dart';
 
 class ExamPageViewModel {
   final Exam exam;

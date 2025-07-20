@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
-import 'package:unizen/ui/animated_scene/animated_scene.dart';
-import 'package:unizen/ui/animated_scene/view_models/rotation_view_model.dart';
-import 'package:unizen/ui/core/ui/vertical_text.dart';
-import 'package:unizen/ui/health_bar/health_bar.dart';
-import 'package:unizen/ui/home_page/view_models/exam_page_view_model.dart';
-import 'package:unizen/ui/study_timer/study_timer.dart';
-import 'package:unizen/ui/core/ui/overlay_text.dart';
-
 import '../../../domain/models/exam/exam.dart';
+import '../../../domain/models/health_bar/health_bar.dart';
+import '../../../domain/models/study_timer/study_timer.dart';
+import '../../../ui/animated_scene/animated_scene.dart';
+import '../../../ui/animated_scene/view_models/rotation_view_model.dart';
+import '../../../ui/core/ui/overlay_text.dart';
+import '../../../ui/core/ui/vertical_text.dart';
+import '../../../ui/health_bar/health_bar.dart';
+import '../../../ui/home_page/view_models/exam_page_view_model.dart';
+import '../../../ui/study_timer/study_timer.dart';
 
 class ExamPage extends StatelessWidget {
   const ExamPage({
@@ -112,8 +113,8 @@ class _AnimatedSceneSection extends StatelessWidget {
         SizedBox(
           height: height,
           width: double.infinity,
-          child: AnimatedScene(
-            sceneConfig: exam.sceneConfig,
+          child: AnimatedSceneWidget(
+            model: exam.animatedScene,
             rotationViewModel: rotationViewModel,
           ),
         ),
@@ -130,9 +131,9 @@ class _HealthBarSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HealthBar(
+    return HealthBarWidget(
       viewModel: HealthBarViewModel(
-        config: HealthBarConfig(size: HealthBarSize.medium),
+        config: HealthBar(size: HealthBarSize.medium),
         maxHealth: exam.maxHealth,
         health: exam.health,
       ),
@@ -149,8 +150,8 @@ class _StudyTimerSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StudyTimer(
-      viewModel: StudyTimerViewModel(config: StudyTimerConfig()),
+    return StudyTimerWidget(
+      viewModel: StudyTimerViewModel(config: StudyTimer()),
       examName: exam.name,
       margin: margin,
     );
