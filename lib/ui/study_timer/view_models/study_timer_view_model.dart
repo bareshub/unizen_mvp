@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_command/flutter_command.dart';
-import 'package:unizen/ui/study_timer/configs/study_timer_config.dart';
+
+import '../../../domain/models/study_timer/study_timer.dart';
 
 class StudyTimerViewModel extends ChangeNotifier {
-  final StudyTimerConfig config;
+  final StudyTimer config;
 
   late final ValueNotifier<int> minutes;
   late final Command<void, void> incrementTimerCommand;

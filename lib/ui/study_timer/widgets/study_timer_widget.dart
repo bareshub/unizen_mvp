@@ -1,17 +1,17 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:unizen/ui/core/ui/frosted_glass_box.dart';
 
+import '../../../ui/core/ui/frosted_glass_box.dart';
+import '../view_models/study_timer_view_model.dart';
 import 'study_timer_controls.dart';
 import 'study_timer_heading.dart';
 import 'study_timer_start.dart';
 import 'study_timer_summary.dart';
 import 'study_timer_edit.dart';
-import '../view_models/study_timer_view_model.dart';
 
-class StudyTimer extends StatelessWidget {
-  const StudyTimer({
+class StudyTimerWidget extends StatelessWidget {
+  const StudyTimerWidget({
     super.key,
     required this.viewModel,
     required this.examName,

@@ -1,8 +1,8 @@
-class StudyTimerConfig {
+class StudyTimer {
   final List<int> stepMinutes;
   final int defaultStepMinutesIndex;
 
-  const StudyTimerConfig({
+  const StudyTimer({
     this.stepMinutes = const [15, 20, 25, 30, 45, 60, 90, 120],
     this.defaultStepMinutesIndex = 2,
   }) : assert(stepMinutes.length > 0),
