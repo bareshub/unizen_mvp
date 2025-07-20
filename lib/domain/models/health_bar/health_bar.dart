@@ -1,7 +1,7 @@
-class HealthBarConfig {
+class HealthBar {
   final HealthBarSize size;
 
-  const HealthBarConfig({this.size = HealthBarSize.medium});
+  const HealthBar({this.size = HealthBarSize.medium});
 }
 
 enum HealthBarSize {

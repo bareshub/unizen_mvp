@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_command/flutter_command.dart';
 
-import '../configs/health_bar_config.dart';
+import '../../../domain/models/health_bar/health_bar.dart';
 
 class HealthBarViewModel extends ChangeNotifier {
   HealthBarViewModel({
@@ -19,7 +19,7 @@ class HealthBarViewModel extends ChangeNotifier {
     stopTimerCommand = Command.createSyncNoParamNoResult(_stopTimer);
   }
 
-  final HealthBarConfig config;
+  final HealthBar config;
 
   // TODO move to Timer Widget, replace with "decreaseHealthComamand"
   late final Command<void, void> startTimerCommand;

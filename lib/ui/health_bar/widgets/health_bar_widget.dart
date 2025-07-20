@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../view_models/health_bar_view_model.dart';
 import './health_bar_background.dart';
 import './health_bar_content.dart';
 import './health_bar_fill.dart';
-import '../view_models/health_bar_view_model.dart';
 
-class HealthBar extends StatelessWidget {
-  const HealthBar({super.key, required this.viewModel, this.margin});
+class HealthBarWidget extends StatelessWidget {
+  const HealthBarWidget({super.key, required this.viewModel, this.margin});
 
   final HealthBarViewModel viewModel;
   final EdgeInsetsGeometry? margin;
