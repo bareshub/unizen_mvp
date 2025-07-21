@@ -3,8 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../data/repositories/auth/auth_repository.dart';
-import '../domain/models/exam/exam.dart';
-import '../domain/models/animated_scene/animated_scene.dart';
 import '../ui/core/localization/applocalization.dart';
 import '../ui/home_page/home_page.dart';
 import '../ui/home_page/view_models/home_page_view_model.dart';
@@ -31,42 +29,10 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
       path: Routes.home,
       builder: (context, state) {
         // TODO get from repository
-        List<Exam> exams = [
-          Exam(
-            name: 'AUTOMATION',
-            maxHealth: 5000,
-            health: 2780,
-            animatedScene: AnimatedScene(
-              modelAssetPath: 'build/models/zombie_after_blender.model',
-            ),
-          ),
-          Exam(
-            name: 'PHYSICS',
-            maxHealth: 5000,
-            health: 4878,
-            animatedScene: AnimatedScene(
-              modelAssetPath: 'build/models/toilet_after_blender.model',
-            ),
-          ),
-          Exam(
-            name: 'COMPUTER SCIENCE',
-            maxHealth: 5000,
-            health: 1280,
-            animatedScene: AnimatedScene(
-              modelAssetPath: 'build/models/zombie_after_blender.model',
-            ),
-          ),
-          Exam(
-            name: 'AUTOMATION',
-            maxHealth: 5000,
-            health: 2780,
-            animatedScene: AnimatedScene(
-              modelAssetPath: 'build/models/zombie_after_blender.model',
-            ),
-          ),
-        ];
 
-        return HomePageWidget(viewModel: HomePageViewModel(exams: exams));
+        return HomePageWidget(
+          viewModel: HomePageViewModel(examRepository: context.read()),
+        );
       },
       routes: [],
     ),
