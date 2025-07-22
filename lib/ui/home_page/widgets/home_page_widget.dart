@@ -104,15 +104,20 @@ class _PageIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SmoothPageIndicator(
-      controller: _pageController,
-      count: widget.viewModel.pageCount,
-      effect: ScrollingDotsEffect(
-        activeDotColor: Theme.of(context).colorScheme.secondary,
-        dotColor: Theme.of(context).colorScheme.primaryContainer,
-        dotHeight: 8.0,
-        dotWidth: 8.0,
-      ),
+    return ValueListenableBuilder(
+      valueListenable: widget.viewModel.pageCount,
+      builder: (context, value, child) {
+        return SmoothPageIndicator(
+          controller: _pageController,
+          count: widget.viewModel.pageCount.value,
+          effect: ScrollingDotsEffect(
+            activeDotColor: Theme.of(context).colorScheme.secondary,
+            dotColor: Theme.of(context).colorScheme.primaryContainer,
+            dotHeight: 8.0,
+            dotWidth: 8.0,
+          ),
+        );
+      },
     );
   }
 }
