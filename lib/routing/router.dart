@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import 'package:unizen/data/repositories/auth/auth_repository.dart';
-import 'package:unizen/routing/routes.dart';
-import 'package:unizen/ui/core/localization/applocalization.dart';
+import '../data/repositories/auth/auth_repository.dart';
+import '../ui/core/localization/applocalization.dart';
+import '../ui/home_page/home_page.dart';
+import '../ui/home_page/view_models/home_page_view_model.dart';
+import 'routes.dart';
 
 /// Top go_router entry point.
 ///
@@ -26,7 +28,11 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
     GoRoute(
       path: Routes.home,
       builder: (context, state) {
-        return Container(); // TODO replace with HomeScreen
+        // TODO get from repository
+
+        return HomePageWidget(
+          viewModel: HomePageViewModel(examRepository: context.read()),
+        );
       },
       routes: [],
     ),
