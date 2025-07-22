@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import 'package:unizen/ui/core/ui/unizen_logo.dart';
+import '../../../ui/core/ui/unizen_logo.dart';
 import '../view_models/home_page_view_model.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.viewModel});
+class HomePageWidget extends StatefulWidget {
+  const HomePageWidget({super.key, required this.viewModel});
 
   final HomePageViewModel viewModel;
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomePageWidget> createState() => _HomePageWidgetState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageWidgetState extends State<HomePageWidget> {
   late final PageController _pageController;
 
   @override
@@ -67,7 +67,7 @@ class _HomePageBody extends StatelessWidget {
     required PageController pageController,
   }) : _pageController = pageController;
 
-  final HomePage widget;
+  final HomePageWidget widget;
   final PageController _pageController;
 
   @override
@@ -100,19 +100,24 @@ class _PageIndicator extends StatelessWidget {
   }) : _pageController = pageController;
 
   final PageController _pageController;
-  final HomePage widget;
+  final HomePageWidget widget;
 
   @override
   Widget build(BuildContext context) {
-    return SmoothPageIndicator(
-      controller: _pageController,
-      count: widget.viewModel.pageCount,
-      effect: ScrollingDotsEffect(
-        activeDotColor: Theme.of(context).colorScheme.secondary,
-        dotColor: Theme.of(context).colorScheme.primaryContainer,
-        dotHeight: 8.0,
-        dotWidth: 8.0,
-      ),
+    return ValueListenableBuilder(
+      valueListenable: widget.viewModel.pageCount,
+      builder: (context, value, child) {
+        return SmoothPageIndicator(
+          controller: _pageController,
+          count: widget.viewModel.pageCount.value,
+          effect: ScrollingDotsEffect(
+            activeDotColor: Theme.of(context).colorScheme.secondary,
+            dotColor: Theme.of(context).colorScheme.primaryContainer,
+            dotHeight: 8.0,
+            dotWidth: 8.0,
+          ),
+        );
+      },
     );
   }
 }

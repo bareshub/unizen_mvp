@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_scene/scene.dart';
 
-import '../configs/scene_config.dart';
-import '../view_models/rotation_view_model.dart';
+import '../../../domain/models/animated_scene/animated_scene.dart';
 import '../view_models/animated_scene_view_model.dart';
+import '../view_models/rotation_view_model.dart';
 import '../widgets/scene_painter.dart';
 
-class AnimatedScene extends StatefulWidget {
-  final SceneConfig sceneConfig;
+class AnimatedSceneWidget extends StatefulWidget {
+  final AnimatedScene model;
   final RotationViewModel rotationViewModel;
 
-  const AnimatedScene({
+  const AnimatedSceneWidget({
     super.key,
-    required this.sceneConfig,
+    required this.model,
     required this.rotationViewModel,
   });
 
@@ -22,10 +22,10 @@ class AnimatedScene extends StatefulWidget {
   }
 
   @override
-  State<AnimatedScene> createState() => _AnimatedSceneState();
+  State<AnimatedSceneWidget> createState() => _AnimatedSceneWidgetState();
 }
 
-class _AnimatedSceneState extends State<AnimatedScene> {
+class _AnimatedSceneWidgetState extends State<AnimatedSceneWidget> {
   late Ticker _ticker;
   late AnimatedSceneViewModel _viewModel;
   bool _sceneReady = false;
@@ -34,7 +34,7 @@ class _AnimatedSceneState extends State<AnimatedScene> {
   void initState() {
     super.initState();
 
-    _viewModel = AnimatedSceneViewModel(config: widget.sceneConfig);
+    _viewModel = AnimatedSceneViewModel(model: widget.model);
     Future.wait([_viewModel.loadCommand.executeWithFuture()]).then((_) {
       _ticker = Ticker((elapsed) {
         _viewModel.update(elapsed);
@@ -69,7 +69,7 @@ class _AnimatedSceneState extends State<AnimatedScene> {
                         scene: _viewModel.scene,
                         elapsedTime: elapsed,
                         rotationX: rotationX,
-                        cameraDistance: _viewModel.config.cameraDistance,
+                        cameraDistance: _viewModel.model.cameraDistance,
                       ),
                     ),
                   ),

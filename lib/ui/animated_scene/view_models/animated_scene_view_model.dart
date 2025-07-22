@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_command/flutter_command.dart';
 import 'package:flutter_scene/scene.dart';
 
-import '../configs/scene_config.dart';
+import '../../../domain/models/animated_scene/animated_scene.dart';
 
 class AnimatedSceneViewModel extends ChangeNotifier {
   final Scene scene = Scene();
-  final SceneConfig config;
+  final AnimatedScene model;
 
   late final Command<void, void> loadCommand;
   late final Command<void, void> playClipCommand;
@@ -17,7 +17,7 @@ class AnimatedSceneViewModel extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  AnimatedSceneViewModel({required this.config}) {
+  AnimatedSceneViewModel({required this.model}) {
     loadCommand = Command.createAsyncNoParamNoResult(_loadScene);
     playClipCommand = Command.createSyncNoResult<String>(_play);
   }
@@ -27,7 +27,7 @@ class AnimatedSceneViewModel extends ChangeNotifier {
 
   /// Updates the elapsed frames for the animation.
   void update(Duration elapsed) {
-    elapsedFrames.value = elapsed.inMilliseconds / 1000 * config.fps;
+    elapsedFrames.value = elapsed.inMilliseconds / 1000 * model.fps;
   }
 
   /// Loads the scene and its animations.
@@ -35,27 +35,27 @@ class AnimatedSceneViewModel extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     try {
-      final node = await Node.fromAsset(config.modelAssetPath);
+      final node = await Node.fromAsset(model.modelAssetPath);
 
       for (final animation in node.parsedAnimations) {
         _animationMap[animation.name] = _createClip(node, animation.name);
       }
 
-      var defaultClip = _animationMap[config.defaultAnimation.name];
+      var defaultClip = _animationMap[model.defaultAnimation.name];
       if (defaultClip != null) {
         defaultClip
           ..weight = 1
           ..play();
       } else {
         debugPrint(
-          'Default animation "${config.defaultAnimation.name}" not found.',
+          'Default animation "${model.defaultAnimation.name}" not found.',
         );
       }
 
       scene.add(node);
       scene.environment
-        ..exposure = config.environmentExposure
-        ..intensity = config.environmentIntensity;
+        ..exposure = model.environmentExposure
+        ..intensity = model.environmentIntensity;
     } catch (e, stack) {
       debugPrint('Error loading scene: $e\n$stack');
     } finally {

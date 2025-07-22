@@ -1,25 +1,64 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_command/flutter_command.dart';
 
-import 'package:unizen/ui/animated_scene/animated_scene.dart';
-import 'package:unizen/ui/animated_scene/view_models/rotation_view_model.dart';
+import '../../../data/repositories/exam/exam_repository.dart';
+import '../../../ui/animated_scene/animated_scene.dart';
+import '../../../ui/animated_scene/view_models/rotation_view_model.dart';
+import '../../../utils/result.dart';
 
-import '../models/exam.dart';
+import '../../../domain/models/exam/exam.dart';
 import '../widgets/add_exam_page.dart';
 import '../widgets/exam_page.dart';
 
 class HomePageViewModel extends ChangeNotifier {
-  final List<Exam> exams;
+  final ExamRepository _examRepository;
+  final TurnOffset turnOffset;
+
+  late final ValueNotifier<int> pageCount;
+  late final Command<void, void> loadCommand;
+
   late List<RotationViewModel> rotationViewModels;
-  late TurnOffset turnOffset;
+
+  List<Exam> _exams = [];
   bool sceneReady = false;
 
-  HomePageViewModel({required this.exams, this.turnOffset = TurnOffset.turn60});
+  HomePageViewModel({
+    required ExamRepository examRepository,
+    this.turnOffset = TurnOffset.turn60,
+  }) : _examRepository = examRepository {
+    pageCount = ValueNotifier(0);
+    loadCommand = Command.createAsyncNoParamNoResult(_load)..execute();
+  }
+
+  Future<void> _load() async {
+    try {
+      final result = await _examRepository.getExamsList();
+
+      switch (result) {
+        case Ok<List<Exam>>():
+          _exams = result.value;
+          break;
+        case Error<Exam>():
+          // TODO log warning / error
+          break;
+        default:
+      }
+    } finally {
+      _updatePageCount();
+      notifyListeners();
+    }
+  }
+
+  void _updatePageCount() {
+    pageCount.value = _exams.length + 1;
+    notifyListeners();
+  }
 
   void init(PageController pageController) {
-    AnimatedScene.initialize().then((_) {
-      rotationViewModels = exams.map((_) => RotationViewModel()).toList();
+    AnimatedSceneWidget.initialize().then((_) {
+      rotationViewModels = _exams.map((_) => RotationViewModel()).toList();
       sceneReady = true;
       notifyListeners();
     });
@@ -29,7 +68,7 @@ class HomePageViewModel extends ChangeNotifier {
       final intPart = page.floor();
       final decimalPart = page - intPart;
 
-      if (decimalPart != 0 && intPart > 0 && intPart < exams.length) {
+      if (decimalPart != 0 && intPart > 0 && intPart < _exams.length) {
         var lIndex = intPart - 1;
         var rIndex = intPart;
 
@@ -46,23 +85,21 @@ class HomePageViewModel extends ChangeNotifier {
     });
   }
 
-  int get pageCount => exams.length + 1;
-
   List<Widget> buildPages() {
     return [
-      AddExamPage(rVerticalText: exams.firstOrNull?.name ?? ''),
-      ...exams.asMap().entries.map((entry) {
+      AddExamPage(rVerticalText: _exams.firstOrNull?.name ?? ''),
+      ..._exams.asMap().entries.map((entry) {
         final index = entry.key;
         final exam = entry.value;
 
         final lVerticalText = switch (index) {
           0 => 'NEW EXAM',
-          _ => exams.elementAt(index - 1).name,
+          _ => _exams.elementAt(index - 1).name,
         };
 
         var rVerticalText = '';
-        if (index + 1 < exams.length) {
-          rVerticalText = exams.elementAt(index + 1).name;
+        if (index + 1 < _exams.length) {
+          rVerticalText = _exams.elementAt(index + 1).name;
         }
 
         return ExamPage(
