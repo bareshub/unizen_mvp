@@ -12,6 +12,11 @@ import '../../../ui/home_page/view_models/exam_page_view_model.dart';
 import '../../../ui/study_timer/study_timer.dart';
 
 class ExamPage extends StatelessWidget {
+  final RotationViewModel rotationViewModel;
+  final Exam exam;
+  final String? lVerticalText;
+  final String? rVerticalText;
+
   const ExamPage({
     super.key,
     required this.rotationViewModel,
@@ -19,11 +24,6 @@ class ExamPage extends StatelessWidget {
     this.lVerticalText,
     this.rVerticalText,
   });
-
-  final RotationViewModel rotationViewModel;
-  final Exam exam;
-  final String? lVerticalText;
-  final String? rVerticalText;
 
   @override
   Widget build(BuildContext context) {

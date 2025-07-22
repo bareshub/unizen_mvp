@@ -18,6 +18,7 @@ class HomePageViewModel extends ChangeNotifier {
 
   late final ValueNotifier<int> pageCount;
   late final Command<void, void> loadCommand;
+  late final Command<PageController, void> initCommand;
 
   late List<RotationViewModel> rotationViewModels;
 
@@ -29,7 +30,8 @@ class HomePageViewModel extends ChangeNotifier {
     this.turnOffset = TurnOffset.turn60,
   }) : _examRepository = examRepository {
     pageCount = ValueNotifier(0);
-    loadCommand = Command.createAsyncNoParamNoResult(_load)..execute();
+    loadCommand = Command.createAsyncNoParamNoResult(_load);
+    initCommand = Command.createSyncNoResult<PageController>(_init);
   }
 
   Future<void> _load() async {
@@ -47,6 +49,7 @@ class HomePageViewModel extends ChangeNotifier {
       }
     } finally {
       _updatePageCount();
+      _loadAnimatedScene();
       notifyListeners();
     }
   }
@@ -56,13 +59,15 @@ class HomePageViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void init(PageController pageController) {
+  void _loadAnimatedScene() {
     AnimatedSceneWidget.initialize().then((_) {
       rotationViewModels = _exams.map((_) => RotationViewModel()).toList();
       sceneReady = true;
       notifyListeners();
     });
+  }
 
+  void _init(PageController pageController) {
     pageController.addListener(() {
       final page = pageController.page ?? 0.0;
       final intPart = page.floor();
@@ -86,29 +91,30 @@ class HomePageViewModel extends ChangeNotifier {
   }
 
   List<Widget> buildPages() {
+    final examPages = _exams.asMap().entries.map((entry) {
+      final index = entry.key;
+      final exam = entry.value;
+
+      final lVerticalText = switch (index) {
+        0 => 'NEW EXAM',
+        _ => _exams.elementAt(index - 1).name,
+      };
+
+      var rVerticalText = '';
+      if (index + 1 < _exams.length) {
+        rVerticalText = _exams.elementAt(index + 1).name;
+      }
+
+      return ExamPage(
+        rotationViewModel: rotationViewModels[index],
+        exam: exam,
+        lVerticalText: lVerticalText,
+        rVerticalText: rVerticalText,
+      );
+    });
     return [
       AddExamPage(rVerticalText: _exams.firstOrNull?.name ?? ''),
-      ..._exams.asMap().entries.map((entry) {
-        final index = entry.key;
-        final exam = entry.value;
-
-        final lVerticalText = switch (index) {
-          0 => 'NEW EXAM',
-          _ => _exams.elementAt(index - 1).name,
-        };
-
-        var rVerticalText = '';
-        if (index + 1 < _exams.length) {
-          rVerticalText = _exams.elementAt(index + 1).name;
-        }
-
-        return ExamPage(
-          rotationViewModel: rotationViewModels[index],
-          exam: exam,
-          lVerticalText: lVerticalText,
-          rVerticalText: rVerticalText,
-        );
-      }),
+      ...examPages,
     ];
   }
 

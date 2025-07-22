@@ -19,8 +19,11 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   @override
   void initState() {
     super.initState();
+
     _pageController = PageController(initialPage: 1);
-    widget.viewModel.init(_pageController);
+
+    widget.viewModel.loadCommand.execute();
+    widget.viewModel.initCommand.execute(_pageController);
   }
 
   @override

@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
+
 import '../../../domain/models/exam/exam.dart';
 import '../../../domain/models/health_bar/health_bar.dart';
 
-class ExamPageViewModel {
+class ExamPageViewModel extends ChangeNotifier {
   final Exam exam;
   final String? lVerticalText;
   final String? rVerticalText;
