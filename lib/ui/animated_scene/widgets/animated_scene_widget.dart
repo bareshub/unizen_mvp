@@ -34,11 +34,13 @@ class _AnimatedSceneWidgetState extends State<AnimatedSceneWidget> {
   void initState() {
     super.initState();
 
+    _ticker = Ticker((elapsed) {
+      _viewModel.update(elapsed);
+    });
+
     _viewModel = AnimatedSceneViewModel(model: widget.model);
     Future.wait([_viewModel.loadCommand.executeWithFuture()]).then((_) {
-      _ticker = Ticker((elapsed) {
-        _viewModel.update(elapsed);
-      })..start();
+      _ticker.start();
 
       setState(() {
         _sceneReady = true;
