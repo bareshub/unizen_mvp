@@ -19,36 +19,34 @@ class HealthBarFill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FrostedGlassBox(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final healthPercentage = (maxHealth <= 0) ? 0.0 : health / maxHealth;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final healthPercentage = (maxHealth <= 0) ? 0.0 : health / maxHealth;
 
-          final minWidth = calculateMinWidth(
-            healthPercentage,
-            constraints.maxWidth,
-          );
+        final minWidth = calculateMinWidth(
+          healthPercentage,
+          constraints.maxWidth,
+        );
 
-          return UnconstrainedBox(
-            constrainedAxis: Axis.vertical,
-            child: AnimatedContainer(
-              constraints: BoxConstraints(minWidth: minWidth),
-              duration: Durations.extralong4,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(horizontal: 4.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24.0),
-                color: HealthBarStyle.backgroundColor(healthPercentage),
-                border: Border.all(
-                  color: HealthBarStyle.borderColor(healthPercentage),
-                  width: 1.5,
-                ),
+        return UnconstrainedBox(
+          constrainedAxis: Axis.vertical,
+          child: AnimatedContainer(
+            constraints: BoxConstraints(minWidth: minWidth),
+            duration: Durations.extralong4,
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.symmetric(horizontal: 4.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24.0),
+              color: HealthBarStyle.backgroundColor(healthPercentage),
+              border: Border.all(
+                color: HealthBarStyle.borderColor(healthPercentage),
+                width: 1.5,
               ),
-              child: child,
             ),
-          );
-        },
-      ),
+            child: child,
+          ),
+        );
+      },
     );
   }
 
