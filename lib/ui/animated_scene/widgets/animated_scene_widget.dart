@@ -5,7 +5,7 @@ import 'package:flutter_scene/scene.dart';
 import '../../../domain/models/animated_scene/animated_scene.dart';
 import '../view_models/animated_scene_view_model.dart';
 import '../view_models/rotation_view_model.dart';
-import '../widgets/scene_painter.dart';
+import 'animated_scene_painter.dart';
 
 class AnimatedSceneWidget extends StatefulWidget {
   final AnimatedScene model;
@@ -67,7 +67,7 @@ class _AnimatedSceneWidgetState extends State<AnimatedSceneWidget> {
               builder:
                   (_, rotationX, _) => RepaintBoundary(
                     child: CustomPaint(
-                      painter: ScenePainter(
+                      painter: AnimatedScenePainter(
                         scene: _viewModel.scene,
                         elapsedTime: elapsed,
                         rotationX: rotationX,
