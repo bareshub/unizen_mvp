@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_scene/scene.dart';
 import 'package:vector_math/vector_math.dart' as vm;
 
-class ScenePainter extends CustomPainter {
+class AnimatedScenePainter extends CustomPainter {
   final Scene scene;
   final double elapsedTime;
   final double rotationX;
   final double cameraDistance;
 
-  const ScenePainter({
+  const AnimatedScenePainter({
     required this.scene,
     required this.elapsedTime,
     required this.rotationX,
@@ -34,7 +34,7 @@ class ScenePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant ScenePainter oldDelegate) {
+  bool shouldRepaint(covariant AnimatedScenePainter oldDelegate) {
     return oldDelegate.elapsedTime != elapsedTime;
   }
 }
