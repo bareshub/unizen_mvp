@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:unizen/ui/core/ui/frosted_glass_box.dart';
 
 import './health_bar_style.dart';
 
