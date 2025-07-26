@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_command/flutter_command.dart';
+import 'package:flutter_scene/scene.dart';
 
 import '../../../data/repositories/exam/exam_repository.dart';
-import '../../../ui/animated_scene/animated_scene.dart';
 import '../../../ui/animated_scene/view_models/rotation_view_model.dart';
 import '../../../utils/result.dart';
 
@@ -49,7 +49,7 @@ class HomePageViewModel extends ChangeNotifier {
       }
     } finally {
       _updatePageCount();
-      _loadAnimatedScene();
+      _initializeScene();
       notifyListeners();
     }
   }
@@ -59,8 +59,8 @@ class HomePageViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _loadAnimatedScene() {
-    AnimatedSceneWidget.initialize().then((_) {
+  void _initializeScene() {
+    Scene.initializeStaticResources().then((_) {
       rotationViewModels = _exams.map((_) => RotationViewModel()).toList();
       sceneReady = true;
       notifyListeners();
