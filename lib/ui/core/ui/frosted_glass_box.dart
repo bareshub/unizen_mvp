@@ -7,7 +7,7 @@ class FrostedGlassBox extends StatelessWidget {
     super.key,
     required this.child,
     this.borderRadius = 32.0,
-    this.blurSigma = 8.0,
+    this.blurSigma = 4.0,
     this.width = double.infinity,
     this.height = double.infinity,
     this.margin,
