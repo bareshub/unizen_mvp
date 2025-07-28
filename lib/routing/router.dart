@@ -6,17 +6,22 @@ import '../data/repositories/auth/auth_repository.dart';
 import '../ui/core/localization/applocalization.dart';
 import '../ui/home_page/home_page.dart';
 import '../ui/home_page/view_models/home_page_view_model.dart';
+import '../ui/splash/splash_screen.dart';
 import 'routes.dart';
 
 /// Top go_router entry point.
 ///
 /// Listens to changes in [AuthTokenRepository] to redirect the user to /logout.
 GoRouter router(AuthRepository authRepository) => GoRouter(
-  initialLocation: Routes.home,
+  initialLocation: Routes.splash,
   debugLogDiagnostics: true,
   redirect: _redirect,
   refreshListenable: authRepository,
   routes: [
+    GoRoute(
+      path: Routes.splash,
+      builder: (context, state) => const SplashScreen(),
+    ),
     GoRoute(
       path: Routes.login,
       builder: (context, state) {
@@ -29,7 +34,6 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
       path: Routes.home,
       builder: (context, state) {
         // TODO get from repository
-
         return HomePageWidget(
           viewModel: HomePageViewModel(examRepository: context.read()),
         );
