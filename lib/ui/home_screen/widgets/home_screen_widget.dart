@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import '../../../ui/core/ui/unizen_logo.dart';
+import '../../core/ui/unizen_logo.dart';
 import '../view_models/home_page_view_model.dart';
 
-class HomePageWidget extends StatefulWidget {
-  const HomePageWidget({super.key, required this.viewModel});
+class HomeScreenWidget extends StatefulWidget {
+  const HomeScreenWidget({super.key, required this.viewModel});
 
-  final HomePageViewModel viewModel;
+  final HomeScreenViewModel viewModel;
 
   @override
-  State<HomePageWidget> createState() => _HomePageWidgetState();
+  State<HomeScreenWidget> createState() => _HomeScreenWidgetState();
 }
 
-class _HomePageWidgetState extends State<HomePageWidget> {
+class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   late final PageController _pageController;
 
   @override
@@ -31,16 +31,12 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: SafeArea(
-        child: Stack(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                _HomePageHeader(),
-                _HomePageBody(widget: widget, pageController: _pageController),
-                _PageIndicator(pageController: _pageController, widget: widget),
-              ],
-            ),
+            _HomePageHeader(),
+            _HomePageBody(widget: widget, pageController: _pageController),
+            _PageIndicator(pageController: _pageController, widget: widget),
           ],
         ),
       ),
@@ -70,20 +66,25 @@ class _HomePageBody extends StatelessWidget {
     required PageController pageController,
   }) : _pageController = pageController;
 
-  final HomePageWidget widget;
+  final HomeScreenWidget widget;
   final PageController _pageController;
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: AnimatedBuilder(
-        animation: widget.viewModel,
-        builder: (context, _) {
-          return widget.viewModel.sceneReady
-              ? PageView(
-                allowImplicitScrolling: true,
-                controller: _pageController,
-                children: widget.viewModel.buildPages(),
+      child: ValueListenableBuilder(
+        valueListenable: widget.viewModel.sceneReady,
+        builder: (_, sceneReady, _) {
+          return sceneReady
+              ? ValueListenableBuilder(
+                valueListenable: widget.viewModel.pageCount,
+                builder: (context, value, child) {
+                  return PageView(
+                    allowImplicitScrolling: true,
+                    controller: _pageController,
+                    children: widget.viewModel.pages,
+                  );
+                },
               )
               : Center(
                 child: CircularProgressIndicator(
@@ -103,7 +104,7 @@ class _PageIndicator extends StatelessWidget {
   }) : _pageController = pageController;
 
   final PageController _pageController;
-  final HomePageWidget widget;
+  final HomeScreenWidget widget;
 
   @override
   Widget build(BuildContext context) {

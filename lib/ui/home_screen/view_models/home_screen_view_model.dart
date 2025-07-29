@@ -2,33 +2,34 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_command/flutter_command.dart';
-import 'package:flutter_scene/scene.dart';
+import 'package:unizen/ui/home_screen/widgets/add_exam_page.dart';
 
 import '../../../data/repositories/exam/exam_repository.dart';
-import '../../../ui/animated_scene/view_models/rotation_view_model.dart';
+import '../../animated_scene/view_models/rotation_view_model.dart';
 import '../../../utils/result.dart';
 
 import '../../../domain/models/exam/exam.dart';
-import '../widgets/add_exam_page.dart';
 import '../widgets/exam_page.dart';
 
-class HomePageViewModel extends ChangeNotifier {
+class HomeScreenViewModel extends ChangeNotifier {
   final ExamRepository _examRepository;
   final TurnOffset turnOffset;
 
+  late final ValueNotifier<bool> sceneReady;
   late final ValueNotifier<int> pageCount;
   late final Command<void, void> loadCommand;
   late final Command<PageController, void> initCommand;
 
-  late List<RotationViewModel> rotationViewModels;
-
   List<Exam> _exams = [];
-  bool sceneReady = false;
+  List<RotationViewModel> rotationViewModels = [];
+  List<Widget> _pages = [];
+  List<Widget> get pages => _pages;
 
-  HomePageViewModel({
+  HomeScreenViewModel({
     required ExamRepository examRepository,
     this.turnOffset = TurnOffset.turn60,
   }) : _examRepository = examRepository {
+    sceneReady = ValueNotifier(false);
     pageCount = ValueNotifier(0);
     loadCommand = Command.createAsyncNoParamNoResult(_load);
     initCommand = Command.createSyncNoResult<PageController>(_init);
@@ -48,9 +49,7 @@ class HomePageViewModel extends ChangeNotifier {
         default:
       }
     } finally {
-      _updatePageCount();
-      _initializeScene();
-      notifyListeners();
+      _initialize();
     }
   }
 
@@ -59,12 +58,43 @@ class HomePageViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _initializeScene() {
-    Scene.initializeStaticResources().then((_) {
-      rotationViewModels = _exams.map((_) => RotationViewModel()).toList();
-      sceneReady = true;
-      notifyListeners();
+  void _updatePages() {
+    final examPages = _exams.asMap().entries.map((entry) {
+      final index = entry.key;
+      final exam = entry.value;
+
+      final lVerticalText = switch (index) {
+        0 => 'NEW EXAM',
+        _ => _exams.elementAt(index - 1).name,
+      };
+
+      var rVerticalText = '';
+      if (index + 1 < _exams.length) {
+        rVerticalText = _exams.elementAt(index + 1).name;
+      }
+
+      return ExamPageWidget(
+        rotationViewModel: rotationViewModels[index],
+        exam: exam,
+        lVerticalText: lVerticalText,
+        rVerticalText: rVerticalText,
+      );
     });
+    _pages = [
+      AddExamPage(rVerticalText: _exams.firstOrNull?.name ?? ''),
+      ...examPages,
+    ];
+  }
+
+  void _initialize() async {
+    rotationViewModels = _exams.map((_) => RotationViewModel()).toList();
+
+    _updatePages();
+    _updatePageCount();
+
+    sceneReady.value = true;
+
+    notifyListeners();
   }
 
   void _init(PageController pageController) {
@@ -88,34 +118,6 @@ class HomePageViewModel extends ChangeNotifier {
             .execute(-(1 - decimalPart) * turnOffset.radians);
       }
     });
-  }
-
-  List<Widget> buildPages() {
-    final examPages = _exams.asMap().entries.map((entry) {
-      final index = entry.key;
-      final exam = entry.value;
-
-      final lVerticalText = switch (index) {
-        0 => 'NEW EXAM',
-        _ => _exams.elementAt(index - 1).name,
-      };
-
-      var rVerticalText = '';
-      if (index + 1 < _exams.length) {
-        rVerticalText = _exams.elementAt(index + 1).name;
-      }
-
-      return ExamPage(
-        rotationViewModel: rotationViewModels[index],
-        exam: exam,
-        lVerticalText: lVerticalText,
-        rVerticalText: rVerticalText,
-      );
-    });
-    return [
-      AddExamPage(rVerticalText: _exams.firstOrNull?.name ?? ''),
-      ...examPages,
-    ];
   }
 
   @override
