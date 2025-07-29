@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../core/ui/unizen_logo.dart';
-import '../view_models/home_page_view_model.dart';
+import '../view_models/home_screen_view_model.dart';
 
 class HomeScreenWidget extends StatefulWidget {
   const HomeScreenWidget({super.key, required this.viewModel});
