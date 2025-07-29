@@ -1,14 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
-import 'package:unizen/domain/models/static_scene/static_scene.dart';
-import 'package:unizen/ui/home_page/view_models/add_exam_page_view_model.dart';
-import 'package:unizen/ui/static_scene/widgets/static_scene_widget.dart';
-import 'package:unizen/ui/core/ui/frosted_glass_box.dart';
-import 'package:unizen/ui/core/ui/frosted_glass_text_button.dart';
-// import 'package:unizen/ui/home_page/view_models/add_exam_page_view_model.dart';
-
+import '../../../domain/models/static_scene/static_scene.dart';
+import '../../core/ui/frosted_glass_box.dart';
+import '../../core/ui/frosted_glass_text_button.dart';
 import '../../core/ui/vertical_text.dart';
+import '../../static_scene/widgets/static_scene_widget.dart';
+import '../view_models/add_exam_page_view_model.dart';
 
 class AddExamPage extends StatelessWidget {
   final String? rVerticalText;
@@ -18,8 +16,6 @@ class AddExamPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = AddExamPageViewModel();
-
-    // TODO move to viewModel
 
     return Center(
       child: Stack(
@@ -129,8 +125,8 @@ class _CarouselExamViewState extends State<CarouselExamView> {
                                 : StaticSceneWidget(
                                   model: StaticScene(
                                     modelAssetPath:
-                                        'build/models/zombie_after_blender.model',
-                                    cameraDistance: 8,
+                                        'build/models/tvman_multiple_supreme.model',
+                                    cameraDistance: 24,
                                   ),
                                 );
                           },

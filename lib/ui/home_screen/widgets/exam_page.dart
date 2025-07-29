@@ -3,21 +3,21 @@ import 'package:flutter/material.dart';
 import '../../../domain/models/exam/exam.dart';
 import '../../../domain/models/health_bar/health_bar.dart';
 import '../../../domain/models/study_timer/study_timer.dart';
-import '../../../ui/animated_scene/animated_scene.dart';
-import '../../../ui/animated_scene/view_models/rotation_view_model.dart';
-import '../../../ui/core/ui/overlay_text.dart';
-import '../../../ui/core/ui/vertical_text.dart';
-import '../../../ui/health_bar/health_bar.dart';
-import '../../../ui/home_page/view_models/exam_page_view_model.dart';
-import '../../../ui/study_timer/study_timer.dart';
+import '../../animated_scene/animated_scene.dart';
+import '../../animated_scene/view_models/rotation_view_model.dart';
+import '../../core/ui/overlay_text.dart';
+import '../../core/ui/vertical_text.dart';
+import '../../health_bar/health_bar.dart';
+import '../view_models/exam_page_view_model.dart';
+import '../../study_timer/study_timer.dart';
 
-class ExamPage extends StatelessWidget {
+class ExamPageWidget extends StatelessWidget {
   final RotationViewModel rotationViewModel;
   final Exam exam;
   final String? lVerticalText;
   final String? rVerticalText;
 
-  const ExamPage({
+  const ExamPageWidget({
     super.key,
     required this.rotationViewModel,
     required this.exam,
