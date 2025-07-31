@@ -1,3 +1,5 @@
+import 'package:uuid/uuid.dart';
+
 import '../../../data/services/local/local_data_service.dart';
 import '../../../domain/models/exam/exam.dart';
 import '../../../utils/result.dart';
@@ -6,7 +8,6 @@ import 'exam_repository.dart';
 /// Local implementation of [ExamRepository]
 class ExamRepositoryLocal implements ExamRepository {
   bool _isInitialized = false;
-  int _sequentialId = 0;
 
   final _exams = List<Exam>.empty(growable: true);
   final LocalDataService _localDataService;
@@ -15,16 +16,15 @@ class ExamRepositoryLocal implements ExamRepository {
     : _localDataService = localDataService;
 
   @override
-  Future<Result<int>> createExam(Exam exam) async {
-    final examWithId = Exam(
-      id: _sequentialId++,
-      name: exam.name,
-      maxHealth: exam.maxHealth,
-      health: exam.health,
-      animatedScene: exam.animatedScene,
-    );
-    _exams.add(examWithId);
-    return Result.ok(examWithId.id!);
+  Future<Result<Uuid>> create(Exam exam) async {
+    _exams.add(exam);
+    return Result.ok(exam.id);
+  }
+
+  @override
+  Future<Result<void>> delete(Uuid id) async {
+    _exams.removeWhere((x) => x.id == id);
+    return Result.ok(null);
   }
 
   @override
@@ -42,7 +42,7 @@ class ExamRepositoryLocal implements ExamRepository {
 
   @override
   Future<Result<Exam>> update(
-    int id, {
+    Uuid id, {
     String? name,
     int? maxHealth,
     int? health,
@@ -54,11 +54,5 @@ class ExamRepositoryLocal implements ExamRepository {
     if (health != null) examToUpdate.health = health;
 
     return Result.ok(examToUpdate);
-  }
-
-  @override
-  Future<Result<void>> delete(int id) async {
-    _exams.removeWhere((x) => x.id == id);
-    return Result.ok(null);
   }
 }
