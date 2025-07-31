@@ -12,15 +12,15 @@ import '../view_models/exam_page_view_model.dart';
 import '../../study_timer/study_timer.dart';
 
 class ExamPageWidget extends StatelessWidget {
-  final RotationViewModel rotationViewModel;
   final Exam exam;
+  final RotationViewModel rotationViewModel;
   final String? lVerticalText;
   final String? rVerticalText;
 
   const ExamPageWidget({
     super.key,
-    required this.rotationViewModel,
     required this.exam,
+    required this.rotationViewModel,
     this.lVerticalText,
     this.rVerticalText,
   });
@@ -111,7 +111,7 @@ class _AnimatedSceneSection extends StatelessWidget {
           height: height,
           width: double.infinity,
           child: AnimatedSceneWidget(
-            model: exam.animatedScene,
+            model: exam.boss.animatedScene,
             rotationViewModel: rotationViewModel,
           ),
         ),
@@ -137,4 +137,18 @@ class _HealthBarSection extends StatelessWidget {
       margin: margin,
     );
   }
+}
+
+class ExamPage {
+  final Exam exam;
+  final RotationViewModel rotationViewModel;
+  final String? lVerticalText;
+  final String? rVerticalText;
+
+  ExamPage({
+    required this.exam,
+    required this.rotationViewModel,
+    this.lVerticalText,
+    this.rVerticalText,
+  });
 }
