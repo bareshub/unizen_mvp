@@ -1,17 +1,19 @@
+import 'package:uuid/uuid.dart';
+
 import '../animated_scene/animated_scene.dart';
 
 class Exam {
   Exam({
-    this.id,
     required this.animatedScene,
     required String name,
     required int maxHealth,
     required int health,
-  }) : _name = name,
+  }) : id = Uuid(),
+       _name = name,
        _maxHealth = maxHealth,
        _health = health;
 
-  final int? id;
+  final Uuid id;
   final AnimatedScene animatedScene;
 
   String _name;
