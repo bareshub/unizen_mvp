@@ -10,13 +10,16 @@ class UnizenLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset(
-      'assets/images/unizen_logo_v$version.svg',
-      colorFilter: ColorFilter.mode(
-        color ?? Theme.of(context).colorScheme.onPrimary,
-        BlendMode.srcIn,
+    return Hero(
+      tag: 'unizen_logo',
+      child: SvgPicture.asset(
+        'assets/images/unizen_logo_v$version.svg',
+        colorFilter: ColorFilter.mode(
+          color ?? Theme.of(context).colorScheme.onPrimary,
+          BlendMode.srcIn,
+        ),
+        width: size,
       ),
-      width: size,
     );
   }
 }
