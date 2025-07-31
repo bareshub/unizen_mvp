@@ -17,7 +17,7 @@ class ExamRepositoryLocal implements ExamRepository {
 
   @override
   Future<Result<Uuid>> create(Exam exam) async {
-    _exams.add(exam);
+    _exams.insert(0, exam);
     return Result.ok(exam.id);
   }
 

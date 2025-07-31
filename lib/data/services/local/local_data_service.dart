@@ -9,64 +9,43 @@ class LocalDataService {
         name: 'MACHINE LEARNING',
         maxHealth: 5000,
         health: 2780,
-        animatedScene: AnimatedScene(
-          modelAssetPath: 'build/models/tvwoman.model',
-          cameraDistance: 28,
-        ),
+        boss: getBosses().elementAt(4),
       ),
       Exam(
         name: 'AUTOMATION',
         maxHealth: 5000,
         health: 2780,
-        animatedScene: AnimatedScene(
-          modelAssetPath: 'build/models/cameraman_supreme_god.model',
-          cameraDistance: 36,
-        ),
+        boss: getBosses().elementAt(5),
       ),
       Exam(
         name: 'PHYSICS',
         maxHealth: 5000,
         health: 4878,
-        animatedScene: AnimatedScene(
-          modelAssetPath: 'build/models/skibidi_yisus.model',
-          cameraDistance: 28,
-        ),
+        boss: getBosses().elementAt(1),
       ),
       Exam(
         name: 'COMPUTER SCIENCE',
         maxHealth: 5000,
         health: 1280,
-        animatedScene: AnimatedScene(
-          modelAssetPath: 'build/models/tv_man_supreme.model',
-          cameraDistance: 16,
-        ),
+        boss: getBosses().elementAt(0),
       ),
       Exam(
         name: 'ARTIFICIAL INTELLIGENCE',
         maxHealth: 5000,
         health: 2780,
-        animatedScene: AnimatedScene(
-          modelAssetPath: 'build/models/tvman_multiple_supreme.model',
-          cameraDistance: 20,
-        ),
+        boss: getBosses().elementAt(6),
       ),
       Exam(
         name: 'AUTOMATION',
         maxHealth: 5000,
         health: 2780,
-        animatedScene: AnimatedScene(
-          modelAssetPath: 'build/models/tvman_multiple.model',
-          cameraDistance: 32,
-        ),
+        boss: getBosses().elementAt(3),
       ),
       Exam(
         name: 'AI ENTREPRENEURSHIP',
         maxHealth: 5000,
         health: 2780,
-        animatedScene: AnimatedScene(
-          modelAssetPath: 'build/models/tvman_supreme.model',
-          cameraDistance: 44,
-        ),
+        boss: getBosses().elementAt(2),
       ),
     ];
   }
@@ -87,13 +66,13 @@ class LocalDataService {
         ),
         ects: 4,
       ),
-      // Boss(
-      //   animatedScene: AnimatedScene(
-      //     modelAssetPath: 'build/models/skibidi_yisus.model',
-      //     cameraDistance: 28,
-      //   ),
-      //   ects: 5,
-      // ),
+      Boss(
+        animatedScene: AnimatedScene(
+          modelAssetPath: 'build/models/skibidi_yisus.model',
+          cameraDistance: 28,
+        ),
+        ects: 5,
+      ),
       Boss(
         animatedScene: AnimatedScene(
           modelAssetPath: 'build/models/tv_man_supreme.model',

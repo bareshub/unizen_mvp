@@ -1,10 +1,10 @@
 import 'package:uuid/uuid.dart';
 
-import '../animated_scene/animated_scene.dart';
+import '../../../domain/models/boss/boss.dart';
 
 class Exam {
   Exam({
-    required this.animatedScene,
+    required this.boss,
     required String name,
     required int maxHealth,
     required int health,
@@ -14,7 +14,7 @@ class Exam {
        _health = health;
 
   final Uuid id;
-  final AnimatedScene animatedScene;
+  final Boss boss;
 
   String _name;
   int _maxHealth;
