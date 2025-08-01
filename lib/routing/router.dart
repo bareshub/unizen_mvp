@@ -34,7 +34,10 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
       path: Routes.home,
       builder: (context, state) {
         return HomeScreenWidget(
-          viewModel: HomeScreenViewModel(examRepository: context.read()),
+          viewModel: HomeScreenViewModel(
+            bossRepository: context.read(),
+            examRepository: context.read(),
+          ),
         );
       },
       routes: [],
