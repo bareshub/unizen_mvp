@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../../../data/repositories/boss/boss_repository.dart';
 import '../../core/ui/unizen_logo.dart';
+import '../view_models/add_exam_page_view_model.dart';
 import '../view_models/home_screen_view_model.dart';
+import 'add_exam_page.dart';
+import 'exam_page.dart';
 
 class HomeScreenWidget extends StatefulWidget {
   const HomeScreenWidget({super.key, required this.viewModel});
@@ -21,8 +26,6 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
     super.initState();
 
     _pageController = PageController(initialPage: 1);
-
-    widget.viewModel.loadCommand.execute();
     widget.viewModel.initCommand.execute(_pageController);
   }
 
@@ -77,12 +80,27 @@ class _HomePageBody extends StatelessWidget {
         builder: (_, sceneReady, _) {
           return sceneReady
               ? ValueListenableBuilder(
-                valueListenable: widget.viewModel.pageCount,
+                valueListenable: widget.viewModel.pages,
                 builder: (context, value, child) {
                   return PageView(
                     allowImplicitScrolling: true,
                     controller: _pageController,
-                    children: widget.viewModel.pages,
+                    children: [
+                      AddExamPage(
+                        viewModel: AddExamPageViewModel(
+                          bossRepository: context.read<BossRepository>(),
+                        ),
+                        homeScreenViewModel: widget.viewModel,
+                      ),
+                      ...widget.viewModel.pages.value.map(
+                        (x) => ExamPageWidget(
+                          key: ValueKey(x.exam.id),
+                          exam: x.exam,
+                          lVerticalText: x.lVerticalText,
+                          rVerticalText: x.rVerticalText,
+                        ),
+                      ),
+                    ],
                   );
                 },
               )
@@ -109,11 +127,11 @@ class _PageIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: widget.viewModel.pageCount,
+      valueListenable: widget.viewModel.pages,
       builder: (context, value, child) {
         return SmoothPageIndicator(
           controller: _pageController,
-          count: widget.viewModel.pageCount.value,
+          count: widget.viewModel.pages.value.length + 1,
           effect: ScrollingDotsEffect(
             activeDotColor: Theme.of(context).colorScheme.secondary,
             dotColor: Theme.of(context).colorScheme.primaryContainer,
