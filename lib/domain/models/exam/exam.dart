@@ -8,10 +8,12 @@ class Exam {
     required String name,
     required int maxHealth,
     required int health,
+    rotationX = 0.0,
   }) : id = Uuid(),
        _name = name,
        _maxHealth = maxHealth,
-       _health = health;
+       _health = health,
+       _rotationX = rotationX;
 
   final Uuid id;
   final Boss boss;
@@ -19,6 +21,7 @@ class Exam {
   String _name;
   int _maxHealth;
   int _health;
+  double _rotationX;
 
   String get name => _name;
   set name(String value) => _name = value.isNotEmpty ? value : _name;
@@ -28,4 +31,8 @@ class Exam {
 
   int get health => _health;
   set health(int value) => _health = value.isNegative ? 0 : health;
+
+  double get rotationX => _rotationX;
+
+  void rotate(double rotationX) => _rotationX = rotationX;
 }
