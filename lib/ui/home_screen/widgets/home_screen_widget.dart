@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:unizen/domain/models/exam/exam_page.dart';
 
-import '../../../data/repositories/boss/boss_repository.dart';
 import '../../core/ui/unizen_logo.dart';
-import '../view_models/add_exam_page_view_model.dart';
+import '../view_models/exam_page_view_model.dart';
 import '../view_models/home_screen_view_model.dart';
-import 'add_exam_page.dart';
-import 'exam_page.dart';
+import 'add_exam_page_widget.dart';
+import 'exam_page_widget.dart';
 
 class HomeScreenWidget extends StatefulWidget {
   const HomeScreenWidget({super.key, required this.viewModel});
@@ -27,6 +26,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
 
     _pageController = PageController(initialPage: 1);
     widget.viewModel.initCommand.execute(_pageController);
+    widget.viewModel.loadExamsCommand.executeWithFuture();
   }
 
   @override
@@ -86,18 +86,17 @@ class _HomePageBody extends StatelessWidget {
                     allowImplicitScrolling: true,
                     controller: _pageController,
                     children: [
-                      AddExamPage(
-                        viewModel: AddExamPageViewModel(
-                          bossRepository: context.read<BossRepository>(),
-                        ),
-                        homeScreenViewModel: widget.viewModel,
-                      ),
+                      AddExamPageWidget(viewModel: widget.viewModel),
                       ...widget.viewModel.pages.value.map(
                         (x) => ExamPageWidget(
                           key: ValueKey(x.exam.id),
-                          exam: x.exam,
-                          lVerticalText: x.lVerticalText,
-                          rVerticalText: x.rVerticalText,
+                          viewModel: ExamPageViewModel(
+                            model: ExamPage(
+                              exam: x.exam,
+                              lVerticalText: x.lVerticalText,
+                              rVerticalText: x.rVerticalText,
+                            ),
+                          ),
                         ),
                       ),
                     ],
