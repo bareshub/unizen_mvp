@@ -7,29 +7,16 @@ import '../../animated_scene/animated_scene.dart';
 import '../../core/ui/overlay_text.dart';
 import '../../core/ui/vertical_text.dart';
 import '../../health_bar/health_bar.dart';
-import '../view_models/exam_page_view_model.dart';
 import '../../study_timer/study_timer.dart';
+import '../view_models/exam_page_view_model.dart';
 
 class ExamPageWidget extends StatelessWidget {
-  const ExamPageWidget({
-    super.key,
-    required this.exam,
-    this.lVerticalText,
-    this.rVerticalText,
-  });
+  const ExamPageWidget({super.key, required this.viewModel});
 
-  final Exam exam;
-  final String? lVerticalText;
-  final String? rVerticalText;
+  final ExamPageViewModel viewModel;
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = ExamPageViewModel(
-      exam: exam,
-      lVerticalText: lVerticalText,
-      rVerticalText: rVerticalText,
-    );
-
     return LayoutBuilder(
       builder: (context, constraints) {
         final animatedSceneHeight = viewModel.calculateAnimatedSceneHeight(
@@ -40,14 +27,14 @@ class ExamPageWidget extends StatelessWidget {
           children: [
             if (viewModel.hasLeftVerticalText)
               VerticalText(
-                text: viewModel.lVerticalText!,
+                text: viewModel.model.lVerticalText!,
                 alignment: Alignment.centerLeft,
               ),
             SingleChildScrollView(
               child: Column(
                 children: [
                   _AnimatedSceneSection(
-                    exam: exam,
+                    exam: viewModel.model.exam,
                     height: animatedSceneHeight,
                   ),
                   const SizedBox(
@@ -55,7 +42,7 @@ class ExamPageWidget extends StatelessWidget {
                         ExamPageViewModel.spaceBetweenAnimatedSceneAndHealthBar,
                   ),
                   _HealthBarSection(
-                    exam: exam,
+                    exam: viewModel.model.exam,
                     margin: EdgeInsets.symmetric(
                       horizontal: ExamPageViewModel.horizontalMarginHealthBar,
                     ),
@@ -66,7 +53,7 @@ class ExamPageWidget extends StatelessWidget {
                   ),
                   StudyTimerWidget(
                     viewModel: StudyTimerViewModel(config: StudyTimer()),
-                    examName: exam.name,
+                    examName: viewModel.model.exam.name,
                     margin: EdgeInsets.all(
                       ExamPageViewModel.horizontalMarginStudyTimer,
                     ),
@@ -76,7 +63,7 @@ class ExamPageWidget extends StatelessWidget {
             ),
             if (viewModel.hasRightVerticalText)
               VerticalText(
-                text: viewModel.rVerticalText!,
+                text: viewModel.model.rVerticalText!,
                 alignment: Alignment.centerRight,
               ),
           ],
@@ -128,12 +115,4 @@ class _HealthBarSection extends StatelessWidget {
       margin: margin,
     );
   }
-}
-
-class ExamPage {
-  ExamPage({required this.exam, this.lVerticalText, this.rVerticalText});
-
-  final Exam exam;
-  final String? lVerticalText;
-  final String? rVerticalText;
 }
