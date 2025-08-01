@@ -33,7 +33,6 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
     GoRoute(
       path: Routes.home,
       builder: (context, state) {
-        // TODO get from repository
         return HomeScreenWidget(
           viewModel: HomeScreenViewModel(examRepository: context.read()),
         );
