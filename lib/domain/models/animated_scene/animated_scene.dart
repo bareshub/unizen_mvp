@@ -1,9 +1,6 @@
 import 'package:unizen/domain/models/static_scene/static_scene.dart';
 
 class AnimatedScene extends StaticScene {
-  final Animation defaultAnimation;
-  final double fps;
-
   const AnimatedScene({
     required super.modelAssetPath,
     super.environmentIntensity,
@@ -12,6 +9,9 @@ class AnimatedScene extends StaticScene {
     this.defaultAnimation = Animation.idle,
     this.fps = 60.0,
   });
+
+  final Animation defaultAnimation;
+  final double fps;
 }
 
 enum Animation { idle, walk, attack, death }
