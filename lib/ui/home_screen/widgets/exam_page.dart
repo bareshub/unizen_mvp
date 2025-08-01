@@ -4,7 +4,6 @@ import '../../../domain/models/exam/exam.dart';
 import '../../../domain/models/health_bar/health_bar.dart';
 import '../../../domain/models/study_timer/study_timer.dart';
 import '../../animated_scene/animated_scene.dart';
-import '../../animated_scene/view_models/rotation_view_model.dart';
 import '../../core/ui/overlay_text.dart';
 import '../../core/ui/vertical_text.dart';
 import '../../health_bar/health_bar.dart';
@@ -12,18 +11,16 @@ import '../view_models/exam_page_view_model.dart';
 import '../../study_timer/study_timer.dart';
 
 class ExamPageWidget extends StatelessWidget {
-  final Exam exam;
-  final RotationViewModel rotationViewModel;
-  final String? lVerticalText;
-  final String? rVerticalText;
-
   const ExamPageWidget({
     super.key,
     required this.exam,
-    required this.rotationViewModel,
     this.lVerticalText,
     this.rVerticalText,
   });
+
+  final Exam exam;
+  final String? lVerticalText;
+  final String? rVerticalText;
 
   @override
   Widget build(BuildContext context) {
@@ -46,34 +43,36 @@ class ExamPageWidget extends StatelessWidget {
                 text: viewModel.lVerticalText!,
                 alignment: Alignment.centerLeft,
               ),
-            Column(
-              children: [
-                _AnimatedSceneSection(
-                  rotationViewModel: rotationViewModel,
-                  exam: exam,
-                  height: animatedSceneHeight,
-                ),
-                const SizedBox(
-                  height:
-                      ExamPageViewModel.spaceBetweenAnimatedSceneAndHealthBar,
-                ),
-                _HealthBarSection(
-                  exam: exam,
-                  margin: EdgeInsets.symmetric(
-                    horizontal: ExamPageViewModel.horizontalMarginHealthBar,
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  _AnimatedSceneSection(
+                    exam: exam,
+                    height: animatedSceneHeight,
                   ),
-                ),
-                const SizedBox(
-                  height: ExamPageViewModel.spaceBetweenHealthBarAndStudyTimer,
-                ),
-                StudyTimerWidget(
-                  viewModel: StudyTimerViewModel(config: StudyTimer()),
-                  examName: exam.name,
-                  margin: EdgeInsets.all(
-                    ExamPageViewModel.horizontalMarginStudyTimer,
+                  const SizedBox(
+                    height:
+                        ExamPageViewModel.spaceBetweenAnimatedSceneAndHealthBar,
                   ),
-                ),
-              ],
+                  _HealthBarSection(
+                    exam: exam,
+                    margin: EdgeInsets.symmetric(
+                      horizontal: ExamPageViewModel.horizontalMarginHealthBar,
+                    ),
+                  ),
+                  const SizedBox(
+                    height:
+                        ExamPageViewModel.spaceBetweenHealthBarAndStudyTimer,
+                  ),
+                  StudyTimerWidget(
+                    viewModel: StudyTimerViewModel(config: StudyTimer()),
+                    examName: exam.name,
+                    margin: EdgeInsets.all(
+                      ExamPageViewModel.horizontalMarginStudyTimer,
+                    ),
+                  ),
+                ],
+              ),
             ),
             if (viewModel.hasRightVerticalText)
               VerticalText(
@@ -88,15 +87,10 @@ class ExamPageWidget extends StatelessWidget {
 }
 
 class _AnimatedSceneSection extends StatelessWidget {
-  const _AnimatedSceneSection({
-    required this.rotationViewModel,
-    required this.exam,
-    required this.height,
-  });
+  const _AnimatedSceneSection({required this.exam, required this.height});
 
   final Exam exam;
   final double height;
-  final RotationViewModel rotationViewModel;
 
   @override
   Widget build(BuildContext context) {
@@ -110,10 +104,7 @@ class _AnimatedSceneSection extends StatelessWidget {
         SizedBox(
           height: height,
           width: double.infinity,
-          child: AnimatedSceneWidget(
-            model: exam.boss.animatedScene,
-            rotationViewModel: rotationViewModel,
-          ),
+          child: AnimatedSceneWidget(exam: exam),
         ),
       ],
     );
@@ -140,15 +131,9 @@ class _HealthBarSection extends StatelessWidget {
 }
 
 class ExamPage {
+  ExamPage({required this.exam, this.lVerticalText, this.rVerticalText});
+
   final Exam exam;
-  final RotationViewModel rotationViewModel;
   final String? lVerticalText;
   final String? rVerticalText;
-
-  ExamPage({
-    required this.exam,
-    required this.rotationViewModel,
-    this.lVerticalText,
-    this.rVerticalText,
-  });
 }
