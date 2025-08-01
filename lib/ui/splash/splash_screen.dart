@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
-      body: Center(child: const UnizenLogo()),
+      body: Center(child: const UnizenLogo(size: 80)),
     );
   }
 }
