@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:unizen/ui/core/ui/frosted_glass_box.dart';
+import '../../../ui/core/ui/liquid_glass_box.dart';
 
 class HealthBarBackground extends StatelessWidget {
   const HealthBarBackground({
@@ -16,11 +16,11 @@ class HealthBarBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FrostedGlassBox(
+    return Container(
       width: double.infinity,
       height: height,
       margin: margin,
-      child: Container(child: child),
+      child: LiquidGlassBox(child: child),
     );
   }
 }

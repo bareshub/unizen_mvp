@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../../ui/core/ui/frosted_glass_box.dart';
+import '../../../ui/core/ui/liquid_glass_box.dart';
 import '../view_models/study_timer_view_model.dart';
 import 'study_timer_controls.dart';
 import 'study_timer_heading.dart';
@@ -41,7 +41,7 @@ class StudyTimerWidget extends StatelessWidget {
               return SizedBox(
                 width: size,
                 height: size,
-                child: FrostedGlassBox(
+                child: LiquidGlassBox(
                   child: Padding(
                     padding: const EdgeInsets.all(24.0),
                     child: Column(

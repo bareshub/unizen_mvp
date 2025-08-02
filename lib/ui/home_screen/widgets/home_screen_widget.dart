@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:unizen/domain/models/exam/exam_page.dart';
 
+import '../../../domain/models/exam/exam_page.dart';
 import '../../core/ui/unizen_logo.dart';
 import '../view_models/exam_page_view_model.dart';
 import '../view_models/home_screen_view_model.dart';
