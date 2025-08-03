@@ -3,16 +3,20 @@ import 'package:uuid/uuid.dart';
 import '../../../domain/models/boss/boss.dart';
 
 class Exam {
+  static const double hoursPerEcts = 12.5;
+  static const int minutesPerHour = 60;
+
   Exam({
     required this.boss,
     required String name,
-    required int maxHealth,
-    required int health,
+    int? maxHealth,
+    int? health,
     rotationX = 0.0,
   }) : id = Uuid(),
        _name = name,
-       _maxHealth = maxHealth,
-       _health = health,
+       _maxHealth =
+           maxHealth ?? (boss.ects * hoursPerEcts * minutesPerHour).floor(),
+       _health = health ?? (boss.ects * hoursPerEcts * minutesPerHour).floor(),
        _rotationX = rotationX;
 
   final Uuid id;
