@@ -16,7 +16,7 @@ class AnimatedSceneWidget extends StatefulWidget {
 
 class _AnimatedSceneWidgetState extends State<AnimatedSceneWidget> {
   late Ticker _ticker;
-  late AnimatedSceneViewModel _viewModel;
+  late AnimatedSceneViewModel viewModel;
   bool _sceneReady = false;
 
   @override
@@ -24,11 +24,11 @@ class _AnimatedSceneWidgetState extends State<AnimatedSceneWidget> {
     super.initState();
 
     _ticker = Ticker((elapsed) {
-      _viewModel.update(elapsed);
+      viewModel.update(elapsed);
     });
 
-    _viewModel = AnimatedSceneViewModel(model: widget.exam.boss.animatedScene);
-    Future.wait([_viewModel.loadCommand.executeWithFuture()]).then((_) {
+    viewModel = AnimatedSceneViewModel(model: widget.exam.boss.animatedScene);
+    Future.wait([viewModel.loadCommand.executeWithFuture()]).then((_) {
       _ticker.start();
 
       setState(() {
@@ -40,7 +40,7 @@ class _AnimatedSceneWidgetState extends State<AnimatedSceneWidget> {
   @override
   void dispose() {
     _ticker.dispose();
-    _viewModel.dispose();
+    viewModel.dispose();
     super.dispose();
   }
 
@@ -49,15 +49,15 @@ class _AnimatedSceneWidgetState extends State<AnimatedSceneWidget> {
     return !_sceneReady
         ? CircularProgressIndicator()
         : ValueListenableBuilder<double>(
-          valueListenable: _viewModel.elapsedFrames,
+          valueListenable: viewModel.elapsedFrames,
           builder: (_, elapsed, _) {
             return RepaintBoundary(
               child: CustomPaint(
                 painter: AnimatedScenePainter(
-                  scene: _viewModel.scene,
+                  scene: viewModel.scene,
                   elapsedTime: elapsed,
                   rotationX: widget.exam.rotationX,
-                  cameraDistance: _viewModel.model.cameraDistance,
+                  cameraDistance: viewModel.model.cameraDistance,
                 ),
               ),
             );

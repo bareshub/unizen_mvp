@@ -14,15 +14,15 @@ class StaticSceneWidget extends StatefulWidget {
 }
 
 class _StaticSceneWidgetState extends State<StaticSceneWidget> {
-  late StaticSceneViewModel _viewModel;
+  late StaticSceneViewModel viewModel;
   bool _sceneReady = false;
 
   @override
   void initState() {
     super.initState();
 
-    _viewModel = StaticSceneViewModel(model: widget.model);
-    Future.wait([_viewModel.loadCommand.executeWithFuture()]).then((_) {
+    viewModel = StaticSceneViewModel(model: widget.model);
+    Future.wait([viewModel.loadCommand.executeWithFuture()]).then((_) {
       setState(() {
         _sceneReady = true;
       });
@@ -31,7 +31,7 @@ class _StaticSceneWidgetState extends State<StaticSceneWidget> {
 
   @override
   void dispose() {
-    _viewModel.dispose();
+    viewModel.dispose();
     super.dispose();
   }
 
@@ -41,7 +41,7 @@ class _StaticSceneWidgetState extends State<StaticSceneWidget> {
         ? CircularProgressIndicator()
         : CustomPaint(
           painter: StaticScenePainter(
-            scene: _viewModel.scene,
+            scene: viewModel.scene,
             cameraDistance: widget.model.cameraDistance,
           ),
         );
