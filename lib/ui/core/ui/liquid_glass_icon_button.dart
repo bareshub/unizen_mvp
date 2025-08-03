@@ -4,14 +4,16 @@ import 'package:unizen/ui/core/ui/liquid_glass_box.dart';
 class LiquidGlassIconButton extends StatelessWidget {
   const LiquidGlassIconButton({
     super.key,
-    required this.icon,
     required this.onPressed,
+    required this.icon,
     this.size = 24.0,
   });
 
-  final IconData icon;
   final Function()? onPressed;
+  final IconData icon;
   final double size;
+
+  bool get _disabled => onPressed == null;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +21,7 @@ class LiquidGlassIconButton extends StatelessWidget {
       width: size,
       height: size,
       child: LiquidGlassBox(
+        color: _disabled ? Theme.of(context).colorScheme.shadow : null,
         radius: size / 2,
         child: IconButton(
           onPressed: onPressed,
@@ -31,7 +34,10 @@ class LiquidGlassIconButton extends StatelessWidget {
           ),
           icon: Icon(
             icon,
-            color: Theme.of(context).colorScheme.onPrimary,
+            color:
+                _disabled
+                    ? Theme.of(context).colorScheme.onPrimary.withAlpha(64)
+                    : Theme.of(context).colorScheme.onPrimary,
             size: size,
           ),
         ),
