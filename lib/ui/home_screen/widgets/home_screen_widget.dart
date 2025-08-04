@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:unizen/data/repositories/boss/boss_repository.dart';
+import 'package:unizen/ui/home_screen/view_models/add_exam_page_view_model.dart';
 
 import '../../../domain/models/exam/exam_page.dart';
 import '../../core/ui/unizen_logo.dart';
@@ -26,7 +29,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
 
     _pageController = PageController(initialPage: 1);
     widget.viewModel.initCommand.execute(_pageController);
-    widget.viewModel.loadExamsCommand.executeWithFuture();
+    widget.viewModel.loadCommand.execute();
   }
 
   @override
@@ -37,8 +40,8 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _HomePageHeader(),
-            _HomePageBody(widget: widget, pageController: _pageController),
+            _HomeScreenHeader(),
+            _HomeScreenBody(widget: widget, pageController: _pageController),
             _PageIndicator(pageController: _pageController, widget: widget),
           ],
         ),
@@ -49,13 +52,14 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   @override
   void dispose() {
     widget.viewModel.dispose();
+
     _pageController.dispose();
     super.dispose();
   }
 }
 
-class _HomePageHeader extends StatelessWidget {
-  const _HomePageHeader();
+class _HomeScreenHeader extends StatelessWidget {
+  const _HomeScreenHeader();
 
   @override
   Widget build(BuildContext context) {
@@ -63,8 +67,8 @@ class _HomePageHeader extends StatelessWidget {
   }
 }
 
-class _HomePageBody extends StatelessWidget {
-  const _HomePageBody({
+class _HomeScreenBody extends StatelessWidget {
+  const _HomeScreenBody({
     required this.widget,
     required PageController pageController,
   }) : _pageController = pageController;
@@ -86,7 +90,12 @@ class _HomePageBody extends StatelessWidget {
                     allowImplicitScrolling: true,
                     controller: _pageController,
                     children: [
-                      AddExamPageWidget(viewModel: widget.viewModel),
+                      AddExamPageWidget(
+                        viewModel: AddExamPageViewModel(
+                          bossRepository: context.read<BossRepository>(),
+                        ),
+                        homeScreenViewModel: widget.viewModel,
+                      ),
                       ...widget.viewModel.pages.value.map(
                         (x) => ExamPageWidget(
                           key: ValueKey(x.exam.id),
