@@ -1,5 +1,7 @@
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:unizen/data/repositories/boss/boss_repository.dart';
+import 'package:unizen/data/repositories/boss/boss_repository_local.dart';
 
 import '../data/repositories/auth/auth_repository.dart';
 import '../data/repositories/auth/auth_repository_dev.dart';
@@ -24,6 +26,12 @@ List<SingleChildWidget> get providersLocal {
           (context) =>
               ExamRepositoryLocal(localDataService: context.read())
                   as ExamRepository,
+    ),
+    Provider(
+      create:
+          (context) =>
+              BossRepositoryLocal(localDataService: context.read())
+                  as BossRepository,
     ),
     ChangeNotifierProvider.value(value: AuthRepositoryDev() as AuthRepository),
     ..._sharedProviders,

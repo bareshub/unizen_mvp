@@ -1,19 +1,20 @@
 import 'package:unizen/domain/models/exam/exam.dart';
 
 import 'package:unizen/utils/result.dart';
+import 'package:uuid/uuid.dart';
 
 import 'exam_repository.dart';
 
 /// Remote implementation for [ExamRepository]
 class ExamRepositoryRemote implements ExamRepository {
   @override
-  Future<Result<int>> createExam(Exam exam) {
+  Future<Result<Uuid>> create(Exam exam) {
     // TODO: implement createExam
     throw UnimplementedError();
   }
 
   @override
-  Future<Result<void>> delete(int id) {
+  Future<Result<void>> delete(Uuid id) {
     // TODO: implement delete
     throw UnimplementedError();
   }
@@ -26,7 +27,7 @@ class ExamRepositoryRemote implements ExamRepository {
 
   @override
   Future<Result<Exam>> update(
-    int id, {
+    Uuid id, {
     String? name,
     int? maxHealth,
     int? health,

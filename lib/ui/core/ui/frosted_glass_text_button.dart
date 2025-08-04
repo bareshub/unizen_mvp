@@ -24,9 +24,10 @@ class FrostedGlassTextButton extends StatelessWidget {
       style: TextButton.styleFrom(
         foregroundColor:
             foregroundColor ?? Theme.of(context).colorScheme.onSecondary,
-        backgroundColor:
-            backgroundColor ?? Theme.of(context).colorScheme.secondary,
-        shadowColor: Theme.of(context).colorScheme.shadow.withAlpha(32),
+        backgroundColor: (backgroundColor ??
+                Theme.of(context).colorScheme.secondary)
+            .withAlpha(128),
+        // shadowColor: Theme.of(context).colorScheme.shadow.withAlpha(32),
         overlayColor: overlayColor ?? Theme.of(context).colorScheme.onSecondary,
         elevation: 2,
         textStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
@@ -41,7 +42,14 @@ class FrostedGlassTextButton extends StatelessWidget {
       onPressed: action,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [Icon(icon, size: 16.0), SizedBox(width: 4.0), Text(text)],
+        children: [
+          if (icon != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 4.0),
+              child: Icon(icon, size: 16.0),
+            ),
+          Text(text, style: TextStyle(fontWeight: FontWeight.w600)),
+        ],
       ),
     );
   }

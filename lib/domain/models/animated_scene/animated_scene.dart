@@ -1,19 +1,17 @@
-class AnimatedScene {
-  final String modelAssetPath;
-  final Animation defaultAnimation;
-  final double environmentIntensity;
-  final double environmentExposure;
-  final double cameraDistance;
-  final double fps;
+import 'package:unizen/domain/models/static_scene/static_scene.dart';
 
+class AnimatedScene extends StaticScene {
   const AnimatedScene({
-    required this.modelAssetPath,
+    required super.modelAssetPath,
+    super.environmentIntensity,
+    super.environmentExposure,
+    super.cameraDistance,
     this.defaultAnimation = Animation.idle,
-    this.environmentIntensity = 3.0,
-    this.environmentExposure = 4.0,
-    this.cameraDistance = 10.0,
     this.fps = 60.0,
   });
+
+  final Animation defaultAnimation;
+  final double fps;
 }
 
 enum Animation { idle, walk, attack, death }

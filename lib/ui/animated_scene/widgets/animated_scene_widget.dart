@@ -1,25 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_scene/scene.dart';
 
-import '../../../domain/models/animated_scene/animated_scene.dart';
+import '../../../domain/models/exam/exam.dart';
 import '../view_models/animated_scene_view_model.dart';
-import '../view_models/rotation_view_model.dart';
-import '../widgets/scene_painter.dart';
+import 'animated_scene_painter.dart';
 
 class AnimatedSceneWidget extends StatefulWidget {
-  final AnimatedScene model;
-  final RotationViewModel rotationViewModel;
+  const AnimatedSceneWidget({super.key, required this.exam});
 
-  const AnimatedSceneWidget({
-    super.key,
-    required this.model,
-    required this.rotationViewModel,
-  });
-
-  static Future<void> initialize() async {
-    await Scene.initializeStaticResources();
-  }
+  final Exam exam;
 
   @override
   State<AnimatedSceneWidget> createState() => _AnimatedSceneWidgetState();
@@ -27,18 +16,20 @@ class AnimatedSceneWidget extends StatefulWidget {
 
 class _AnimatedSceneWidgetState extends State<AnimatedSceneWidget> {
   late Ticker _ticker;
-  late AnimatedSceneViewModel _viewModel;
+  late AnimatedSceneViewModel viewModel;
   bool _sceneReady = false;
 
   @override
   void initState() {
     super.initState();
 
-    _viewModel = AnimatedSceneViewModel(model: widget.model);
-    Future.wait([_viewModel.loadCommand.executeWithFuture()]).then((_) {
-      _ticker = Ticker((elapsed) {
-        _viewModel.update(elapsed);
-      })..start();
+    _ticker = Ticker((elapsed) {
+      viewModel.update(elapsed);
+    });
+
+    viewModel = AnimatedSceneViewModel(model: widget.exam.boss.animatedScene);
+    Future.wait([viewModel.loadCommand.executeWithFuture()]).then((_) {
+      _ticker.start();
 
       setState(() {
         _sceneReady = true;
@@ -49,7 +40,7 @@ class _AnimatedSceneWidgetState extends State<AnimatedSceneWidget> {
   @override
   void dispose() {
     _ticker.dispose();
-    _viewModel.dispose();
+    viewModel.dispose();
     super.dispose();
   }
 
@@ -58,21 +49,17 @@ class _AnimatedSceneWidgetState extends State<AnimatedSceneWidget> {
     return !_sceneReady
         ? CircularProgressIndicator()
         : ValueListenableBuilder<double>(
-          valueListenable: _viewModel.elapsedFrames,
+          valueListenable: viewModel.elapsedFrames,
           builder: (_, elapsed, _) {
-            return ValueListenableBuilder<double>(
-              valueListenable: widget.rotationViewModel.rotationX,
-              builder:
-                  (_, rotationX, _) => RepaintBoundary(
-                    child: CustomPaint(
-                      painter: ScenePainter(
-                        scene: _viewModel.scene,
-                        elapsedTime: elapsed,
-                        rotationX: rotationX,
-                        cameraDistance: _viewModel.model.cameraDistance,
-                      ),
-                    ),
-                  ),
+            return RepaintBoundary(
+              child: CustomPaint(
+                painter: AnimatedScenePainter(
+                  scene: viewModel.scene,
+                  elapsedTime: elapsed,
+                  rotationX: widget.exam.rotationX,
+                  cameraDistance: viewModel.model.cameraDistance,
+                ),
+              ),
             );
           },
         );
