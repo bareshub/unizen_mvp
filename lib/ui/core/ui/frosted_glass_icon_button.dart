@@ -19,12 +19,14 @@ class FrostedGlassIconButton extends StatelessWidget {
     return IconButton(
       onPressed: action,
       style: IconButton.styleFrom(
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        backgroundColor: Theme.of(
+          context,
+        ).colorScheme.primaryContainer.withAlpha(128),
         disabledBackgroundColor: Theme.of(
           context,
         ).colorScheme.primaryContainer.withAlpha(64),
         highlightColor: Theme.of(context).colorScheme.onPrimary.withAlpha(128),
-        shadowColor: Theme.of(context).colorScheme.shadow.withAlpha(32),
+        // shadowColor: Theme.of(context).colorScheme.shadow.withAlpha(32),
         elevation: 2,
         minimumSize: Size.fromRadius(16.0),
         padding: EdgeInsets.all(0),
