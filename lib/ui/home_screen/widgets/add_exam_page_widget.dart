@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:unizen/ui/core/ui/custom_painter_spike.dart';
 
 import '../../../ui/core/ui/liquid_glass_icon_button.dart';
 import '../view_models/add_exam_page_view_model.dart';
@@ -17,11 +18,31 @@ class AddExamPageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: LiquidGlassIconButton(
-        icon: Icons.add_rounded,
-        size: 80.0,
-        onPressed: () => _onAddExamPressed(context),
+    return SingleChildScrollView(
+      child: Center(
+        child: SizedBox(
+          child: Column(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                height: 500,
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: CustomPaint(painter: LinePainter()),
+                ),
+              ),
+              SizedBox(
+                height: 200,
+                child: CustomPaint(painter: RectanglePainter()),
+              ),
+              LiquidGlassIconButton(
+                icon: Icons.add_rounded,
+                size: 80.0,
+                onPressed: () => _onAddExamPressed(context),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
