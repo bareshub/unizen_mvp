@@ -26,9 +26,27 @@ class RectanglePainter extends CustomPainter {
           ..strokeWidth = 20.0
           ..strokeJoin = StrokeJoin.round;
 
-    final rect = Rect.fromLTRB(-100, 0, 100, 100);
+    final rect = Rect.fromLTRB(40, 40, 200, 120);
 
     canvas.drawRect(rect, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+
+class CirclePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 20.0;
+
+    final center = Offset(size.shortestSide / 2, size.shortestSide / 2);
+    final radius = size.shortestSide / 4;
+    canvas.drawCircle(center, radius, paint);
   }
 
   @override
