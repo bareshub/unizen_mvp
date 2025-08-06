@@ -99,7 +99,73 @@ class CurvedLinePainter extends CustomPainter {
     //   size.height * 0.5,
     // );
 
+    final destinationPoint1 = Point(size.width * 0.5, size.height * 1 / 3);
+    final controlPoint1 = Point(0 - size.width * 3, destinationPoint1.y / 2);
+
+    final destinationPoint2 = Point(size.width * 0.5, size.height * 2 / 3);
+    final controlPoint2 = Point(
+      size.width + size.width * 3,
+      destinationPoint1.y + (destinationPoint2.y - destinationPoint1.y) / 2,
+    );
+
+    final destinationPoint3 = Point(
+      size.width * 0.5, // - size.width * 0.1, // TODO remove - size.width * 0.1
+      size.height, // + size.height * 0.05, // TODO remove + size.height * 0.05
+    );
+    final controlPoint3 = Point(
+      0 - size.width * 3,
+      destinationPoint2.y + (destinationPoint3.y - destinationPoint2.y) / 2,
+    );
+
+    path.conicTo(
+      controlPoint1.x,
+      controlPoint1.y,
+      destinationPoint1.x,
+      destinationPoint1.y,
+      0.1,
+    );
+
+    path2.conicTo(
+      controlPoint1.x,
+      controlPoint1.y,
+      destinationPoint1.x,
+      destinationPoint1.y,
+      0.1,
+    );
+
+    path.conicTo(
+      controlPoint2.x,
+      controlPoint2.y,
+      destinationPoint2.x,
+      destinationPoint2.y,
+      0.1,
+    );
+    path.conicTo(
+      controlPoint3.x,
+      controlPoint3.y,
+      destinationPoint3.x,
+      destinationPoint3.y,
+      0.1,
+    );
+
+    // path.arcToPoint(
+    //   Offset(size.width * 0.5, size.height * 0.35),
+    //   radius: Radius.circular(1.0),
+    //   clockwise: false,
+    // );
+    // path.arcToPoint(
+    //   Offset(size.width * 0.5, size.height * 0.70),
+    //   radius: Radius.circular(1.0),
+    //   clockwise: true,
+    // );
+    // path.arcToPoint(
+    //   Offset(size.width * 0.5, size.height * 1.05),
+    //   radius: Radius.circular(1.0),
+    //   clockwise: false,
+    // );
+
     canvas.drawPath(path, paint);
+    canvas.drawPath(path2, paint2);
   }
 
   @override
