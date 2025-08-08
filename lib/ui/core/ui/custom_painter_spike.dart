@@ -1,17 +1,91 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-class LinePainter extends CustomPainter {
+class ZigZagPainter extends CustomPainter {
+  final int linesCount;
+  final double curveHeight;
+
+  ZigZagPainter({required this.linesCount, required this.curveHeight});
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint =
         Paint()
-          ..color = Colors.white
-          ..strokeWidth = 20.0
-          ..strokeCap = StrokeCap.round;
+          ..color = Colors.white38
+          ..strokeWidth = 12.0
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round
+          ..style = PaintingStyle.stroke;
 
-    canvas.drawLine(Offset.zero, Offset(size.width, size.height), paint);
+    final path = Path();
+
+    path.moveTo(0, 0);
+    for (int i = 0; i < linesCount; i++) {
+      final x = (i % 2 == 0) ? size.width : 0.0;
+      final y = curveHeight * (i + 1);
+      path.lineTo(x, y);
+    }
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
+}
+
+class CurvedZigZagPainter extends CustomPainter {
+  CurvedZigZagPainter({required this.curveCount, required this.curveHeight});
+
+  final int curveCount;
+  final double curveHeight;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = Colors.white24
+          ..strokeWidth = 16.0
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round
+          ..style = PaintingStyle.stroke;
+
+    final path = Path();
+
+    final paint2 =
+        Paint()
+          ..color = Colors.white54
+          ..strokeWidth = 12.0
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round
+          ..style = PaintingStyle.stroke;
+
+    var x0 = 0.0;
+    var y0 = 0.0;
+    path.moveTo(x0, y0);
+
+    for (int i = 0; i < curveCount; i++) {
+      final y2 = curveHeight * (i + 1);
+
+      path.arcToPoint(
+        Offset(x0 + size.width / 2, y2),
+        radius: Radius.elliptical(2, 1),
+        clockwise: i % 2 == 0,
+      );
+      // x0 = x2;
+      y0 = y2;
+    }
+
+    double progress = 0.3;
+    final PathMetrics metrics = path.computeMetrics();
+    final Path partialPath = Path();
+    for (final PathMetric metric in metrics) {
+      final double length = metric.length * progress.clamp(0.0, 1.0);
+      partialPath.addPath(metric.extractPath(0, length), Offset.zero);
+    }
+    canvas.drawPath(path, paint);
+    canvas.drawPath(partialPath, paint2);
   }
 
   @override
