@@ -32,6 +32,11 @@ class RoadmapScreenWidget extends StatefulWidget {
 class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget> {
   late final AddExamPageViewModel addExamPageViewModel;
 
+  double get bossHeight =>
+      RoadmapScreenWidget.bossHeight +
+      RoadmapScreenWidget.spaceBetweenAnimatedSceneAndHealthBar +
+      RoadmapScreenWidget.healthBarSize.height;
+
   @override
   void initState() {
     super.initState();
@@ -46,90 +51,101 @@ class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       appBar: AppBar(title: UnizenLogo(), toolbarHeight: 24),
-      body: SingleChildScrollView(
-        child: ValueListenableBuilder(
-          valueListenable: widget.viewModel.state,
-          builder: (context, state, child) {
-            // TODO implement return values based on state
-            return switch (state) {
-              RoadmapScreenState.initial => Center(
-                child: CircularProgressIndicator(),
-              ),
-              RoadmapScreenState.loading => Center(
-                child: CircularProgressIndicator(),
-              ),
-              RoadmapScreenState.error => Center(
-                child: CircularProgressIndicator(),
-              ),
-              _ => child!,
-            };
-          },
-          child: ValueListenableBuilder(
-            valueListenable: widget.viewModel.exams,
-            builder: (context, exams, _) {
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: [
-                        ...exams.asMap().entries.map<Widget>((entry) {
-                          final last = entry.key == exams.length - 1;
-                          final addExamButton =
-                              last
-                                  ? Align(
-                                    alignment: AlignmentGeometry.centerRight,
-                                    child: _buildAddExamButton(),
-                                  )
-                                  : null;
-
-                          return switch (entry.key.isEven) {
-                            true => _buildBoss(entry.value),
-                            false => _buildBossEmptyPlaceholder(addExamButton),
-                          };
-                        }),
-                      ],
-                    ),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: ValueListenableBuilder(
+              valueListenable: widget.viewModel.state,
+              builder: (context, state, child) {
+                // TODO implement return values based on state
+                return switch (state) {
+                  RoadmapScreenState.initial => Center(
+                    child: CircularProgressIndicator(),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 28.0),
-                    child: CustomPaint(
-                      painter: CurvedZigZagPainter(
-                        curveCount: exams.length + 1,
-                        curveHeight:
-                            RoadmapScreenWidget.bossHeight +
-                            RoadmapScreenWidget
-                                .spaceBetweenAnimatedSceneAndHealthBar +
-                            RoadmapScreenWidget.healthBarSize.height,
+                  RoadmapScreenState.loading => Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  RoadmapScreenState.error => Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  _ => child!,
+                };
+              },
+              child: ValueListenableBuilder(
+                valueListenable: widget.viewModel.exams,
+                builder: (context, exams, _) {
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          children: [
+                            SizedBox(height: 16),
+                            ...exams.asMap().entries.map<Widget>((entry) {
+                              final first = entry.key == 0;
+                              final even = exams.length.isEven;
+                              final addExamButton =
+                                  first
+                                      ? Align(
+                                        alignment: AlignmentGeometry.topRight,
+                                        child: _buildAddExamButton(),
+                                      )
+                                      : null;
+
+                              return switch ((even && entry.key.isEven) ||
+                                  (!even && entry.key.isOdd)) {
+                                true => _buildBoss(entry.value, first),
+                                false => _buildBossEmptyPlaceholder(
+                                  button: addExamButton,
+                                ),
+                              };
+                            }),
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        ...exams.asMap().entries.map<Widget>((entry) {
-                          final last = entry.key == exams.length - 1;
-                          final addExamButton =
-                              last
-                                  ? Align(
-                                    alignment: AlignmentGeometry.centerLeft,
-                                    child: _buildAddExamButton(),
-                                  )
-                                  : null;
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 48.0),
+                        child: CustomPaint(
+                          size: Size(0, bossHeight * (exams.length + 1)),
+                          painter: CurvedZigZagPainter(
+                            curveCount: exams.length + 1,
+                            curveHeight: bossHeight,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            SizedBox(height: 16),
+                            ...exams.asMap().entries.map<Widget>((entry) {
+                              final first = entry.key == 0;
+                              final odd = exams.length.isOdd;
+                              final addExamButton =
+                                  first
+                                      ? Align(
+                                        alignment: AlignmentGeometry.topLeft,
+                                        child: _buildAddExamButton(),
+                                      )
+                                      : null;
 
-                          return switch (entry.key.isOdd) {
-                            true => _buildBoss(entry.value),
-                            false => _buildBossEmptyPlaceholder(addExamButton),
-                          };
-                        }),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            },
+                              return switch ((!odd && entry.key.isOdd) ||
+                                  (odd && entry.key.isEven)) {
+                                true => _buildBoss(entry.value, first),
+                                false => _buildBossEmptyPlaceholder(
+                                  button: addExamButton,
+                                ),
+                              };
+                            }),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -155,10 +171,11 @@ class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget> {
         ), // TODO
   );
 
-  Widget _buildBoss(Exam exam) {
+  Widget _buildBoss(Exam exam, bool first) {
     return Column(
       key: ValueKey(exam.id),
       children: [
+        if (first) _buildBossEmptyPlaceholder(),
         _AnimatedSceneSection(
           exam: exam,
           height: RoadmapScreenWidget.bossHeight,
@@ -179,18 +196,11 @@ class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget> {
     );
   }
 
-  Widget _buildBossEmptyPlaceholder(Widget? button) {
-    final sizedBox = SizedBox(
-      height:
-          RoadmapScreenWidget.bossHeight +
-          RoadmapScreenWidget.spaceBetweenAnimatedSceneAndHealthBar +
-          RoadmapScreenWidget.healthBarSize.height,
-    );
-
+  Widget _buildBossEmptyPlaceholder({Widget? button}) {
     return Column(
       children: [
-        sizedBox,
-        ...(button != null ? [sizedBox, button] : []),
+        if (button != null) SizedBox(height: bossHeight, child: button),
+        SizedBox(height: bossHeight),
       ],
     );
   }
