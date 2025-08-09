@@ -32,20 +32,26 @@ class RoadmapScreenViewModel extends ChangeNotifier {
     final result = await _examRepository.getExamsList();
     switch (result) {
       case Ok<List<Exam>>():
-        exams.value = result.value;
+        exams.value = List<Exam>.from(
+          result.value,
+        ); // Create new list to ensure notification
         state.value = RoadmapScreenState.loaded;
         break;
       case Error<List<Exam>>():
-        state.value = RoadmapScreenState.error;
         exams.value = [];
+        state.value = RoadmapScreenState.error;
         break;
     }
-
-    notifyListeners();
   }
 
   Future<void> _addExam(Exam exam) async {
-    await _examRepository.create(exam);
-    await _load();
+    try {
+      state.value = RoadmapScreenState.loading;
+      await _examRepository.create(exam);
+      await _load();
+    } catch (e) {
+      state.value = RoadmapScreenState.error;
+      exams.value = [];
+    }
   }
 }
