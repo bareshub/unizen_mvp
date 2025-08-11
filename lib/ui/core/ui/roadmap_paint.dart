@@ -1,0 +1,143 @@
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
+
+class RoadmapPaint extends StatelessWidget {
+  const RoadmapPaint({
+    super.key,
+    required this.bossesCount,
+    required this.bossHeight,
+  });
+
+  final int bossesCount;
+  final double bossHeight;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size(0, bossHeight * (bossesCount + 2)),
+      painter: _RoadmapPainter(
+        curveCount: bossesCount,
+        dottedCurveCount: 2,
+        curveHeight: bossHeight,
+        progress: 0.1,
+      ),
+    );
+  }
+}
+
+class _RoadmapPainter extends CustomPainter {
+  _RoadmapPainter({
+    required this.curveCount,
+    required this.dottedCurveCount,
+    required this.curveHeight,
+    required this.progress,
+  });
+
+  final int curveCount;
+  final int dottedCurveCount;
+  final double curveHeight;
+  final double progress;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = Colors.white24
+          ..strokeWidth = 12.0
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round
+          ..style = PaintingStyle.stroke;
+
+    final path = Path();
+
+    final paint2 =
+        Paint()
+          ..color = Colors.white54
+          ..strokeWidth = 14.0
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round
+          ..style = PaintingStyle.stroke;
+
+    final dashedPaint =
+        Paint()
+          ..color = Colors.white24
+          ..strokeWidth = 12.0
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round
+          ..style = PaintingStyle.stroke;
+
+    // final paint3 =
+    //     Paint()
+    //       ..color = Colors.white70
+    //       ..strokeWidth = 32.0
+    //       ..strokeCap = StrokeCap.round
+    //       ..strokeJoin = StrokeJoin.round
+    //       ..style = PaintingStyle.stroke;
+
+    var x0 = 0.0;
+    var y0 = size.height;
+
+    // canvas.drawPoints(PointMode.points, [Offset(x0, y0)], paint3);
+
+    path.moveTo(x0, y0);
+
+    var y2 = y0;
+    for (int i = 0; i < curveCount; i++) {
+      y2 = y0 - curveHeight * (i + 1);
+
+      path.arcToPoint(
+        Offset(x0 + size.width / 2, y2),
+        radius: Radius.elliptical(7, 4),
+        clockwise: i % 2 == 0,
+      );
+    }
+
+    final PathMetrics metrics = path.computeMetrics();
+    final Path partialPath = Path();
+    for (final PathMetric metric in metrics) {
+      final double length = metric.length * progress.clamp(0.0, 1.0);
+      partialPath.addPath(metric.extractPath(0, length), Offset.zero);
+    }
+    canvas.drawPath(path, paint);
+    canvas.drawPath(partialPath, paint2);
+
+    var dashedPath = Path();
+    dashedPath.moveTo(x0, y2);
+    var y3 = y2;
+    for (var i = 0; i < dottedCurveCount; i++) {
+      y3 = y2 - curveHeight * (i + 1);
+
+      dashedPath.arcToPoint(
+        Offset(x0 + size.width / 2, y3),
+        radius: Radius.elliptical(7, 4),
+        clockwise: i % 2 == 0,
+      );
+    }
+    dashedPath = _createDashedPath(dashedPath, dashLength: 5, gapLength: 15);
+    canvas.drawPath(dashedPath, dashedPaint);
+  }
+
+  Path _createDashedPath(
+    Path source, {
+    required double dashLength,
+    required double gapLength,
+  }) {
+    final Path dest = Path();
+    for (final metric in source.computeMetrics()) {
+      double distance = 0.0;
+      while (distance < metric.length) {
+        final double next = distance + dashLength;
+        dest.addPath(
+          metric.extractPath(distance, next.clamp(0, metric.length)),
+          Offset.zero,
+        );
+        distance = next + dashLength + gapLength;
+      }
+    }
+    return dest;
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
+}
