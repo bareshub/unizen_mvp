@@ -67,18 +67,8 @@ class _RoadmapPainter extends CustomPainter {
           ..strokeJoin = StrokeJoin.round
           ..style = PaintingStyle.stroke;
 
-    // final paint3 =
-    //     Paint()
-    //       ..color = Colors.white70
-    //       ..strokeWidth = 32.0
-    //       ..strokeCap = StrokeCap.round
-    //       ..strokeJoin = StrokeJoin.round
-    //       ..style = PaintingStyle.stroke;
-
     var x0 = 0.0;
     var y0 = size.height;
-
-    // canvas.drawPoints(PointMode.points, [Offset(x0, y0)], paint3);
 
     path.moveTo(x0, y0);
 
@@ -88,19 +78,35 @@ class _RoadmapPainter extends CustomPainter {
 
       path.arcToPoint(
         Offset(x0 + size.width / 2, y2),
-        radius: Radius.elliptical(7, 4),
+        radius: Radius.elliptical(5, 3),
         clockwise: i % 2 == 0,
       );
     }
 
     final PathMetrics metrics = path.computeMetrics();
     final Path partialPath = Path();
+    Offset? finalPoint;
+
     for (final PathMetric metric in metrics) {
       final double length = metric.length * progress.clamp(0.0, 1.0);
       partialPath.addPath(metric.extractPath(0, length), Offset.zero);
+      if (length > 0) {
+        finalPoint = metric.getTangentForOffset(length)?.position;
+      }
     }
+
     canvas.drawPath(path, paint);
     canvas.drawPath(partialPath, paint2);
+    if (finalPoint != null) {
+      final pointPaint =
+          Paint()
+            ..color = Colors.white
+            ..style = PaintingStyle.fill;
+      canvas.drawOval(
+        Rect.fromCenter(center: finalPoint, width: 36.0, height: 24.0),
+        pointPaint,
+      );
+    }
 
     var dashedPath = Path();
     dashedPath.moveTo(x0, y2);
@@ -110,11 +116,11 @@ class _RoadmapPainter extends CustomPainter {
 
       dashedPath.arcToPoint(
         Offset(x0 + size.width / 2, y3),
-        radius: Radius.elliptical(7, 4),
+        radius: Radius.elliptical(5, 3),
         clockwise: i % 2 == 0,
       );
     }
-    dashedPath = _createDashedPath(dashedPath, dashLength: 5, gapLength: 15);
+    dashedPath = _createDashedPath(dashedPath, dashLength: 5, gapLength: 20);
     canvas.drawPath(dashedPath, dashedPaint);
   }
 
