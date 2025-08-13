@@ -8,12 +8,16 @@ import '../../../domain/models/exam/exam.dart';
 enum RoadmapScreenState { initial, loading, loaded, error }
 
 class RoadmapScreenViewModel extends ChangeNotifier {
-  RoadmapScreenViewModel({required ExamRepository examRepository})
+  static RoadmapScreenViewModel? _instance;
+
+  factory RoadmapScreenViewModel({required ExamRepository examRepository}) {
+    return _instance ??= RoadmapScreenViewModel._internal(examRepository);
+  }
+
+  RoadmapScreenViewModel._internal(ExamRepository examRepository)
     : _examRepository = examRepository {
     state = ValueNotifier(RoadmapScreenState.initial);
-
     exams = ValueNotifier<List<Exam>>([]);
-
     loadCommand = Command.createAsyncNoParamNoResult(_load);
     addExamCommand = Command.createAsyncNoResult<Exam>(_addExam);
   }
