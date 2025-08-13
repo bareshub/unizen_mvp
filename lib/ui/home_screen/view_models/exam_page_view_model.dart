@@ -17,7 +17,7 @@ class ExamPageViewModel extends ChangeNotifier {
   bool get hasRightVerticalText => (model.rVerticalText ?? '').isNotEmpty;
 
   double calculateAnimatedSceneHeight(double maxHeight) {
-    return maxHeight / 2 -
+    return maxHeight * 0.4 -
         HealthBarSize.medium.height -
         spaceBetweenAnimatedSceneAndHealthBar -
         spaceBetweenHealthBarAndStudyTimer;
