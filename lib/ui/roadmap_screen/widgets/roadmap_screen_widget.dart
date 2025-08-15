@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide Animation;
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:unizen/domain/models/animated_scene/animated_scene.dart';
@@ -33,7 +34,8 @@ class RoadmapScreenWidget extends StatefulWidget {
   State<RoadmapScreenWidget> createState() => _RoadmapScreenWidgetState();
 }
 
-class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget> {
+class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget>
+    with AutomaticKeepAliveClientMixin {
   late final AddExamPageViewModel addExamPageViewModel;
 
   double get bossHeight =>
@@ -44,16 +46,40 @@ class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget> {
       RoadmapScreenWidget.spaceBelowHealthBar;
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   void initState() {
     super.initState();
+    addExamPageViewModel = AddExamPageViewModel(bossRepository: context.read());
+    _loadData();
+  }
 
-    widget.viewModel.loadCommand.executeWithFuture();
+  void _loadData() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted &&
+          (widget.viewModel.state.value == RoadmapScreenState.initial ||
+              widget.viewModel.exams.value.isEmpty)) {
+        widget.viewModel.loadCommand.execute();
+      }
+    });
+  }
+
+  @override
+  void deactivate() {
+    // Save state before widget is removed from tree
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    addExamPageViewModel.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    addExamPageViewModel = AddExamPageViewModel(bossRepository: context.read());
-
+    super.build(context);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: SafeArea(
@@ -148,77 +174,108 @@ class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget> {
               Container(
                 height: bossHeight,
                 width: double.infinity,
-                padding: const EdgeInsets.only(bottom: 60.0),
+                padding: const EdgeInsets.only(bottom: 80.0),
                 child: LiquidGlassBox(
+                  ambientStrength: 0.5,
+                  chromaticAberration: 10,
+                  lightness: 0.95,
                   refractiveIndex: 1.51,
                   child: Padding(
-                    padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Row(
                           children: [
-                            Icon(
-                              Icons.school_outlined,
-                              color: Colors.blue.withAlpha(160),
-                              size: 20,
-                            ),
-                            SizedBox(width: 8.0),
+                            // Icon(
+                            //   Icons.school_outlined,
+                            //   color: Colors.blue.withAlpha(160),
+                            //   size: 20,
+                            // ),
+                            // SizedBox(width: 8.0),
                             Text(
                               'University: ',
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                // color: Colors.white,
+                              ),
                             ),
                             Spacer(),
                             Text(
                               'DTU',
                               style: Theme.of(context).textTheme.headlineMedium,
+                              // ?.copyWith(color: Colors.white),
                             ),
                           ],
                         ),
                         Row(
                           children: [
-                            Icon(
-                              Icons.flag_outlined,
-                              color: Colors.red.withAlpha(160),
-                              size: 20,
-                            ),
-                            SizedBox(width: 8.0),
+                            // Icon(
+                            //   Icons.flag_outlined,
+                            //   color: Colors.red.withAlpha(160),
+                            //   size: 20,
+                            // ),
+                            // SizedBox(width: 8.0),
                             Text(
                               'Exams Passed: ',
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                // color: Colors.white,
+                              ),
                             ),
                             Spacer(),
                             Text(
                               '0 ',
                               style: Theme.of(context).textTheme.headlineMedium,
+                              // ?.copyWith(color: Colors.white),
                             ),
                             Text(
                               '/ 4',
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                // color: Colors.white,
+                              ),
                             ),
                           ],
                         ),
                         Row(
                           children: [
-                            Icon(
-                              Icons.leaderboard_outlined,
-                              color: Colors.green.withAlpha(160),
-                              size: 20,
-                            ),
-                            SizedBox(width: 8.0),
+                            // Icon(
+                            //   Icons.leaderboard_outlined,
+                            //   color: Colors.green.withAlpha(160),
+                            //   size: 20,
+                            // ),
+                            // SizedBox(width: 8.0),
                             Text(
                               'GPA: ',
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                // color: Colors.white,
+                              ),
                             ),
                             Spacer(),
                             Text(
                               '10.5 ',
                               style: Theme.of(context).textTheme.headlineMedium,
+                              // ?.copyWith(color: Colors.white),
                             ),
                             Text(
                               '/ 12',
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                // color: Colors.white,
+                              ),
                             ),
                           ],
                         ),
@@ -292,9 +349,15 @@ class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const SizedBox(height: RoadmapScreenWidget.spaceAboveBoss),
-              _AnimatedSceneSection(
-                exam: exam,
-                height: RoadmapScreenWidget.bossHeight,
+              InkWell(
+                onTap: () => context.push('/exam', extra: exam),
+                splashColor: Colors.white38,
+                highlightColor: Colors.transparent,
+                borderRadius: BorderRadius.circular(40.0),
+                child: _AnimatedSceneSection(
+                  exam: exam,
+                  height: RoadmapScreenWidget.bossHeight,
+                ),
               ),
               const SizedBox(
                 height: RoadmapScreenWidget.spaceBetweenBossAndHealthBar,
