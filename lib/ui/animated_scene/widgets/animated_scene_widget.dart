@@ -58,6 +58,7 @@ class _AnimatedSceneWidgetState extends State<AnimatedSceneWidget> {
                   elapsedTime: elapsed,
                   rotationX: widget.exam.rotationX,
                   cameraDistance: viewModel.model.cameraDistance,
+                  showBack: viewModel.model.showBack,
                 ),
               ),
             );
