@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:unizen/data/repositories/exam/exam_repository.dart';
+import 'package:unizen/domain/models/exam/exam.dart';
+import 'package:unizen/domain/models/exam/exam_page.dart';
+import 'package:unizen/ui/home_screen/view_models/exam_page_view_model.dart';
+import 'package:unizen/ui/home_screen/widgets/exam_page_widget.dart';
+import 'package:unizen/ui/roadmap_screen/view_models/roadmap_screen_view_model.dart';
+import 'package:unizen/ui/roadmap_screen/widgets/roadmap_screen_widget.dart';
 
 import '../data/repositories/auth/auth_repository.dart';
 import '../ui/core/localization/applocalization.dart';
@@ -34,13 +41,59 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
       path: Routes.home,
       builder: (context, state) {
         return HomeScreenWidget(
-          viewModel: HomeScreenViewModel(
-            bossRepository: context.read(),
-            examRepository: context.read(),
-          ),
+          viewModel: HomeScreenViewModel(examRepository: context.read()),
         );
       },
       routes: [],
+    ),
+    ShellRoute(
+      builder: (context, state, child) {
+        return child;
+      },
+      routes: [
+        GoRoute(
+          path: Routes.timeline,
+          builder: (context, state) {
+            return RoadmapScreenWidget(
+              viewModel: RoadmapScreenViewModel(
+                examRepository: context.read<ExamRepository>(),
+              ),
+            );
+          },
+        ),
+      ],
+    ),
+    GoRoute(
+      path: Routes.exam,
+      builder: (context, state) {
+        final exam = state.extra as Exam;
+        return Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              onPressed: context.pop,
+              icon: Icon(Icons.close_rounded),
+            ),
+            title: Text(
+              'Study Session',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+          ),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          body: SafeArea(
+            child: Center(
+              child: ExamPageWidget(
+                viewModel: ExamPageViewModel(
+                  model: ExamPage(
+                    exam: exam,
+                    lVerticalText: null,
+                    rVerticalText: null,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     ),
   ],
 );
