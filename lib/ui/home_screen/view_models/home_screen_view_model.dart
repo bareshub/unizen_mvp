@@ -3,9 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_command/flutter_command.dart';
 
-import '../../../data/repositories/boss/boss_repository.dart';
 import '../../../data/repositories/exam/exam_repository.dart';
-import '../../../domain/models/boss/boss.dart';
 import '../../../domain/models/exam/exam.dart';
 import '../../../domain/models/exam/exam_page.dart';
 import '../../../utils/result.dart';
@@ -14,7 +12,6 @@ enum HomeScreenState { initial, loading, loaded, error }
 
 class HomeScreenViewModel extends ChangeNotifier {
   HomeScreenViewModel({
-    required BossRepository bossRepository,
     required ExamRepository examRepository,
     this.turnOffset = TurnOffset.turn60,
   }) : _examRepository = examRepository {
@@ -22,7 +19,6 @@ class HomeScreenViewModel extends ChangeNotifier {
     screenState = ValueNotifier(HomeScreenState.initial);
 
     exams = ValueNotifier<List<Exam>>([]);
-    bosses = ValueNotifier<List<Boss>>([]);
     pages = ValueNotifier<List<ExamPage>>([]);
 
     initCommand = Command.createSyncNoResult<PageController>(_init);
@@ -35,7 +31,6 @@ class HomeScreenViewModel extends ChangeNotifier {
 
   late final ValueNotifier<bool> sceneReady;
   late final ValueNotifier<List<Exam>> exams;
-  late final ValueNotifier<List<Boss>> bosses;
   late final ValueNotifier<List<ExamPage>> pages;
   late final ValueNotifier<HomeScreenState> screenState;
   late final PageController _pageController;
