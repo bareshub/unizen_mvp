@@ -58,6 +58,7 @@ class ExamPageWidget extends StatelessWidget {
                       ExamPageViewModel.horizontalMarginStudyTimer,
                     ),
                   ),
+                  SizedBox(height: 40.0),
                 ],
               ),
             ),
@@ -89,8 +90,8 @@ class _AnimatedSceneSection extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 96.0, vertical: 8.0),
         ),
         SizedBox(
-          height: height,
           width: double.infinity,
+          height: height,
           child: AnimatedSceneWidget(exam: exam),
         ),
       ],
