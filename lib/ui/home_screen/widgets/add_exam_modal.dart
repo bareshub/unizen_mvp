@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:unizen/ui/roadmap_screen/view_models/roadmap_screen_view_model.dart';
 
 import '../../../domain/models/boss/boss.dart';
 import '../../../domain/models/exam/exam.dart';
 import '../../../ui/core/ui/liquid_glass_icon_button.dart';
 import '../view_models/add_exam_page_view_model.dart';
-import '../view_models/home_screen_view_model.dart';
 import 'boss_selection_carousel.dart';
 
 class AddExamModal extends StatelessWidget {
   const AddExamModal({
     super.key,
     required this.viewModel,
-    required this.homeScreenViewModel,
+    required this.timelineScreenViewModel,
   });
 
   final AddExamPageViewModel viewModel;
-  final HomeScreenViewModel homeScreenViewModel;
+  final RoadmapScreenViewModel timelineScreenViewModel;
 
   @override
   Widget build(BuildContext context) {
@@ -24,16 +24,13 @@ class AddExamModal extends StatelessWidget {
       children: [
         _AddExamModalHeader(
           viewModel: viewModel,
-          homeScreenViewModel: homeScreenViewModel,
+          timelineScreenViewModel: timelineScreenViewModel,
         ),
-        BossSelectionCarousel(
-          viewModel: viewModel,
-          homeScreenViewModel: homeScreenViewModel,
-        ),
+        BossSelectionCarousel(viewModel: viewModel),
         SizedBox(height: 16.0),
         _AddExamModalTextField(
           viewModel: viewModel,
-          homeScreenViewModel: homeScreenViewModel,
+          timelineScreenViewModel: timelineScreenViewModel,
         ),
       ],
     );
@@ -43,11 +40,11 @@ class AddExamModal extends StatelessWidget {
 class _AddExamModalHeader extends StatefulWidget {
   const _AddExamModalHeader({
     required this.viewModel,
-    required this.homeScreenViewModel,
+    required this.timelineScreenViewModel,
   });
 
   final AddExamPageViewModel viewModel;
-  final HomeScreenViewModel homeScreenViewModel;
+  final RoadmapScreenViewModel timelineScreenViewModel;
 
   @override
   State<_AddExamModalHeader> createState() => _AddExamModalHeaderState();
@@ -100,7 +97,7 @@ class _AddExamModalHeaderState extends State<_AddExamModalHeader> {
 
   void _onConfirmPressed(BuildContext context, {required Boss boss}) {
     Navigator.of(context).pop();
-    widget.homeScreenViewModel.addExamCommand.execute(
+    widget.timelineScreenViewModel.addExamCommand.execute(
       Exam(boss: boss, name: widget.viewModel.examName.value),
     );
   }
@@ -109,11 +106,11 @@ class _AddExamModalHeaderState extends State<_AddExamModalHeader> {
 class _AddExamModalTextField extends StatefulWidget {
   const _AddExamModalTextField({
     required this.viewModel,
-    required this.homeScreenViewModel,
+    required this.timelineScreenViewModel,
   });
 
   final AddExamPageViewModel viewModel;
-  final HomeScreenViewModel homeScreenViewModel;
+  final RoadmapScreenViewModel timelineScreenViewModel;
 
   @override
   State<_AddExamModalTextField> createState() => _AddExamModalTextFieldState();
@@ -198,7 +195,7 @@ class _AddExamModalTextFieldState extends State<_AddExamModalTextField> {
   void _onSubmitted(BuildContext context, {required Boss boss}) {
     if (widget.viewModel.isExamNameValid) {
       Navigator.of(context).pop();
-      widget.homeScreenViewModel.addExamCommand.execute(
+      widget.timelineScreenViewModel.addExamCommand.execute(
         Exam(boss: boss, name: widget.viewModel.examName.value),
       );
     }
