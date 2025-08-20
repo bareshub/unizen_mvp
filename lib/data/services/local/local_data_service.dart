@@ -23,18 +23,18 @@ class LocalDataService {
         health: 4878,
         boss: getBosses().elementAt(1),
       ),
-      // Exam(
-      //   name: 'COMPUTER SCIENCE',
-      //   maxHealth: 5000,
-      //   health: 1280,
-      //   boss: getBosses().elementAt(0),
-      // ),
-      // Exam(
-      //   name: 'ARTIFICIAL INTELLIGENCE',
-      //   maxHealth: 5000,
-      //   health: 2780,
-      //   boss: getBosses().elementAt(6),
-      // ),
+      Exam(
+        name: 'COMPUTER SCIENCE',
+        maxHealth: 5000,
+        health: 1280,
+        boss: getBosses().elementAt(0),
+      ),
+      Exam(
+        name: 'ARTIFICIAL INTELLIGENCE',
+        maxHealth: 5000,
+        health: 2780,
+        boss: getBosses().elementAt(6),
+      ),
       // Exam(
       //   name: 'AUTOMATION',
       //   maxHealth: 5000,
@@ -55,7 +55,7 @@ class LocalDataService {
       Boss(
         animatedScene: AnimatedScene(
           modelAssetPath: 'build/models/tvwoman.model',
-          cameraDistance: 22,
+          cameraDistance: 24,
         ),
         ects: 3,
       ),
@@ -90,17 +90,29 @@ class LocalDataService {
       Boss(
         animatedScene: AnimatedScene(
           modelAssetPath: 'build/models/tvman_multiple.model',
-          cameraDistance: 22,
+          cameraDistance: 24,
         ),
         ects: 8,
       ),
       Boss(
         animatedScene: AnimatedScene(
           modelAssetPath: 'build/models/tvman_supreme.model',
-          cameraDistance: 44,
+          cameraDistance: 34,
         ),
         ects: 9,
       ),
     ];
   }
+}
+
+Boss getAvatar() {
+  return Boss(
+    animatedScene: AnimatedScene(
+      modelAssetPath: 'build/models/minecraft_sprunki_oren_after_blender.model',
+      defaultAnimation: Animation.walk,
+      cameraDistance: 10,
+      showBack: true,
+    ),
+    ects: 0,
+  );
 }
