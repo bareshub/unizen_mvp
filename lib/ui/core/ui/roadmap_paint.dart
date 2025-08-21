@@ -7,20 +7,24 @@ class RoadmapPaint extends StatelessWidget {
     super.key,
     required this.bossesCount,
     required this.bossHeight,
+    required this.progress,
   });
 
   final int bossesCount;
   final double bossHeight;
+  final double progress;
 
   @override
   Widget build(BuildContext context) {
+    const extraCurveCount = 2;
+
     return CustomPaint(
-      size: Size(0, bossHeight * (bossesCount + 2)),
+      size: Size(0, bossHeight * (bossesCount + extraCurveCount)),
       painter: _RoadmapPainter(
         curveCount: bossesCount,
-        dottedCurveCount: 2,
+        dottedCurveCount: extraCurveCount,
         curveHeight: bossHeight,
-        progress: 0.1,
+        progress: progress,
       ),
     );
   }
@@ -32,58 +36,54 @@ class _RoadmapPainter extends CustomPainter {
     required this.dottedCurveCount,
     required this.curveHeight,
     required this.progress,
-  });
+  }) : basePaint =
+           Paint()
+             ..strokeCap = StrokeCap.round
+             ..strokeJoin = StrokeJoin.round
+             ..style = PaintingStyle.stroke;
 
   final int curveCount;
   final int dottedCurveCount;
   final double curveHeight;
   final double progress;
 
+  final Paint basePaint;
+
   @override
   void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
+    final roadmapPaint =
+        basePaint
           ..color = Colors.white24
-          ..strokeWidth = 12.0
-          ..strokeCap = StrokeCap.round
-          ..strokeJoin = StrokeJoin.round
-          ..style = PaintingStyle.stroke;
+          ..strokeWidth = 12.0;
 
-    final path = Path();
-
-    final paint2 =
-        Paint()
+    final progressPaint =
+        basePaint
           ..color = Colors.white54
-          ..strokeWidth = 14.0
-          ..strokeCap = StrokeCap.round
-          ..strokeJoin = StrokeJoin.round
-          ..style = PaintingStyle.stroke;
+          ..strokeWidth = 14.0;
 
     final dashedPaint =
-        Paint()
+        basePaint
           ..color = Colors.white24
-          ..strokeWidth = 12.0
-          ..strokeCap = StrokeCap.round
-          ..strokeJoin = StrokeJoin.round
-          ..style = PaintingStyle.stroke;
+          ..strokeWidth = 12.0;
 
     var x0 = 0.0;
     var y0 = size.height;
 
-    path.moveTo(x0, y0);
+    final roadmapPath = Path();
+    roadmapPath.moveTo(x0, y0);
 
     var y2 = y0;
     for (int i = 0; i < curveCount; i++) {
       y2 = y0 - curveHeight * (i + 1);
 
-      path.arcToPoint(
+      roadmapPath.arcToPoint(
         Offset(x0 + size.width / 2, y2),
         radius: Radius.elliptical(5, 3),
-        clockwise: i % 2 == 0,
+        clockwise: (i + curveCount + dottedCurveCount) % 2 == 0,
       );
     }
 
-    final PathMetrics metrics = path.computeMetrics();
+    final PathMetrics metrics = roadmapPath.computeMetrics();
     final Path partialPath = Path();
     Offset? finalPoint;
 
@@ -95,8 +95,8 @@ class _RoadmapPainter extends CustomPainter {
       }
     }
 
-    canvas.drawPath(path, paint);
-    canvas.drawPath(partialPath, paint2);
+    canvas.drawPath(roadmapPath, roadmapPaint);
+    canvas.drawPath(partialPath, progressPaint);
     if (finalPoint != null) {
       final pointPaint =
           Paint()
