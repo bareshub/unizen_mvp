@@ -141,6 +141,7 @@ class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget>
                             child: RoadmapPaint(
                               bossesCount: exams.length,
                               bossHeight: bossHeight,
+                              progress: 0.1,
                             ),
                           ),
                           Positioned(
