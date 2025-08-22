@@ -2,17 +2,24 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-class RoadmapPaint extends StatelessWidget {
-  const RoadmapPaint({
+/// A widget that draws the roadmap and exposes the final point
+/// (the point representing current progress along the roadmap)
+/// via a [ValueNotifier].
+///
+/// Use [progressNotifier] to drive the painted progress (0.0 - 1.0).
+class RoadmapProgressWidget extends StatelessWidget {
+  RoadmapProgressWidget({
     super.key,
     required this.bossesCount,
     required this.bossHeight,
     required this.progress,
-  });
+    ValueNotifier<Offset?>? finalPointNotifier,
+  }) : finalPointNotifier = finalPointNotifier ?? ValueNotifier(null);
 
   final int bossesCount;
   final double bossHeight;
   final double progress;
+  final ValueNotifier<Offset?> finalPointNotifier;
 
   @override
   Widget build(BuildContext context) {
@@ -20,57 +27,62 @@ class RoadmapPaint extends StatelessWidget {
 
     return CustomPaint(
       size: Size(0, bossHeight * (bossesCount + extraCurveCount)),
-      painter: _RoadmapPainter(
+      painter: _RoadmapProgressPainter(
         curveCount: bossesCount,
         dottedCurveCount: extraCurveCount,
         curveHeight: bossHeight,
         progress: progress,
+        finalPointNotifier: finalPointNotifier,
       ),
     );
   }
 }
 
-class _RoadmapPainter extends CustomPainter {
-  _RoadmapPainter({
+class _RoadmapProgressPainter extends CustomPainter {
+  _RoadmapProgressPainter({
     required this.curveCount,
     required this.dottedCurveCount,
     required this.curveHeight,
     required this.progress,
-  }) : basePaint =
+    required this.finalPointNotifier,
+  }) : _basePaint =
            Paint()
              ..strokeCap = StrokeCap.round
              ..strokeJoin = StrokeJoin.round
-             ..style = PaintingStyle.stroke;
+             ..style = PaintingStyle.stroke,
+       super();
 
   final int curveCount;
   final int dottedCurveCount;
   final double curveHeight;
-  final double progress;
 
-  final Paint basePaint;
+  final double progress;
+  final ValueNotifier<Offset?> finalPointNotifier;
+  final Paint _basePaint;
+
+  double get _progress => progress.clamp(0.0, 1.0);
 
   @override
   void paint(Canvas canvas, Size size) {
     final roadmapPaint =
-        basePaint
+        _basePaint
           ..color = Colors.white24
           ..strokeWidth = 12.0;
 
     final progressPaint =
-        basePaint
+        _basePaint
           ..color = Colors.white54
           ..strokeWidth = 14.0;
 
     final dashedPaint =
-        basePaint
+        _basePaint
           ..color = Colors.white24
           ..strokeWidth = 12.0;
 
-    var x0 = 0.0;
+    final x0 = 0.0;
     var y0 = size.height;
 
-    final roadmapPath = Path();
-    roadmapPath.moveTo(x0, y0);
+    final roadmapPath = Path()..moveTo(x0, y0);
 
     var y2 = y0;
     for (int i = 0; i < curveCount; i++) {
@@ -78,7 +90,7 @@ class _RoadmapPainter extends CustomPainter {
 
       roadmapPath.arcToPoint(
         Offset(x0 + size.width / 2, y2),
-        radius: Radius.elliptical(5, 3),
+        radius: const Radius.elliptical(5, 3),
         clockwise: (i + curveCount + dottedCurveCount) % 2 == 0,
       );
     }
@@ -88,15 +100,23 @@ class _RoadmapPainter extends CustomPainter {
     Offset? finalPoint;
 
     for (final PathMetric metric in metrics) {
-      final double length = metric.length * progress.clamp(0.0, 1.0);
-      partialPath.addPath(metric.extractPath(0, length), Offset.zero);
+      final double length = metric.length * _progress;
       if (length > 0) {
+        partialPath.addPath(metric.extractPath(0, length), Offset.zero);
         finalPoint = metric.getTangentForOffset(length)?.position;
       }
     }
 
+    // Update final point notifier if it changed
+    if (finalPointNotifier.value != finalPoint) {
+      // Avoid notifying during paint if caller expects no rebuild loops, but
+      // this usage is common to expose data computed by the painter.
+      finalPointNotifier.value = finalPoint;
+    }
+
     canvas.drawPath(roadmapPath, roadmapPaint);
     canvas.drawPath(partialPath, progressPaint);
+
     if (finalPoint != null) {
       final pointPaint =
           Paint()
@@ -108,6 +128,7 @@ class _RoadmapPainter extends CustomPainter {
       );
     }
 
+    // Draw dotted extension
     var dashedPath = Path();
     dashedPath.moveTo(x0, y2);
     var y3 = y2;
@@ -116,7 +137,7 @@ class _RoadmapPainter extends CustomPainter {
 
       dashedPath.arcToPoint(
         Offset(x0 + size.width / 2, y3),
-        radius: Radius.elliptical(5, 3),
+        radius: const Radius.elliptical(5, 3),
         clockwise: i % 2 == 0,
       );
     }
@@ -133,17 +154,19 @@ class _RoadmapPainter extends CustomPainter {
     for (final metric in source.computeMetrics()) {
       double distance = 0.0;
       while (distance < metric.length) {
-        final double next = distance + dashLength;
-        dest.addPath(
-          metric.extractPath(distance, next.clamp(0, metric.length)),
-          Offset.zero,
-        );
-        distance = next + dashLength + gapLength;
+        final double next = (distance + dashLength).clamp(0.0, metric.length);
+        dest.addPath(metric.extractPath(distance, next), Offset.zero);
+        distance = next + gapLength;
       }
     }
     return dest;
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
+  bool shouldRepaint(covariant _RoadmapProgressPainter oldDelegate) {
+    return oldDelegate.progress != progress ||
+        oldDelegate.curveCount != curveCount ||
+        oldDelegate.curveHeight != curveHeight ||
+        oldDelegate.dottedCurveCount != dottedCurveCount;
+  }
 }
