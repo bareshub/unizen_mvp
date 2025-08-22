@@ -138,14 +138,14 @@ class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget>
                           ),
                           Align(
                             alignment: AlignmentGeometry.bottomCenter,
-                            child: RoadmapPaint(
+                            child: RoadmapProgressWidget(
                               bossesCount: exams.length,
                               bossHeight: bossHeight,
                               progress: 0.1,
                             ),
                           ),
                           Positioned(
-                            bottom: 90,
+                            top: 1048 - 120,
                             child: SizedBox(
                               height: 120,
                               width: 50,
