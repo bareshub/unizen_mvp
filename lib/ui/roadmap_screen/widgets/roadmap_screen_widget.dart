@@ -66,12 +66,6 @@ class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget>
   }
 
   @override
-  void deactivate() {
-    // Save state before widget is removed from tree
-    super.deactivate();
-  }
-
-  @override
   void dispose() {
     addExamPageViewModel.dispose();
     super.dispose();
@@ -117,19 +111,21 @@ class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget>
                               _buildBossEmptyPlaceholder(
                                 button: Row(
                                   children: [
-                                    if (exams.length.isEven) Spacer(flex: 3),
+                                    if (exams.length.isOdd) Spacer(flex: 3),
                                     Expanded(
                                       flex: 2,
                                       child: Center(
                                         child: _buildAddExamButton(),
                                       ),
                                     ),
-                                    if (exams.length.isOdd) Spacer(flex: 3),
+                                    if (exams.length.isEven) Spacer(flex: 3),
                                   ],
                                 ),
                               ),
                               ...exams.asMap().entries.map<Widget>((entry) {
-                                final left = entry.key.isOdd;
+                                final left =
+                                    (exams.length.isOdd && entry.key.isOdd) ||
+                                    (exams.length.isEven && entry.key.isEven);
 
                                 return _buildBoss(entry.value, left);
                               }),
