@@ -13,8 +13,10 @@ class RoadmapProgressWidget extends StatelessWidget {
     required this.bossesCount,
     required this.bossHeight,
     required this.progress,
-    ValueNotifier<Offset?>? finalPointNotifier,
-  }) : finalPointNotifier = finalPointNotifier ?? ValueNotifier(null);
+  }) : finalPointNotifier = ValueNotifier(null),
+       super();
+
+  static const extraCurveCount = 2;
 
   final int bossesCount;
   final double bossHeight;
@@ -23,8 +25,6 @@ class RoadmapProgressWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const extraCurveCount = 2;
-
     return CustomPaint(
       size: Size(0, bossHeight * (bossesCount + extraCurveCount)),
       painter: _RoadmapProgressPainter(
@@ -64,102 +64,145 @@ class _RoadmapProgressPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final roadmapPaint =
-        _basePaint
-          ..color = Colors.white24
-          ..strokeWidth = 12.0;
+    final Offset start = Offset(0.0, size.height);
 
-    final progressPaint =
-        _basePaint
-          ..color = Colors.white54
-          ..strokeWidth = 14.0;
+    var roadmapPath = buildRoadmapPath(size, start);
+    var progressPath = buildProgressPath(roadmapPath);
+    var dashedPath = buildDashedPath(size, start, dashLength: 5, gapLength: 20);
 
-    final dashedPaint =
-        _basePaint
-          ..color = Colors.white24
-          ..strokeWidth = 12.0;
+    drawRoadmap(canvas, roadmapPath);
+    drawProgress(canvas, progressPath);
+    drawDashed(canvas, dashedPath);
 
-    final x0 = 0.0;
-    var y0 = size.height;
+    if (finalPointNotifier.value != null) {
+      drawProgressPoint(
+        canvas,
+        finalPointNotifier.value!,
+        width: 36.0, // TODO replace with a parameter with a default value
+        height: 24.0, // TODO replace with a parameter with a default value
+      );
+    }
+  }
 
-    final roadmapPath = Path()..moveTo(x0, y0);
+  Path buildRoadmapPath(Size size, Offset start) {
+    final roadmapPath = Path()..moveTo(start.dx, start.dy);
 
-    var y2 = y0;
+    var y2 = start.dy;
     for (int i = 0; i < curveCount; i++) {
-      y2 = y0 - curveHeight * (i + 1);
+      y2 = start.dy - curveHeight * (i + 1);
 
       roadmapPath.arcToPoint(
-        Offset(x0 + size.width / 2, y2),
+        Offset(start.dx + size.width / 2, y2),
         radius: const Radius.elliptical(5, 3),
-        clockwise: (i + curveCount + dottedCurveCount) % 2 == 0,
+        clockwise: i % 2 != 0,
       );
     }
 
+    return roadmapPath;
+  }
+
+  Path buildProgressPath(Path roadmapPath) {
     final PathMetrics metrics = roadmapPath.computeMetrics();
-    final Path partialPath = Path();
+    final Path progressPath = Path();
     Offset? finalPoint;
 
     for (final PathMetric metric in metrics) {
       final double length = metric.length * _progress;
       if (length > 0) {
-        partialPath.addPath(metric.extractPath(0, length), Offset.zero);
+        progressPath.addPath(metric.extractPath(0, length), Offset.zero);
         finalPoint = metric.getTangentForOffset(length)?.position;
       }
     }
 
-    // Update final point notifier if it changed
     if (finalPointNotifier.value != finalPoint) {
-      // Avoid notifying during paint if caller expects no rebuild loops, but
-      // this usage is common to expose data computed by the painter.
       finalPointNotifier.value = finalPoint;
     }
 
-    canvas.drawPath(roadmapPath, roadmapPaint);
-    canvas.drawPath(partialPath, progressPaint);
+    return progressPath;
+  }
 
-    if (finalPoint != null) {
-      final pointPaint =
-          Paint()
-            ..color = Colors.white
-            ..style = PaintingStyle.fill;
-      canvas.drawOval(
-        Rect.fromCenter(center: finalPoint, width: 36.0, height: 24.0),
-        pointPaint,
-      );
-    }
+  Path buildDashedPath(
+    Size size,
+    Offset start, {
+    required double dashLength,
+    required double gapLength,
+  }) {
+    var extraPath = Path();
 
-    // Draw dotted extension
-    var dashedPath = Path();
-    dashedPath.moveTo(x0, y2);
+    final y2 = start.dy - curveHeight * curveCount;
+    extraPath.moveTo(start.dx, y2);
     var y3 = y2;
     for (var i = 0; i < dottedCurveCount; i++) {
       y3 = y2 - curveHeight * (i + 1);
 
-      dashedPath.arcToPoint(
-        Offset(x0 + size.width / 2, y3),
+      extraPath.arcToPoint(
+        Offset(start.dx + size.width / 2, y3),
         radius: const Radius.elliptical(5, 3),
-        clockwise: i % 2 == 0,
+        clockwise: (i + curveCount) % 2 != 0,
       );
     }
-    dashedPath = _createDashedPath(dashedPath, dashLength: 5, gapLength: 20);
-    canvas.drawPath(dashedPath, dashedPaint);
-  }
 
-  Path _createDashedPath(
-    Path source, {
-    required double dashLength,
-    required double gapLength,
-  }) {
-    final Path dest = Path();
-    for (final metric in source.computeMetrics()) {
+    final Path dashedPath = Path();
+    for (final metric in extraPath.computeMetrics()) {
       double distance = 0.0;
       while (distance < metric.length) {
         final double next = (distance + dashLength).clamp(0.0, metric.length);
-        dest.addPath(metric.extractPath(distance, next), Offset.zero);
+        dashedPath.addPath(metric.extractPath(distance, next), Offset.zero);
         distance = next + gapLength;
       }
     }
-    return dest;
+    return dashedPath;
+  }
+
+  void drawRoadmap(Canvas canvas, Path roadmapPath) {
+    final roadmapPaint =
+        _basePaint
+          ..color =
+              Colors
+                  .white24 // TODO substitute with an optional parameter with a default value
+          ..strokeWidth =
+              12.0; // TODO substitute with an optional parameter with a default value
+    canvas.drawPath(roadmapPath, roadmapPaint);
+  }
+
+  void drawProgress(Canvas canvas, Path progressPath) {
+    final progressPaint =
+        _basePaint
+          ..color =
+              Colors
+                  .white54 // TODO substitute with an optional parameter with a default value
+          ..strokeWidth =
+              14.0; // TODO substitute with an optional parameter with a default value
+
+    canvas.drawPath(progressPath, progressPaint);
+  }
+
+  void drawDashed(Canvas canvas, Path dashedPath) {
+    final dashedPaint =
+        _basePaint
+          ..color =
+              Colors
+                  .white24 // TODO substitute with an optional parameter with a default value
+          ..strokeWidth =
+              12.0; // TODO substitute with an optional parameter with a default value
+
+    canvas.drawPath(dashedPath, dashedPaint);
+  }
+
+  void drawProgressPoint(
+    Canvas canvas,
+    Offset center, {
+    required double width,
+    required double height,
+  }) {
+    final pointPaint =
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.fill;
+    canvas.drawOval(
+      Rect.fromCenter(center: center, width: width, height: height),
+      pointPaint,
+    );
   }
 
   @override
