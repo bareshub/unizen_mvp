@@ -1,27 +1,29 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import '../../roadmap_screen/view_models/roadmap_progress_view_model.dart';
 
-/// A widget that draws the roadmap and exposes the final point
+/// A widget that draws the roadmap and exposes the current point
 /// (the point representing current progress along the roadmap)
 /// via a [ValueNotifier].
 ///
-/// Use [progressNotifier] to drive the painted progress (0.0 - 1.0).
+/// Use [progress] to drive the painted progress (0.0 - 1.0).
 class RoadmapProgressWidget extends StatelessWidget {
-  RoadmapProgressWidget({
+  const RoadmapProgressWidget({
     super.key,
     required this.bossesCount,
     required this.bossHeight,
     required this.progress,
-  }) : finalPointNotifier = ValueNotifier(null),
-       super();
+    required this.viewModel,
+  });
 
   static const extraCurveCount = 2;
 
   final int bossesCount;
   final double bossHeight;
   final double progress;
-  final ValueNotifier<Offset?> finalPointNotifier;
+  final RoadmapProgressViewModel viewModel;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,7 @@ class RoadmapProgressWidget extends StatelessWidget {
         dottedCurveCount: extraCurveCount,
         curveHeight: bossHeight,
         progress: progress,
-        finalPointNotifier: finalPointNotifier,
+        viewModel: viewModel,
       ),
     );
   }
@@ -41,10 +43,10 @@ class RoadmapProgressWidget extends StatelessWidget {
 class _RoadmapProgressPainter extends CustomPainter {
   _RoadmapProgressPainter({
     required this.curveCount,
-    required this.dottedCurveCount,
     required this.curveHeight,
+    required this.dottedCurveCount,
     required this.progress,
-    required this.finalPointNotifier,
+    required this.viewModel,
   }) : _basePaint =
            Paint()
              ..strokeCap = StrokeCap.round
@@ -52,12 +54,19 @@ class _RoadmapProgressPainter extends CustomPainter {
              ..style = PaintingStyle.stroke,
        super();
 
+  static const double currentPointWidth = 36.0;
+  static const double currentPointHeight = 24.0;
+  static const Color roadmapPaintColor = Colors.white24;
+  static const double roadmapPaintStrokeWidth = 12.0;
+  static const Color progressPaintColor = Colors.white54;
+  static const double progressPaintStrokeWidth = 14.0;
+
   final int curveCount;
-  final int dottedCurveCount;
   final double curveHeight;
+  final int dottedCurveCount;
 
   final double progress;
-  final ValueNotifier<Offset?> finalPointNotifier;
+  final RoadmapProgressViewModel viewModel;
   final Paint _basePaint;
 
   double get _progress => progress.clamp(0.0, 1.0);
@@ -74,12 +83,12 @@ class _RoadmapProgressPainter extends CustomPainter {
     drawProgress(canvas, progressPath);
     drawDashed(canvas, dashedPath);
 
-    if (finalPointNotifier.value != null) {
-      drawProgressPoint(
+    if (viewModel.currentPoint != null) {
+      drawCurrentPoint(
         canvas,
-        finalPointNotifier.value!,
-        width: 36.0, // TODO replace with a parameter with a default value
-        height: 24.0, // TODO replace with a parameter with a default value
+        viewModel.currentPoint!,
+        width: currentPointWidth,
+        height: currentPointHeight,
       );
     }
   }
@@ -114,8 +123,12 @@ class _RoadmapProgressPainter extends CustomPainter {
       }
     }
 
-    if (finalPointNotifier.value != finalPoint) {
-      finalPointNotifier.value = finalPoint;
+    // Schedule a post-frame update to set the current point on the view model.
+    if (viewModel.currentPoint != finalPoint) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        // viewModel will notify listeners from the main thread.
+        viewModel.setCurrentPoint(finalPoint);
+      });
     }
 
     return progressPath;
@@ -157,22 +170,16 @@ class _RoadmapProgressPainter extends CustomPainter {
   void drawRoadmap(Canvas canvas, Path roadmapPath) {
     final roadmapPaint =
         _basePaint
-          ..color =
-              Colors
-                  .white24 // TODO substitute with an optional parameter with a default value
-          ..strokeWidth =
-              12.0; // TODO substitute with an optional parameter with a default value
+          ..color = roadmapPaintColor
+          ..strokeWidth = roadmapPaintStrokeWidth;
     canvas.drawPath(roadmapPath, roadmapPaint);
   }
 
   void drawProgress(Canvas canvas, Path progressPath) {
     final progressPaint =
         _basePaint
-          ..color =
-              Colors
-                  .white54 // TODO substitute with an optional parameter with a default value
-          ..strokeWidth =
-              14.0; // TODO substitute with an optional parameter with a default value
+          ..color = progressPaintColor
+          ..strokeWidth = progressPaintStrokeWidth;
 
     canvas.drawPath(progressPath, progressPaint);
   }
@@ -180,16 +187,13 @@ class _RoadmapProgressPainter extends CustomPainter {
   void drawDashed(Canvas canvas, Path dashedPath) {
     final dashedPaint =
         _basePaint
-          ..color =
-              Colors
-                  .white24 // TODO substitute with an optional parameter with a default value
-          ..strokeWidth =
-              12.0; // TODO substitute with an optional parameter with a default value
+          ..color = roadmapPaintColor
+          ..strokeWidth = roadmapPaintStrokeWidth;
 
     canvas.drawPath(dashedPath, dashedPaint);
   }
 
-  void drawProgressPoint(
+  void drawCurrentPoint(
     Canvas canvas,
     Offset center, {
     required double width,
