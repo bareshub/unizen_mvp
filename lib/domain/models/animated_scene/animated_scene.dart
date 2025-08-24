@@ -7,7 +7,7 @@ class AnimatedScene extends StaticScene {
     super.environmentExposure,
     super.cameraDistance,
     this.defaultAnimation = Animation.idle,
-    this.fps = 60.0,
+    this.fps = 24.0,
     this.showBack = false,
   });
 
