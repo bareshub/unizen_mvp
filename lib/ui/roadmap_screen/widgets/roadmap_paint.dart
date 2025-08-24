@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import '../../roadmap_screen/view_models/roadmap_progress_view_model.dart';
+import '../view_models/roadmap_progress_view_model.dart';
 
 /// A widget that draws the roadmap and exposes the current point
 /// (the point representing current progress along the roadmap)
@@ -54,12 +54,12 @@ class _RoadmapProgressPainter extends CustomPainter {
              ..style = PaintingStyle.stroke,
        super();
 
-  static const double currentPointWidth = 36.0;
-  static const double currentPointHeight = 24.0;
-  static const Color roadmapPaintColor = Colors.white24;
-  static const double roadmapPaintStrokeWidth = 12.0;
-  static const Color progressPaintColor = Colors.white54;
-  static const double progressPaintStrokeWidth = 14.0;
+  static const currentPointWidth = 36.0;
+  static const currentPointHeight = 24.0;
+  static const roadmapPaintColor = Colors.white24;
+  static const roadmapPaintStrokeWidth = 12.0;
+  static const progressPaintColor = Colors.white54;
+  static const progressPaintStrokeWidth = 14.0;
 
   final int curveCount;
   final double curveHeight;
