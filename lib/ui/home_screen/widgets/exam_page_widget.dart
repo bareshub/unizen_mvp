@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:unizen/ui/core/ui/animated_boss_section.dart';
 
 import '../../../domain/models/exam/exam.dart';
 import '../../../domain/models/health_bar/health_bar.dart';
@@ -33,9 +34,13 @@ class ExamPageWidget extends StatelessWidget {
             SingleChildScrollView(
               child: Column(
                 children: [
-                  _AnimatedSceneSection(
+                  AnimatedBossSection(
                     exam: viewModel.model.exam,
                     height: animatedSceneHeight,
+                    overlayMargin: const EdgeInsets.symmetric(
+                      horizontal: 96.0,
+                      vertical: 8.0,
+                    ),
                   ),
                   const SizedBox(
                     height:
@@ -70,31 +75,6 @@ class ExamPageWidget extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-}
-
-class _AnimatedSceneSection extends StatelessWidget {
-  const _AnimatedSceneSection({required this.exam, required this.height});
-
-  final Exam exam;
-  final double height;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        OverlayText(
-          exam.name,
-          margin: const EdgeInsets.symmetric(horizontal: 96.0, vertical: 8.0),
-        ),
-        SizedBox(
-          width: double.infinity,
-          height: height,
-          child: AnimatedSceneWidget(exam: exam),
-        ),
-      ],
     );
   }
 }
