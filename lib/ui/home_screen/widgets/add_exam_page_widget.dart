@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:unizen/ui/animated_scene/animated_scene.dart';
-import 'package:unizen/ui/core/ui/custom_painter_spike.dart';
 
 import '../../../domain/models/animated_scene/animated_scene.dart';
 import '../../../domain/models/boss/boss.dart';
 import '../../../domain/models/exam/exam.dart';
 import '../../../domain/models/health_bar/health_bar.dart';
+import '../../../ui/core/ui/animated_boss_section.dart';
+import '../../../ui/core/ui/custom_painter_spike.dart';
 import '../../../ui/core/ui/liquid_glass_icon_button.dart';
-import '../../core/ui/overlay_text.dart';
 import '../../health_bar/view_models/health_bar_view_model.dart';
 import '../../health_bar/widgets/health_bar_widget.dart';
 import '../view_models/add_exam_page_view_model.dart';
@@ -33,8 +32,7 @@ class AddExamPageWidget extends StatelessWidget {
           Expanded(
             child: Column(
               children: [
-                _AnimatedSceneSection(
-                  height: 150,
+                AnimatedBossSection(
                   exam: Exam(
                     name: 'AUTOMATION',
                     maxHealth: 5000,
@@ -47,6 +45,8 @@ class AddExamPageWidget extends StatelessWidget {
                       ects: 6,
                     ),
                   ),
+                  height: 150,
+                  overlayMargin: const EdgeInsets.symmetric(horizontal: 48.0),
                 ),
                 const SizedBox(height: 8.0),
                 _HealthBarSection(
@@ -86,8 +86,7 @@ class AddExamPageWidget extends StatelessWidget {
             child: Column(
               children: [
                 SizedBox(height: 156),
-                _AnimatedSceneSection(
-                  height: 150,
+                AnimatedBossSection(
                   exam: Exam(
                     name: 'MACHINE LEARNING',
                     maxHealth: 5000,
@@ -100,6 +99,8 @@ class AddExamPageWidget extends StatelessWidget {
                       ects: 3,
                     ),
                   ),
+                  height: 150,
+                  overlayMargin: const EdgeInsets.symmetric(horizontal: 48.0),
                 ),
                 const SizedBox(height: 8.0),
                 _HealthBarSection(
@@ -140,31 +141,6 @@ class AddExamPageWidget extends StatelessWidget {
           // ),
         );
       },
-    );
-  }
-}
-
-class _AnimatedSceneSection extends StatelessWidget {
-  const _AnimatedSceneSection({required this.exam, required this.height});
-
-  final Exam exam;
-  final double height;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        OverlayText(
-          exam.name,
-          margin: const EdgeInsets.symmetric(horizontal: 48.0),
-        ),
-        SizedBox(
-          height: height,
-          width: double.infinity,
-          child: AnimatedSceneWidget(exam: exam),
-        ),
-      ],
     );
   }
 }
