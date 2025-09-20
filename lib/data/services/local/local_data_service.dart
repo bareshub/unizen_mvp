@@ -111,7 +111,7 @@ Boss getAvatar() {
       modelAssetPath: 'build/models/minecraft_sprunki_oren_after_blender.model',
       defaultAnimation: Animation.walk,
       cameraDistance: 10,
-      showBack: true,
+      flip: true,
     ),
     ects: 0,
   );
