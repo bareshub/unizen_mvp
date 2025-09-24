@@ -1,6 +1,6 @@
-import 'package:unizen/data/services/local/local_data_service.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../data/services/local/local_data_service.dart';
 import '../../../domain/models/boss/boss.dart';
 import '../../../utils/result.dart';
 import 'boss_repository.dart';
