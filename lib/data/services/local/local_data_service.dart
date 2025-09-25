@@ -1,3 +1,4 @@
+import '../../../domain/models/avatar/avatar.dart';
 import '../../../domain/models/animated_scene/animated_scene.dart';
 import '../../../domain/models/boss/boss.dart';
 import '../../../domain/models/exam/exam.dart';
@@ -103,16 +104,16 @@ class LocalDataService {
       ),
     ];
   }
-}
 
-Boss getAvatar() {
-  return Boss(
-    animatedScene: AnimatedScene(
-      modelAssetPath: 'build/models/minecraft_sprunki_oren_after_blender.model',
-      defaultAnimation: Animation.walk,
-      cameraDistance: 10,
-      flip: true,
-    ),
-    ects: 0,
-  );
+  Avatar getAvatar() {
+    return Avatar(
+      animatedScene: AnimatedScene(
+        modelAssetPath:
+            'build/models/minecraft_sprunki_oren_after_blender.model',
+        defaultAnimation: Animation.walk,
+        cameraDistance: 10,
+        flip: true,
+      ),
+    );
+  }
 }
