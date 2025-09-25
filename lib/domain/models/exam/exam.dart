@@ -1,6 +1,6 @@
 import 'package:uuid/uuid.dart';
 
-import '../../../domain/models/boss/boss.dart';
+import '../boss/boss.dart';
 
 class Exam {
   static const double hoursPerEcts = 12.5;
