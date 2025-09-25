@@ -4,8 +4,6 @@ import 'package:unizen/ui/core/ui/animated_boss_section.dart';
 import '../../../domain/models/exam/exam.dart';
 import '../../../domain/models/health_bar/health_bar.dart';
 import '../../../domain/models/study_timer/study_timer.dart';
-import '../../animated_scene/animated_scene.dart';
-import '../../core/ui/overlay_text.dart';
 import '../../core/ui/vertical_text.dart';
 import '../../health_bar/health_bar.dart';
 import '../../study_timer/study_timer.dart';
