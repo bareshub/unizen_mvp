@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../domain/models/exam/exam.dart';
@@ -11,7 +10,6 @@ class AnimatedBossSection extends StatelessWidget {
     required this.exam,
     required this.height,
     this.width = double.infinity,
-    this.externalElapsed,
     this.showOverlay = true,
     this.overlayMargin,
   }) : assert(overlayMargin == null || showOverlay);
@@ -19,7 +17,6 @@ class AnimatedBossSection extends StatelessWidget {
   final Exam exam;
   final double height;
   final double width;
-  final ValueListenable<Duration>? externalElapsed;
   final bool showOverlay;
   final EdgeInsetsGeometry? overlayMargin;
 
@@ -32,10 +29,7 @@ class AnimatedBossSection extends StatelessWidget {
         SizedBox(
           width: width,
           height: height,
-          child: AnimatedSceneWidget(
-            exam: exam,
-            externalElapsed: externalElapsed,
-          ),
+          child: AnimatedSceneWidget.boss(exam: exam),
         ),
       ],
     );
