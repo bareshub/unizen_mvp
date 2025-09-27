@@ -1,10 +1,12 @@
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import 'package:unizen/data/repositories/boss/boss_repository.dart';
-import 'package:unizen/data/repositories/boss/boss_repository_local.dart';
 
 import '../data/repositories/auth/auth_repository.dart';
 import '../data/repositories/auth/auth_repository_dev.dart';
+import '../data/repositories/avatar/avatar_repository.dart';
+import '../data/repositories/avatar/avatar_repository_local.dart';
+import '../data/repositories/boss/boss_repository.dart';
+import '../data/repositories/boss/boss_repository_local.dart';
 import '../data/repositories/exam/exam_repository.dart';
 import '../data/repositories/exam/exam_repository_local.dart';
 import '../data/services/local/local_data_service.dart';
@@ -24,13 +26,25 @@ List<SingleChildWidget> get providersLocal {
     Provider(
       create:
           (context) =>
-              ExamRepositoryLocal(localDataService: context.read())
+              AvatarRepositoryLocal(
+                    localDataService: context.read<LocalDataService>(),
+                  )
+                  as AvatarRepository,
+    ),
+    Provider(
+      create:
+          (context) =>
+              ExamRepositoryLocal(
+                    localDataService: context.read<LocalDataService>(),
+                  )
                   as ExamRepository,
     ),
     Provider(
       create:
           (context) =>
-              BossRepositoryLocal(localDataService: context.read())
+              BossRepositoryLocal(
+                    localDataService: context.read<LocalDataService>(),
+                  )
                   as BossRepository,
     ),
     ChangeNotifierProvider.value(value: AuthRepositoryDev() as AuthRepository),
