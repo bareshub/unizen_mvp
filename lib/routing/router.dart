@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:unizen/data/repositories/exam/exam_repository.dart';
-import 'package:unizen/domain/models/exam/exam.dart';
-import 'package:unizen/domain/models/exam/exam_page.dart';
-import 'package:unizen/ui/home_screen/view_models/exam_page_view_model.dart';
-import 'package:unizen/ui/home_screen/widgets/exam_page_widget.dart';
-import 'package:unizen/ui/roadmap_screen/view_models/roadmap_screen_view_model.dart';
-import 'package:unizen/ui/roadmap_screen/widgets/roadmap_screen_widget.dart';
 
+import '../data/repositories/avatar/avatar_repository.dart';
 import '../data/repositories/auth/auth_repository.dart';
+import '../data/repositories/exam/exam_repository.dart';
+import '../domain/models/exam/exam.dart';
+import '../domain/models/exam/exam_page.dart';
+import '../ui/home_screen/view_models/exam_page_view_model.dart';
+import '../ui/home_screen/widgets/exam_page_widget.dart';
+import '../ui/roadmap_screen/view_models/roadmap_screen_view_model.dart';
+import '../ui/roadmap_screen/widgets/roadmap_screen_widget.dart';
 import '../ui/core/localization/applocalization.dart';
 import '../ui/home_screen/home_screen.dart';
 import '../ui/home_screen/view_models/home_screen_view_model.dart';
@@ -56,6 +57,7 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
           builder: (context, state) {
             return RoadmapScreenWidget(
               viewModel: RoadmapScreenViewModel(
+                avatarRepository: context.read<AvatarRepository>(),
                 examRepository: context.read<ExamRepository>(),
               ),
             );
