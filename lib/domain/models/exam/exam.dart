@@ -1,3 +1,4 @@
+import 'package:unizen/domain/models/exam/grade.dart';
 import 'package:uuid/uuid.dart';
 
 import '../boss/boss.dart';
@@ -8,11 +9,13 @@ class Exam {
 
   Exam({
     required this.boss,
+    this.grade,
     required String name,
     int? maxHealth,
     int? health,
     rotationX = 0.0,
-  }) : id = Uuid(),
+  }) : assert(grade == null || health == 0),
+       id = Uuid(),
        _name = name,
        _maxHealth =
            maxHealth ?? (boss.ects * hoursPerEcts * minutesPerHour).floor(),
@@ -21,6 +24,7 @@ class Exam {
 
   final Uuid id;
   final Boss boss;
+  Grade? grade;
 
   String _name;
   int _maxHealth;
