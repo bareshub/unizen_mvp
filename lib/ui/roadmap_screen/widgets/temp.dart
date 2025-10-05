@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'package:unizen/ui/home_screen/view_models/add_exam_page_view_model.dart';
-import 'package:unizen/ui/roadmap_screen/view_models/roadmap_progress_view_model.dart';
+
+import '../../../domain/models/exam/exam.dart';
 import '../../../domain/models/health_bar/health_bar.dart';
+import '../../../ui/core/ui/animated_boss_section.dart';
+import '../../../ui/core/ui/health_bar_section.dart';
+import '../../../ui/home_screen/view_models/add_exam_page_view_model.dart';
+import '../../../ui/roadmap_screen/view_models/roadmap_progress_view_model.dart';
 import '../view_models/roadmap_screen_view_model.dart';
 
 class RoadmapScreenWidget extends StatefulWidget {
@@ -56,6 +59,68 @@ class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
-    throw UnimplementedError();
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      body: SafeArea(
+        child: ValueListenableBuilder(
+          valueListenable: widget.viewModel.exams,
+          builder: (context, exams, _) {
+            // TODO if exams.empty
+            return ListView.builder(
+              itemCount: exams.length,
+              itemBuilder: (context, index) {
+                return _buildBossRow(exam: exams[index]);
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBossRow({
+    required Exam exam,
+    AlignmentGeometry alignment = AlignmentGeometry.centerLeft,
+  }) {
+    var textAlign =
+        alignment == AlignmentGeometry.centerLeft
+            ? TextAlign.left
+            : TextAlign.right;
+    final bossInfo = Expanded(
+      flex: 3,
+      child: Container(
+        height: bossSectionHeight,
+        alignment: alignment,
+        child: Text(
+          exam.name,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          textAlign: textAlign,
+        ),
+      ),
+    );
+
+    return Row(
+      children: [
+        bossInfo,
+        Expanded(
+          flex: 2,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(height: widget.spaceAboveBoss),
+              AnimatedBossSection(
+                exam: exam,
+                height: widget.bossHeight,
+                showOverlay: false,
+              ),
+              SizedBox(height: widget.spaceBetweenBossAndHealthBar),
+              HealthBarSection(exam: exam),
+              SizedBox(height: widget.spaceBelowHealthBar),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }
