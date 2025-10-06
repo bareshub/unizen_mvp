@@ -12,13 +12,20 @@ import '../view_models/roadmap_screen_view_model.dart';
 class RoadmapScreenWidget extends StatefulWidget {
   const RoadmapScreenWidget({super.key, required this.viewModel});
 
-  final bossHeight = 120.0;
-  final healthBarSize = HealthBarSize.medium;
-  final horizontalMargin = 48.0;
-  final spaceAboveBoss = 12.0;
-  final spaceBetweenBossAndHealthBar = 8.0;
-  final spaceBelowHealthBar = 24.0;
-  final plusButtonSize = 72.0;
+  static const bossHeight = 120.0;
+  static const healthBarSize = HealthBarSize.medium;
+  static const horizontalMargin = 48.0;
+  static const spaceAboveBoss = 12.0;
+  static const spaceBetweenBossAndHealthBar = 8.0;
+  static const spaceBelowHealthBar = 24.0;
+  static const plusButtonSize = 72.0;
+
+  static double get bossSectionHeight =>
+      RoadmapScreenWidget.bossHeight +
+      RoadmapScreenWidget.spaceAboveBoss +
+      RoadmapScreenWidget.spaceBetweenBossAndHealthBar +
+      RoadmapScreenWidget.healthBarSize.height +
+      RoadmapScreenWidget.spaceBelowHealthBar;
 
   final RoadmapScreenViewModel viewModel;
 
@@ -29,13 +36,6 @@ class RoadmapScreenWidget extends StatefulWidget {
 class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget> {
   late final AddExamPageViewModel addExamPageViewModel;
   late final RoadmapProgressViewModel roadmapProgressViewModel;
-
-  double get bossSectionHeight =>
-      widget.bossHeight +
-      widget.spaceAboveBoss +
-      widget.spaceBetweenBossAndHealthBar +
-      widget.healthBarSize.height +
-      widget.spaceBelowHealthBar;
 
   @override
   void initState() {
@@ -69,7 +69,12 @@ class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget> {
             return ListView.builder(
               itemCount: exams.length,
               itemBuilder: (context, index) {
-                return _buildBossRow(exam: exams[index]);
+                final alignLeft =
+                    (exams.length.isOdd && index.isOdd) ||
+                    (exams.length.isEven && index.isEven);
+                final alignment =
+                    alignLeft ? Alignment.centerLeft : Alignment.centerRight;
+                return BossRow(exam: exams[index], alignment: alignment);
               },
             );
           },
@@ -77,19 +82,56 @@ class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget> {
       ),
     );
   }
+}
 
-  Widget _buildBossRow({
-    required Exam exam,
-    AlignmentGeometry alignment = AlignmentGeometry.centerLeft,
-  }) {
-    var textAlign =
-        alignment == AlignmentGeometry.centerLeft
-            ? TextAlign.left
-            : TextAlign.right;
-    final bossInfo = Expanded(
+class BossRow extends StatelessWidget {
+  const BossRow({super.key, required this.exam, required this.alignment});
+
+  static const leftAlignments = <AlignmentGeometry>[
+    Alignment.topLeft,
+    AlignmentGeometry.centerLeft,
+    Alignment.bottomLeft,
+  ];
+
+  final Exam exam;
+  final AlignmentGeometry alignment;
+  TextAlign get textAlign =>
+      leftAlignments.contains(alignment) ? TextAlign.left : TextAlign.right;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        if (textAlign == TextAlign.left) _buildBossInfo(),
+        Expanded(
+          flex: 2,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(height: RoadmapScreenWidget.spaceAboveBoss),
+              AnimatedBossSection(
+                exam: exam,
+                height: RoadmapScreenWidget.bossHeight,
+                showOverlay: false,
+              ),
+              const SizedBox(
+                height: RoadmapScreenWidget.spaceBetweenBossAndHealthBar,
+              ),
+              HealthBarSection(exam: exam),
+              const SizedBox(height: RoadmapScreenWidget.spaceBelowHealthBar),
+            ],
+          ),
+        ),
+        if (textAlign == TextAlign.right) _buildBossInfo(),
+      ],
+    );
+  }
+
+  Widget _buildBossInfo() {
+    return Expanded(
       flex: 3,
       child: Container(
-        height: bossSectionHeight,
+        height: RoadmapScreenWidget.bossSectionHeight,
         alignment: alignment,
         child: Text(
           exam.name,
@@ -98,29 +140,6 @@ class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget> {
           textAlign: textAlign,
         ),
       ),
-    );
-
-    return Row(
-      children: [
-        bossInfo,
-        Expanded(
-          flex: 2,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(height: widget.spaceAboveBoss),
-              AnimatedBossSection(
-                exam: exam,
-                height: widget.bossHeight,
-                showOverlay: false,
-              ),
-              SizedBox(height: widget.spaceBetweenBossAndHealthBar),
-              HealthBarSection(exam: exam),
-              SizedBox(height: widget.spaceBelowHealthBar),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }
