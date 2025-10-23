@@ -13,7 +13,7 @@ UniZen is a productivity app that turns university study goals into gamified cha
 
 ### Requirements
 
-- Flutter (latest stable)
+- Flutter (beta channel `3.35.6`)
 - Dart SDK
 - CMake (required for flutter_scene model building)
 
