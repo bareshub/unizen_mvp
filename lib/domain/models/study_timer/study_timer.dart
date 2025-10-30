@@ -3,7 +3,7 @@ class StudyTimer {
   final int defaultStepMinutesIndex;
 
   const StudyTimer({
-    this.stepMinutes = const [15, 20, 25, 30, 45, 60, 90, 120],
+    this.stepMinutes = const [15, 20, 25, 30, 45, 60, 90],
     this.defaultStepMinutesIndex = 2,
   }) : assert(stepMinutes.length > 0),
        assert(
