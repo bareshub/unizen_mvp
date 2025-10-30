@@ -18,24 +18,22 @@ class LocalDataService {
         health: 2780,
         boss: getBosses().elementAt(5),
       ),
-      Exam(
-        name: 'PHYSICS',
-        maxHealth: 5000,
-        health: 4878,
-        boss: getBosses().elementAt(1),
-      ),
-      Exam(
-        name: 'COMPUTER SCIENCE',
-        maxHealth: 5000,
-        health: 1280,
-        boss: getBosses().elementAt(0),
-      ),
+      Exam(name: 'PHYSICS', maxHealth: 5000, health: 4878, boss: getBosses().elementAt(1)),
+      Exam(name: 'COMPUTER SCIENCE', maxHealth: 5000, health: 1280, boss: getBosses().elementAt(0)),
       Exam(
         name: 'ARTIFICIAL INTELLIGENCE',
         maxHealth: 5000,
         health: 2780,
         boss: getBosses().elementAt(6),
       ),
+      Exam(
+        name: 'AUTOMATION AND TECHNOLOGY',
+        maxHealth: 5000,
+        health: 2780,
+        boss: getBosses().elementAt(5),
+      ),
+      Exam(name: 'PHYSICS', maxHealth: 5000, health: 4878, boss: getBosses().elementAt(1)),
+      Exam(name: 'COMPUTER SCIENCE', maxHealth: 5000, health: 1280, boss: getBosses().elementAt(0)),
       // Exam(
       //   name: 'AUTOMATION',
       //   maxHealth: 5000,
@@ -108,10 +106,9 @@ class LocalDataService {
   Avatar getAvatar() {
     return Avatar(
       animatedScene: AnimatedScene(
-        modelAssetPath:
-            'build/models/minecraft_sprunki_oren_after_blender.model',
-        defaultAnimation: Animation.walk,
-        cameraDistance: 10,
+        modelAssetPath: 'build/models/minecraft_sprunki_oren_after_blender.model',
+        defaultAnimation: SceneAnimation.walk,
+        cameraDistance: 6,
         flip: true,
       ),
     );
