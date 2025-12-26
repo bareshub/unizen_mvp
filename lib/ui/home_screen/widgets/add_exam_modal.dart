@@ -9,11 +9,7 @@ import '../view_models/add_exam_page_view_model.dart';
 import 'boss_selection_carousel.dart';
 
 class AddExamModal extends StatelessWidget {
-  const AddExamModal({
-    super.key,
-    required this.viewModel,
-    required this.timelineScreenViewModel,
-  });
+  const AddExamModal({super.key, required this.viewModel, required this.timelineScreenViewModel});
 
   final AddExamPageViewModel viewModel;
   final RoadmapScreenViewModel timelineScreenViewModel;
@@ -22,10 +18,7 @@ class AddExamModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _AddExamModalHeader(
-          viewModel: viewModel,
-          timelineScreenViewModel: timelineScreenViewModel,
-        ),
+        _AddExamModalHeader(viewModel: viewModel, timelineScreenViewModel: timelineScreenViewModel),
         BossSelectionCarousel(viewModel: viewModel),
         SizedBox(height: 16.0),
         _AddExamModalTextField(
@@ -38,10 +31,7 @@ class AddExamModal extends StatelessWidget {
 }
 
 class _AddExamModalHeader extends StatefulWidget {
-  const _AddExamModalHeader({
-    required this.viewModel,
-    required this.timelineScreenViewModel,
-  });
+  const _AddExamModalHeader({required this.viewModel, required this.timelineScreenViewModel});
 
   final AddExamPageViewModel viewModel;
   final RoadmapScreenViewModel timelineScreenViewModel;
@@ -63,10 +53,7 @@ class _AddExamModalHeaderState extends State<_AddExamModalHeader> {
             size: 40.0,
           ),
           Spacer(),
-          Text(
-            'Add Exam Boss',
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
+          Text('Add Exam Boss', style: Theme.of(context).textTheme.headlineMedium),
           Spacer(),
           ValueListenableBuilder(
             valueListenable: widget.viewModel.examName,
@@ -104,10 +91,7 @@ class _AddExamModalHeaderState extends State<_AddExamModalHeader> {
 }
 
 class _AddExamModalTextField extends StatefulWidget {
-  const _AddExamModalTextField({
-    required this.viewModel,
-    required this.timelineScreenViewModel,
-  });
+  const _AddExamModalTextField({required this.viewModel, required this.timelineScreenViewModel});
 
   final AddExamPageViewModel viewModel;
   final RoadmapScreenViewModel timelineScreenViewModel;
@@ -171,13 +155,9 @@ class _AddExamModalTextFieldState extends State<_AddExamModalTextField> {
           ),
           contentPadding: EdgeInsets.symmetric(horizontal: 16),
           filled: true,
-          fillColor: Theme.of(
-            context,
-          ).colorScheme.primaryContainer.withAlpha(128),
+          fillColor: Theme.of(context).colorScheme.primaryContainer.withAlpha(128),
           hintText: 'Exam Name',
-          hintStyle: Theme.of(
-            context,
-          ).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w600),
+          hintStyle: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w600),
           // visualDensity: VisualDensity.compact,
           // isDense: true,
         ),

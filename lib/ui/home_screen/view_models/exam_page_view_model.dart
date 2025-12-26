@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:unizen/ui/study_timer/study_timer.dart';
 
 import '../../../domain/models/exam/exam_page.dart';
 import '../../../domain/models/health_bar/health_bar.dart';
@@ -16,8 +17,13 @@ class ExamPageViewModel extends ChangeNotifier {
   bool get hasLeftVerticalText => (model.lVerticalText ?? '').isNotEmpty;
   bool get hasRightVerticalText => (model.rVerticalText ?? '').isNotEmpty;
 
-  double calculateAnimatedSceneHeight(double maxHeight) {
-    return maxHeight * 0.4 -
+  double calculateAnimatedSceneHeight(double maxHeight, StudyTimerState state) {
+    final scale = switch (state) {
+      StudyTimerState.finished => 0.5,
+      StudyTimerState.studying => 0.5,
+      _ => 0.4,
+    };
+    return maxHeight * scale -
         HealthBarSize.medium.height -
         spaceBetweenAnimatedSceneAndHealthBar -
         spaceBetweenHealthBarAndStudyTimer;

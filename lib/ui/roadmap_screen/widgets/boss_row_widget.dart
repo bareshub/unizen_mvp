@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../domain/models/exam/exam.dart';
 import '../../../domain/models/health_bar/health_bar.dart';
+import '../../../routing/routes.dart';
+import '../../../ui/core/ui/custom_ink_well.dart';
+import '../../../ui/core/ui/overlay_text.dart';
 import '../../core/ui/animated_boss_section.dart';
 import '../../core/ui/health_bar_section.dart';
 
-class BossRow extends StatelessWidget {
-  const BossRow({super.key, required this.exam, required this.alignment});
+class BossRowWidget extends StatelessWidget {
+  const BossRowWidget({super.key, required this.exam, required this.alignment});
 
   static const leftAlignments = <AlignmentGeometry>[
     Alignment.topLeft,
@@ -25,45 +27,61 @@ class BossRow extends StatelessWidget {
   static const healthBarSize = HealthBarSize.medium;
 
   static double get bossSectionHeight =>
-      BossRow.bossHeight +
-      BossRow.spaceAboveBoss +
-      BossRow.spaceBetweenBossAndHealthBar +
-      BossRow.healthBarSize.height +
-      BossRow.spaceBelowHealthBar;
+      BossRowWidget.bossHeight +
+      BossRowWidget.spaceAboveBoss +
+      BossRowWidget.spaceBetweenBossAndHealthBar +
+      BossRowWidget.healthBarSize.height +
+      BossRowWidget.spaceBelowHealthBar;
 
   final Exam exam;
   final AlignmentGeometry alignment;
 
-  TextAlign get textAlign => leftAlignments.contains(alignment) ? TextAlign.left : TextAlign.right;
+  bool get isLeftAliged => leftAlignments.contains(alignment);
+  TextAlign get textAlign => isLeftAliged ? TextAlign.left : TextAlign.right;
   EdgeInsetsGeometry get examInfoMargin => EdgeInsets.only(
     left:
-        leftAlignments.contains(alignment)
+        isLeftAliged
             ? spaceBetweenRoadmapAndExamName
             : spaceBetweenBossAndExamName,
     right:
-        leftAlignments.contains(alignment)
+        isLeftAliged
             ? spaceBetweenBossAndExamName
             : spaceBetweenRoadmapAndExamName,
   );
 
   @override
   Widget build(BuildContext context) {
+    final examInfoWidget = Expanded(
+      flex: 3,
+      child: OverlayText(
+        exam.name,
+        alignment: alignment,
+        fontSize: 36.0,
+        maxHeight: bossSectionHeight,
+        maxLines: 2,
+        margin: examInfoMargin,
+        opacity: 0.70,
+        overflow: TextOverflow.ellipsis,
+        textAlign: textAlign,
+      ),
+    );
+
     return Row(
       children: [
-        if (textAlign == TextAlign.right) _buildExamInfo(),
+        if (textAlign == TextAlign.right) examInfoWidget,
         Expanded(
           flex: 2,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const SizedBox(height: spaceAboveBoss),
-              // TODO REPLACE WITH ONTAP PARAM FUNCTION
-              InkWell(
-                onTap: () => context.push('/exam', extra: exam),
-                splashColor: Colors.white38,
-                highlightColor: Colors.transparent,
-                borderRadius: BorderRadius.circular(40.0),
-                child: AnimatedBossSection(exam: exam, height: bossHeight, showOverlay: false),
+              CustomInkWell(
+                onTap: () => _onBossTap(context),
+                child: AnimatedBossSection(
+                  exam: exam,
+                  height: bossHeight,
+                  showOverlay: false,
+                ),
               ),
               const SizedBox(height: spaceBetweenBossAndHealthBar),
               HealthBarSection(exam: exam),
@@ -71,32 +89,11 @@ class BossRow extends StatelessWidget {
             ],
           ),
         ),
-        if (textAlign == TextAlign.left) _buildExamInfo(),
+        if (textAlign == TextAlign.left) examInfoWidget,
       ],
     );
   }
 
-  // TODO extract widget roadmap_boss_info ?
-  Widget _buildExamInfo() {
-    return Expanded(
-      flex: 3,
-      child: Container(
-        height: bossSectionHeight,
-        alignment: alignment,
-        margin: examInfoMargin,
-        child: Text(
-          exam.name,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          textAlign: textAlign,
-          style: GoogleFonts.sixCaps(
-            color: Colors.white.withAlpha((0.75 * 255).toInt()),
-            fontWeight: FontWeight.w500,
-            height: 1.0,
-            fontSize: 36.0,
-          ),
-        ),
-      ),
-    );
-  }
+  void _onBossTap(BuildContext context) =>
+      context.push(Routes.exam, extra: exam);
 }

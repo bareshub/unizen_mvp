@@ -24,15 +24,12 @@ class FrostedGlassTextButton extends StatelessWidget {
       style: TextButton.styleFrom(
         foregroundColor:
             foregroundColor ?? Theme.of(context).colorScheme.onSecondary,
-        backgroundColor: (backgroundColor ??
-                Theme.of(context).colorScheme.secondary)
-            .withAlpha(128),
+        backgroundColor:
+            backgroundColor ??
+            Theme.of(context).colorScheme.secondary.withAlpha(128),
         // shadowColor: Theme.of(context).colorScheme.shadow.withAlpha(32),
         overlayColor: overlayColor ?? Theme.of(context).colorScheme.onSecondary,
         elevation: 2,
-        textStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
-          color: Theme.of(context).colorScheme.secondary,
-        ),
         minimumSize: Size.zero,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16.0)),
