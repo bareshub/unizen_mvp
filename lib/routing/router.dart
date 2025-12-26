@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../data/repositories/avatar/avatar_repository.dart';
 import '../data/repositories/auth/auth_repository.dart';
+import '../data/repositories/exam/exam_repository.dart';
+import '../domain/models/exam/exam.dart';
+import '../domain/models/exam/exam_page.dart';
+import '../ui/home_screen/widgets/exam_page_widget.dart';
+import '../ui/roadmap_screen/view_models/roadmap_screen_view_model.dart';
+import '../ui/roadmap_screen/widgets/roadmap_screen_widget.dart';
 import '../ui/core/localization/applocalization.dart';
 import '../ui/home_screen/home_screen.dart';
-import '../ui/home_screen/view_models/home_screen_view_model.dart';
 import '../ui/splash/splash_screen.dart';
 import 'routes.dart';
 
@@ -30,17 +36,70 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
         ); // TODO replace with LoginScreen
       },
     ),
+    // TODO remove Routes.home, deprecated
     GoRoute(
       path: Routes.home,
       builder: (context, state) {
         return HomeScreenWidget(
-          viewModel: HomeScreenViewModel(
-            bossRepository: context.read(),
-            examRepository: context.read(),
-          ),
+          viewModel: HomeScreenViewModel(examRepository: context.read()),
         );
       },
       routes: [],
+    ),
+    ShellRoute(
+      builder: (context, state, child) {
+        return ChangeNotifierProvider(
+          create:
+              (context) => RoadmapScreenViewModel(
+                avatarRepository: context.read<AvatarRepository>(),
+                examRepository: context.read<ExamRepository>(),
+              ),
+          child: child,
+        );
+      },
+      routes: [
+        GoRoute(
+          path: Routes.timeline,
+          builder: (context, state) {
+            return RoadmapScreenWidget(
+              viewModel: context.read<RoadmapScreenViewModel>(),
+            );
+          },
+        ),
+      ],
+    ),
+    GoRoute(
+      path: Routes.exam,
+      builder: (context, state) {
+        final exam = state.extra as Exam;
+        // TODO extract
+        return Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              onPressed: context.pop,
+              icon: Icon(Icons.close_rounded),
+            ),
+            title: Text(
+              'Study Session',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+          ),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          body: SafeArea(
+            child: Center(
+              child: ExamPageWidget(
+                viewModel: ExamPageViewModel(
+                  model: ExamPage(
+                    exam: exam,
+                    lVerticalText: null,
+                    rVerticalText: null,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     ),
   ],
 );

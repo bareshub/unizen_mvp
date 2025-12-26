@@ -5,17 +5,11 @@ import '../../../domain/models/boss/boss.dart';
 import '../../../ui/core/ui/liquid_glass_box.dart';
 import '../../static_scene/widgets/static_scene_widget.dart';
 import '../view_models/add_exam_page_view_model.dart';
-import '../view_models/home_screen_view_model.dart';
 
 class BossSelectionCarousel extends StatefulWidget {
-  const BossSelectionCarousel({
-    super.key,
-    required this.viewModel,
-    required this.homeScreenViewModel,
-  });
+  const BossSelectionCarousel({super.key, required this.viewModel});
 
   final AddExamPageViewModel viewModel;
-  final HomeScreenViewModel homeScreenViewModel;
 
   @override
   State<BossSelectionCarousel> createState() => _BossSelectionCarouselState();

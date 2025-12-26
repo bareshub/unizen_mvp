@@ -27,7 +27,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   void initState() {
     super.initState();
 
-    _pageController = PageController(initialPage: 1);
+    _pageController = PageController(initialPage: 0);
     widget.viewModel.initCommand.execute(_pageController);
     widget.viewModel.loadCommand.execute();
   }

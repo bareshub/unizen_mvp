@@ -17,12 +17,16 @@ class StudyTimerWidget extends StatelessWidget {
     required this.examName,
     this.minSize = 240.0,
     this.margin,
+    this.onStudyTimerEdit,
+    this.onStudyTimerStart,
   });
 
   final StudyTimerViewModel viewModel;
   final String examName;
   final double minSize;
   final EdgeInsetsGeometry? margin;
+  final VoidCallback? onStudyTimerEdit;
+  final VoidCallback? onStudyTimerStart;
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +67,9 @@ class StudyTimerWidget extends StatelessWidget {
                                   : null,
                         ),
                         Spacer(),
-                        StudyTimerEdit(onEdit: () {}),
+                        StudyTimerEdit(onEdit: onStudyTimerEdit),
                         SizedBox(height: 8.0),
-                        StudyTimerStart(onStart: () {}),
+                        StudyTimerStart(onStart: onStudyTimerStart),
                       ],
                     ),
                   ),

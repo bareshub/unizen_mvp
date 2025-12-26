@@ -1,27 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:unizen/domain/models/health_bar/health_bar.dart';
-import 'package:unizen/ui/core/ui/custom_painter_spike.dart';
-import 'package:unizen/ui/core/ui/liquid_glass_icon_button.dart';
-import 'package:unizen/ui/core/ui/unizen_logo.dart';
 
 import '../../../domain/models/exam/exam.dart';
-import '../../animated_scene/widgets/animated_scene_widget.dart';
-import '../../core/ui/overlay_text.dart';
-import '../../health_bar/view_models/health_bar_view_model.dart';
-import '../../health_bar/widgets/health_bar_widget.dart';
-import '../../home_screen/view_models/add_exam_page_view_model.dart';
+import '../../../ui/animated_scene/animated_scene.dart';
+import '../../../ui/core/ui/liquid_glass_box.dart';
+import '../../../ui/home_screen/home_screen.dart';
+import '../../../ui/roadmap_screen/roadmap_screen.dart';
+import '../../core/ui/liquid_glass_icon_button.dart';
 import '../../home_screen/widgets/add_exam_modal.dart';
-import '../view_models/roadmap_screen_view_model.dart';
+import 'boss_row_widget.dart';
 
 class RoadmapScreenWidget extends StatefulWidget {
   const RoadmapScreenWidget({super.key, required this.viewModel});
 
+  static const avatarHeight = 72.0;
+  static const avatarWidth = 40.0;
   static const horizontalMargin = 48.0;
-  static const bossHeight = 150.0;
-  static const spaceBetweenAnimatedSceneAndHealthBar = 8.0;
-  static const HealthBarSize healthBarSize = HealthBarSize.medium;
-  static const plusButtonSize = 60.0;
+  static const plusButtonSize = 72.0;
 
   final RoadmapScreenViewModel viewModel;
 
@@ -30,123 +25,307 @@ class RoadmapScreenWidget extends StatefulWidget {
 }
 
 class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget> {
-  late final AddExamPageViewModel addExamPageViewModel;
+  final _examListController = ScrollController();
+  final _roadmapScrollController = ScrollController();
 
-  double get bossHeight =>
-      RoadmapScreenWidget.bossHeight +
-      RoadmapScreenWidget.spaceBetweenAnimatedSceneAndHealthBar +
-      RoadmapScreenWidget.healthBarSize.height;
+  late final AddExamPageViewModel addExamPageViewModel;
+  late final RoadmapProgressViewModel roadmapProgressViewModel;
+
+  double get totalMaxHealth => widget.viewModel.exams.value.fold<double>(
+    0,
+    (acc, exam) => acc + exam.maxHealth,
+  );
+  double get totalHealth => widget.viewModel.exams.value.fold<double>(
+    0,
+    (acc, exam) => acc + exam.health,
+  );
+  double get progress => totalHealth / totalMaxHealth;
 
   @override
   void initState() {
     super.initState();
 
-    widget.viewModel.loadCommand.executeWithFuture();
+    _syncScrollControllers();
+
+    addExamPageViewModel = AddExamPageViewModel(bossRepository: context.read());
+    roadmapProgressViewModel = RoadmapProgressViewModel();
+
+    if (widget.viewModel.state.value == RoadmapScreenState.initial) {
+      widget.viewModel.loadCommand.execute();
+    }
+  }
+
+  void _syncScrollControllers() {
+    _examListController.addListener(() {
+      if (_roadmapScrollController.hasClients) {
+        _roadmapScrollController.jumpTo(_examListController.offset);
+      }
+    });
+
+    // to avoid debounch problems
+    _roadmapScrollController.addListener(() {
+      if (_roadmapScrollController.offset != _examListController.offset) {
+        _roadmapScrollController.jumpTo(_examListController.offset);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _examListController.dispose();
+    _roadmapScrollController.dispose();
+
+    addExamPageViewModel.dispose();
+    roadmapProgressViewModel.dispose();
+
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    addExamPageViewModel = AddExamPageViewModel(bossRepository: context.read());
-
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
-      appBar: AppBar(title: UnizenLogo(), toolbarHeight: 24),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: ValueListenableBuilder(
-              valueListenable: widget.viewModel.state,
-              builder: (context, state, child) {
-                // TODO implement return values based on state
-                return switch (state) {
-                  RoadmapScreenState.initial => Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                  RoadmapScreenState.loading => Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                  RoadmapScreenState.error => Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                  _ => child!,
-                };
-              },
-              child: ValueListenableBuilder(
-                valueListenable: widget.viewModel.exams,
-                builder: (context, exams, _) {
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          children: [
-                            SizedBox(height: 16),
-                            ...exams.asMap().entries.map<Widget>((entry) {
-                              final first = entry.key == 0;
-                              final even = exams.length.isEven;
-                              final addExamButton =
-                                  first
-                                      ? Align(
-                                        alignment: AlignmentGeometry.topRight,
-                                        child: _buildAddExamButton(),
-                                      )
-                                      : null;
+      body: ValueListenableBuilder(
+        valueListenable: widget.viewModel.state,
+        builder: (context, state, child) {
+          if ([
+            RoadmapScreenState.initial,
+            RoadmapScreenState.loading,
+          ].contains(state)) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            ); // TODO improve progress indicator
+          }
 
-                              return switch ((even && entry.key.isEven) ||
-                                  (!even && entry.key.isOdd)) {
-                                true => _buildBoss(entry.value, first),
-                                false => _buildBossEmptyPlaceholder(
-                                  button: addExamButton,
-                                ),
-                              };
-                            }),
-                          ],
-                        ),
+          return ValueListenableBuilder(
+            valueListenable: widget.viewModel.exams,
+            builder: (context, exams, _) {
+              // TODO if exams.empty
+              if (exams.isEmpty) {
+                return Placeholder(); // TODO replace with empty list handling
+              }
+
+              return Stack(
+                children: [
+                  ListView.builder(
+                    controller: _examListController,
+                    itemCount: exams.length,
+                    itemBuilder: (_, index) => _buildBossRow(index - 2, exams),
+                  ),
+                  IgnorePointer(
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.symmetric(
+                        vertical: MediaQuery.of(context).padding.top,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 48.0),
-                        child: CustomPaint(
-                          size: Size(0, bossHeight * (exams.length + 1)),
-                          painter: CurvedZigZagPainter(
-                            curveCount: exams.length + 1,
-                            curveHeight: bossHeight,
+                      controller: _roadmapScrollController,
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: AlignmentGeometry.bottomCenter,
+                            child: RoadmapProgressWidget(
+                              bossesCount: exams.length - 2,
+                              bossHeight: BossRowWidget.bossSectionHeight,
+                              progress: progress,
+                              viewModel: roadmapProgressViewModel,
+                            ),
+                          ),
+                          AnimatedBuilder(
+                            // TODO check if animation needed
+                            animation: roadmapProgressViewModel,
+                            builder: (context, _) {
+                              final currentPoint =
+                                  roadmapProgressViewModel.currentPoint;
+                              if (currentPoint == null) return const SizedBox();
+
+                              return Positioned(
+                                // TODO refactor
+                                top:
+                                    currentPoint.dy -
+                                    RoadmapScreenWidget.avatarHeight, // heigth
+                                // TODO refactor
+                                left:
+                                    MediaQuery.of(context).size.width / 2 +
+                                    currentPoint.dx -
+                                    RoadmapScreenWidget.avatarWidth /
+                                        2, // witdh / 2
+                                child: SizedBox(
+                                  height: RoadmapScreenWidget.avatarHeight,
+                                  width: RoadmapScreenWidget.avatarWidth,
+                                  child: AnimatedSceneWidget.avatar(
+                                    avatar: widget.viewModel.avatar.value,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // TODO refactor
+                  SafeArea(
+                    child: Container(
+                      height: BossRowWidget.bossSectionHeight,
+                      width: double.infinity,
+                      padding: const EdgeInsets.fromLTRB(32.0, 0.0, 32.0, 80.0),
+                      child: LiquidGlassBox(
+                        ambientStrength: 0.5,
+                        chromaticAberration: 10,
+                        lightIntensity: 0.95,
+                        refractiveIndex: 1.51,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  // Icon(
+                                  //   Icons.school_outlined,
+                                  //   color: Colors.blue.withAlpha(160),
+                                  //   size: 20,
+                                  // ),
+                                  // SizedBox(width: 8.0),
+                                  Text(
+                                    'University: ',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      // color: Colors.white,
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  Text(
+                                    'DTU',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  // Icon(
+                                  //   Icons.flag_outlined,
+                                  //   color: Colors.red.withAlpha(160),
+                                  //   size: 20,
+                                  // ),
+                                  // SizedBox(width: 8.0),
+                                  Text(
+                                    'Exams Passed: ',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      // color: Colors.white,
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  // TODO count exams with grade (or add passed derived property to Exam)
+                                  Text(
+                                    '0 ',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                  // TODO count exams
+                                  Text(
+                                    '/ 4',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      // color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  // Icon(
+                                  //   Icons.leaderboard_outlined,
+                                  //   color: Colors.green.withAlpha(160),
+                                  //   size: 20,
+                                  // ),
+                                  // SizedBox(width: 8.0),
+                                  Text(
+                                    'GPA: ',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      // color: Colors.white,
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  // TODO sum exams grade and divide by exam with grade
+                                  Text(
+                                    '- ',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                    // ?.copyWith(color: Colors.white),
+                                  ),
+                                  // TODO same "config" or "profile" as the University
+                                  Text(
+                                    '/ 12',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      // color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            SizedBox(height: 16),
-                            ...exams.asMap().entries.map<Widget>((entry) {
-                              final first = entry.key == 0;
-                              final odd = exams.length.isOdd;
-                              final addExamButton =
-                                  first
-                                      ? Align(
-                                        alignment: AlignmentGeometry.topLeft,
-                                        child: _buildAddExamButton(),
-                                      )
-                                      : null;
-
-                              return switch ((!odd && entry.key.isOdd) ||
-                                  (odd && entry.key.isEven)) {
-                                true => _buildBoss(entry.value, first),
-                                false => _buildBossEmptyPlaceholder(
-                                  button: addExamButton,
-                                ),
-                              };
-                            }),
-                          ],
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-          ),
-        ],
+                    ),
+                  ), // TODO replace with info box
+                ],
+              );
+            },
+          );
+        },
       ),
+    );
+  }
+
+  Widget _buildBossRow(int index, List<Exam> exams) {
+    final alignRight =
+        (exams.length.isOdd && index.isOdd) ||
+        (exams.length.isEven && index.isEven);
+    final alignment = alignRight ? Alignment.centerRight : Alignment.centerLeft;
+
+    if (index == -2) {
+      return SizedBox(height: BossRowWidget.bossSectionHeight);
+    }
+
+    if (index == -1) {
+      return SizedBox(
+        height: BossRowWidget.bossSectionHeight,
+        child: Row(
+          children: [
+            if (exams.length.isOdd) Spacer(flex: 3),
+            Expanded(flex: 2, child: Center(child: _buildAddExamButton())),
+            if (exams.length.isEven) Spacer(flex: 3),
+          ],
+        ),
+      );
+    }
+
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: RoadmapScreenWidget.horizontalMargin,
+      ),
+      child: BossRowWidget(exam: exams[index], alignment: alignment),
     );
   }
 
@@ -170,86 +349,4 @@ class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget> {
           },
         ), // TODO
   );
-
-  Widget _buildBoss(Exam exam, bool first) {
-    return Column(
-      key: ValueKey(exam.id),
-      children: [
-        if (first) _buildBossEmptyPlaceholder(),
-        _AnimatedSceneSection(
-          exam: exam,
-          height: RoadmapScreenWidget.bossHeight,
-          margin: const EdgeInsets.symmetric(
-            horizontal: RoadmapScreenWidget.horizontalMargin,
-          ),
-        ),
-        const SizedBox(
-          height: RoadmapScreenWidget.spaceBetweenAnimatedSceneAndHealthBar,
-        ),
-        _HealthBarSection(
-          exam: exam,
-          margin: EdgeInsets.symmetric(
-            horizontal: RoadmapScreenWidget.horizontalMargin,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildBossEmptyPlaceholder({Widget? button}) {
-    return Column(
-      children: [
-        if (button != null) SizedBox(height: bossHeight, child: button),
-        SizedBox(height: bossHeight),
-      ],
-    );
-  }
-}
-
-// TODO extract
-class _AnimatedSceneSection extends StatelessWidget {
-  const _AnimatedSceneSection({
-    required this.exam,
-    required this.height,
-    this.margin,
-  });
-
-  final Exam exam;
-  final double height;
-  final EdgeInsets? margin;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        OverlayText(exam.name, margin: margin),
-        SizedBox(
-          height: height,
-          width: double.infinity,
-          child: AnimatedSceneWidget(exam: exam),
-        ),
-      ],
-    );
-  }
-}
-
-// TODO extract
-class _HealthBarSection extends StatelessWidget {
-  const _HealthBarSection({required this.exam, this.margin});
-
-  final Exam exam;
-  final EdgeInsets? margin;
-
-  @override
-  Widget build(BuildContext context) {
-    return HealthBarWidget(
-      viewModel: HealthBarViewModel(
-        config: HealthBar(size: HealthBarSize.medium),
-        maxHealth: exam.maxHealth,
-        health: exam.health,
-      ),
-      margin: margin,
-    );
-  }
 }

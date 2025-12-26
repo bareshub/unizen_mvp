@@ -1,69 +1,227 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-import '../../../domain/models/exam/exam.dart';
 import '../../../domain/models/health_bar/health_bar.dart';
 import '../../../domain/models/study_timer/study_timer.dart';
-import '../../animated_scene/animated_scene.dart';
-import '../../core/ui/overlay_text.dart';
+import '../../../ui/core/ui/animated_boss_section.dart';
+import '../../core/ui/frosted_glass_text_button.dart';
 import '../../core/ui/vertical_text.dart';
 import '../../health_bar/health_bar.dart';
 import '../../study_timer/study_timer.dart';
 import '../view_models/exam_page_view_model.dart';
 
-class ExamPageWidget extends StatelessWidget {
+class ExamPageWidget extends StatefulWidget {
   const ExamPageWidget({super.key, required this.viewModel});
 
   final ExamPageViewModel viewModel;
 
   @override
+  State<ExamPageWidget> createState() => _ExamPageWidgetState();
+}
+
+class _ExamPageWidgetState extends State<ExamPageWidget> {
+  late final StudyTimerViewModel _studyTimerViewModel;
+  late final HealthBarViewModel _healthBarViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _studyTimerViewModel = StudyTimerViewModel(config: StudyTimer());
+    _healthBarViewModel = HealthBarViewModel(
+      config: HealthBar(size: HealthBarSize.medium),
+      maxHealth: widget.viewModel.model.exam.maxHealth,
+      health: widget.viewModel.model.exam.health,
+    );
+
+    _studyTimerViewModel.minutes.addListener(_onMinutesChanged);
+  }
+
+  @override
+  void dispose() {
+    _studyTimerViewModel.minutes.removeListener(_onMinutesChanged);
+    _studyTimerViewModel.dispose();
+    _healthBarViewModel.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final animatedSceneHeight = viewModel.calculateAnimatedSceneHeight(
-          constraints.maxHeight,
-        );
-
         return Stack(
           children: [
-            if (viewModel.hasLeftVerticalText)
+            if (widget.viewModel.hasLeftVerticalText)
               VerticalText(
-                text: viewModel.model.lVerticalText!,
+                text: widget.viewModel.model.lVerticalText!,
                 alignment: Alignment.centerLeft,
               ),
             SingleChildScrollView(
-              child: Column(
-                children: [
-                  _AnimatedSceneSection(
-                    exam: viewModel.model.exam,
-                    height: animatedSceneHeight,
-                  ),
-                  const SizedBox(
-                    height:
-                        ExamPageViewModel.spaceBetweenAnimatedSceneAndHealthBar,
-                  ),
-                  _HealthBarSection(
-                    exam: viewModel.model.exam,
-                    margin: EdgeInsets.symmetric(
-                      horizontal: ExamPageViewModel.horizontalMarginHealthBar,
-                    ),
-                  ),
-                  const SizedBox(
-                    height:
-                        ExamPageViewModel.spaceBetweenHealthBarAndStudyTimer,
-                  ),
-                  StudyTimerWidget(
-                    viewModel: StudyTimerViewModel(config: StudyTimer()),
-                    examName: viewModel.model.exam.name,
-                    margin: EdgeInsets.all(
-                      ExamPageViewModel.horizontalMarginStudyTimer,
-                    ),
-                  ),
-                ],
+              child: ValueListenableBuilder(
+                valueListenable: _studyTimerViewModel.state,
+                builder: (context, state, child) {
+                  final animatedSceneHeight = widget.viewModel
+                      .calculateAnimatedSceneHeight(
+                        constraints.maxHeight,
+                        state,
+                      );
+
+                  if (state == StudyTimerState.studying ||
+                      state == StudyTimerState.paused) {
+                    _healthBarViewModel.config.size = HealthBarSize.large;
+                  }
+
+                  return Column(
+                    children: [
+                      AnimatedContainer(
+                        duration: Durations.medium1,
+                        height: animatedSceneHeight,
+                        child: AnimatedBossSection(
+                          exam: widget.viewModel.model.exam,
+                          height: animatedSceneHeight,
+                          overlayMargin: EdgeInsets.symmetric(
+                            horizontal:
+                                // (state == StudyTimerState.studying ? 0.5 : 1) *
+                                ExamPageViewModel.horizontalMarginHealthBar,
+                            vertical: 8.0, // TODO extract in a variable
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height:
+                            ExamPageViewModel
+                                .spaceBetweenAnimatedSceneAndHealthBar,
+                      ),
+                      HealthBarWidget(
+                        viewModel: _healthBarViewModel,
+                        margin: EdgeInsets.symmetric(
+                          horizontal:
+                              // (state == StudyTimerState.studying ? 0.5 : 1) *
+                              ExamPageViewModel.horizontalMarginHealthBar,
+                        ),
+                      ),
+                      const SizedBox(
+                        height:
+                            ExamPageViewModel
+                                .spaceBetweenHealthBarAndStudyTimer,
+                      ),
+                      switch (state) {
+                        StudyTimerState.finished => Text(
+                          'FINISHED',
+                        ), // TODO change finished
+                        StudyTimerState.studying ||
+                        StudyTimerState.paused => ValueListenableBuilder(
+                          valueListenable: _studyTimerViewModel.seconds,
+                          builder:
+                              (context, value, child) => Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      _studyTimerViewModel.formattedMinutes,
+                                      maxLines: 1,
+                                      textAlign: TextAlign.end,
+                                      style: GoogleFonts.sixCaps(
+                                        letterSpacing: 12,
+                                        color: Colors.white.withAlpha(
+                                          (0.75 * 255).toInt(),
+                                        ),
+                                        fontWeight: FontWeight.w500,
+                                        height: 1.0,
+                                        fontSize: 128.0,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    ":",
+                                    maxLines: 1,
+                                    style: GoogleFonts.sixCaps(
+                                      letterSpacing: 12,
+                                      color: Colors.white.withAlpha(
+                                        (0.75 * 255).toInt(),
+                                      ),
+                                      fontWeight: FontWeight.w500,
+                                      height: 1.0,
+                                      fontSize: 128.0,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      _studyTimerViewModel.formattedSeconds,
+                                      maxLines: 1,
+                                      textAlign: TextAlign.start,
+                                      style: GoogleFonts.sixCaps(
+                                        letterSpacing: 12,
+                                        color: Colors.white.withAlpha(
+                                          (0.75 * 255).toInt(),
+                                        ),
+                                        fontWeight: FontWeight.w500,
+                                        height: 1.0,
+                                        fontSize: 128.0,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                        ),
+                        _ => StudyTimerWidget(
+                          viewModel: _studyTimerViewModel,
+                          examName: widget.viewModel.model.exam.name,
+                          margin: EdgeInsets.all(
+                            ExamPageViewModel.horizontalMarginStudyTimer,
+                          ),
+                          onStudyTimerStart: _onStudyTimerStart,
+                          onStudyTimerEdit: _onStudyTimerEdit,
+                        ),
+                      },
+                      SizedBox(height: 40.0),
+                      if (state == StudyTimerState.studying ||
+                          state == StudyTimerState.paused)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal:
+                                ExamPageViewModel.horizontalMarginHealthBar *
+                                1.5,
+                          ),
+                          child: Column(
+                            spacing: 8.0,
+                            children: [
+                              FrostedGlassTextButton(
+                                text:
+                                    state == StudyTimerState.paused
+                                        ? 'Start'
+                                        : 'Pause',
+                                backgroundColor:
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.primaryContainer,
+                                foregroundColor:
+                                    Theme.of(context).colorScheme.secondary,
+                                icon:
+                                    state == StudyTimerState.paused
+                                        ? Icons.play_arrow_rounded
+                                        : Icons.pause_rounded,
+                                action: _onStudyTimerPause,
+                              ),
+                              FrostedGlassTextButton(
+                                text: 'Stop',
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.error.withAlpha(128),
+                                icon: Icons.stop_rounded,
+                                action: _onStudyTimerStop,
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  );
+                },
               ),
             ),
-            if (viewModel.hasRightVerticalText)
+            if (widget.viewModel.hasRightVerticalText)
               VerticalText(
-                text: viewModel.model.rVerticalText!,
+                text: widget.viewModel.model.rVerticalText!,
                 alignment: Alignment.centerRight,
               ),
           ],
@@ -71,48 +229,27 @@ class ExamPageWidget extends StatelessWidget {
       },
     );
   }
-}
 
-class _AnimatedSceneSection extends StatelessWidget {
-  const _AnimatedSceneSection({required this.exam, required this.height});
-
-  final Exam exam;
-  final double height;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        OverlayText(
-          exam.name,
-          margin: const EdgeInsets.symmetric(horizontal: 96.0, vertical: 8.0),
-        ),
-        SizedBox(
-          height: height,
-          width: double.infinity,
-          child: AnimatedSceneWidget(exam: exam),
-        ),
-      ],
-    );
+  void _onMinutesChanged() {
+    _studyTimerViewModel.minutes.addListener(() {
+      if ([
+        StudyTimerState.studying,
+        StudyTimerState.paused,
+        StudyTimerState.finished,
+      ].contains(_studyTimerViewModel.state.value)) {
+        _healthBarViewModel.decreaseHealthComamand.execute();
+      }
+    });
   }
-}
 
-class _HealthBarSection extends StatelessWidget {
-  const _HealthBarSection({required this.exam, this.margin});
+  void _onStudyTimerStart() => _studyTimerViewModel.startTimerCommand.execute();
 
-  final Exam exam;
-  final EdgeInsets? margin;
-
-  @override
-  Widget build(BuildContext context) {
-    return HealthBarWidget(
-      viewModel: HealthBarViewModel(
-        config: HealthBar(size: HealthBarSize.medium),
-        maxHealth: exam.maxHealth,
-        health: exam.health,
-      ),
-      margin: margin,
-    );
+  void _onStudyTimerEdit() {
+    // TODO implement
   }
+
+  void _onStudyTimerPause() =>
+      _studyTimerViewModel.togglePauseTimerCommand.execute();
+
+  void _onStudyTimerStop() => _studyTimerViewModel.stopTimerCommand.execute();
 }

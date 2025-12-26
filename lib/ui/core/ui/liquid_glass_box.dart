@@ -6,14 +6,26 @@ class LiquidGlassBox extends StatelessWidget {
     super.key,
     required this.child,
     this.alpha = 96,
+    this.ambientStrength = 0.1,
+    this.blur = 8.0,
+    this.chromaticAberration = 0.1,
+    this.lightIntensity = 0.2,
     this.radius = 32.0,
+    this.refractiveIndex = 1,
+    this.saturation = 1.5,
     this.color,
     this.liquidGlassSettings,
   });
 
   final Widget child;
   final int alpha;
+  final double ambientStrength;
+  final double lightIntensity;
+  final double blur;
+  final double chromaticAberration;
   final double radius;
+  final double refractiveIndex;
+  final double saturation;
   final Color? color;
   final LiquidGlassSettings? liquidGlassSettings;
 
@@ -25,20 +37,19 @@ class LiquidGlassBox extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(radius),
-              color: (color ?? Theme.of(context).colorScheme.primaryContainer)
-                  .withAlpha(alpha),
+              color: (color ?? Theme.of(context).colorScheme.primaryContainer).withAlpha(alpha),
             ),
           ),
           LiquidGlass(
-            shape: LiquidRoundedSuperellipse(
-              borderRadius: Radius.circular(radius),
-            ),
+            shape: LiquidRoundedSuperellipse(borderRadius: Radius.circular(radius)),
             settings:
                 liquidGlassSettings ??
                 LiquidGlassSettings(
-                  blur: 12.0,
-                  refractiveIndex: 1,
-                  saturation: 1.5,
+                  blur: blur,
+                  refractiveIndex: refractiveIndex,
+                  saturation: saturation,
+                  lightIntensity: lightIntensity,
+                  ambientStrength: ambientStrength,
                 ),
             child: Container(),
           ),

@@ -6,12 +6,14 @@ class AnimatedScene extends StaticScene {
     super.environmentIntensity,
     super.environmentExposure,
     super.cameraDistance,
-    this.defaultAnimation = Animation.idle,
-    this.fps = 60.0,
+    this.defaultAnimation = SceneAnimation.idle,
+    this.fps = 30.0,
+    this.flip = false,
   });
 
-  final Animation defaultAnimation;
+  final SceneAnimation defaultAnimation;
   final double fps;
+  final bool flip;
 }
 
-enum Animation { idle, walk, attack, death }
+enum SceneAnimation { idle, walk, attack, death }
