@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:unizen/domain/models/avatar/avatar.dart';
 
 import '../../../domain/models/exam/exam.dart';
 import '../view_models/animated_scene_view_model.dart';
 import 'animated_scene_painter.dart';
 
 class AnimatedSceneWidget extends StatefulWidget {
-  const AnimatedSceneWidget({super.key, required this.exam});
+  const AnimatedSceneWidget.avatar({super.key, required this.avatar})
+    : assert(avatar != null),
+      exam = null;
 
-  final Exam exam;
+  const AnimatedSceneWidget.boss({super.key, required this.exam})
+    : assert(exam != null),
+      avatar = null;
+
+  final Avatar? avatar;
+  final Exam? exam;
 
   @override
   State<AnimatedSceneWidget> createState() => _AnimatedSceneWidgetState();
@@ -23,11 +31,15 @@ class _AnimatedSceneWidgetState extends State<AnimatedSceneWidget> {
   void initState() {
     super.initState();
 
+    assert(widget.avatar != null || widget.exam != null);
+    viewModel = AnimatedSceneViewModel(
+      model: widget.avatar?.animatedScene ?? widget.exam!.boss.animatedScene,
+    );
+
     _ticker = Ticker((elapsed) {
       viewModel.update(elapsed);
     });
 
-    viewModel = AnimatedSceneViewModel(model: widget.exam.boss.animatedScene);
     Future.wait([viewModel.loadCommand.executeWithFuture()]).then((_) {
       _ticker.start();
 
@@ -56,8 +68,9 @@ class _AnimatedSceneWidgetState extends State<AnimatedSceneWidget> {
                 painter: AnimatedScenePainter(
                   scene: viewModel.scene,
                   elapsedTime: elapsed,
-                  rotationX: widget.exam.rotationX,
+                  rotationX: widget.exam?.rotationX ?? 0.0,
                   cameraDistance: viewModel.model.cameraDistance,
+                  flip: viewModel.model.flip,
                 ),
               ),
             );

@@ -13,7 +13,7 @@ class UnizenLogo extends StatelessWidget {
     return Hero(
       tag: 'unizen_logo',
       child: SvgPicture.asset(
-        'assets/images/unizen_logo_v$version.svg',
+        'assets/icon/unizen_logo_v$version.svg',
         colorFilter: ColorFilter.mode(
           color ?? Theme.of(context).colorScheme.onPrimary,
           BlendMode.srcIn,

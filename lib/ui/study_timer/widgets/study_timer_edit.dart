@@ -4,7 +4,7 @@ import 'package:unizen/ui/core/ui/frosted_glass_text_button.dart';
 class StudyTimerEdit extends StatelessWidget {
   const StudyTimerEdit({super.key, required this.onEdit});
 
-  final VoidCallback onEdit;
+  final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {

@@ -8,7 +8,7 @@ import '../../../utils/result.dart';
 class AddExamPageViewModel extends ChangeNotifier {
   AddExamPageViewModel({required BossRepository bossRepository})
     : _bossRepository = bossRepository {
-    bosses = ValueNotifier(List<Boss>.empty());
+    bosses = ValueNotifier([]);
 
     selectedBossIndex = ValueNotifier(1);
     examName = ValueNotifier('');
