@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_command/flutter_command.dart';
 import 'package:flutter_scene/scene.dart';
+import 'package:vector_math/vector_math.dart' as vm;
 
 import '../../../domain/models/static_scene/static_scene.dart';
 
@@ -25,9 +26,10 @@ class StaticSceneViewModel extends ChangeNotifier {
       final node = await Node.fromAsset(model.modelAssetPath);
 
       scene.add(node);
-      scene.environment
-        ..exposure = model.environmentExposure
-        ..intensity = model.environmentIntensity;
+      scene.exposure = model.environmentExposure;
+      scene.environmentIntensity = model.environmentIntensity;
+      scene.directionalLight =
+          DirectionalLight(direction: vm.Vector3(-1, -0.5, -1));
     } catch (e, stack) {
       debugPrint('Error loading scene: $e\n$stack');
     } finally {

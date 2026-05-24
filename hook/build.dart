@@ -1,10 +1,10 @@
-import 'package:native_assets_cli/native_assets_cli.dart';
-import 'package:flutter_scene_importer/build_hooks.dart';
+import 'package:hooks/hooks.dart';
+import 'package:flutter_scene/build_hooks.dart';
 
 void main(List<String> args) {
-  build(args, (config, output) async {
+  build(args, (input, output) async {
     buildModels(
-      buildInput: config,
+      buildInput: input,
       inputFilePaths: [
         // 'minecraft_sprunki_oren_after_blender.glb',
         // 'zombie_after_blender.glb', //
