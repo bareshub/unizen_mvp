@@ -1,8 +1,8 @@
 class StaticScene {
   const StaticScene({
     required this.modelAssetPath,
-    this.environmentIntensity = 3.0,
-    this.environmentExposure = 3.0,
+    this.environmentIntensity = 0.8,
+    this.environmentExposure = 1.0,
     this.cameraDistance = 10.0,
   });
 

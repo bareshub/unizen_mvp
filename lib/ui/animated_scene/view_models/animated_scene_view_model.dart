@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_command/flutter_command.dart';
 import 'package:flutter_scene/scene.dart';
+import 'package:vector_math/vector_math.dart' as vm;
 
 import '../../../domain/models/animated_scene/animated_scene.dart';
 
@@ -53,9 +54,10 @@ class AnimatedSceneViewModel extends ChangeNotifier {
       }
 
       scene.add(node);
-      scene.environment
-        ..exposure = model.environmentExposure
-        ..intensity = model.environmentIntensity;
+      scene.exposure = model.environmentExposure;
+      scene.environmentIntensity = model.environmentIntensity;
+      scene.directionalLight =
+          DirectionalLight(direction: vm.Vector3(-1, -0.5, -1));
     } catch (e, stack) {
       debugPrint('Error loading scene: $e\n$stack');
     } finally {
