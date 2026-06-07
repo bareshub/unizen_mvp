@@ -53,6 +53,15 @@ abstract final class AppTheme {
     _baseTextTheme,
   );
 
+  /// Large timer display text (128px SixCaps)
+  static TextStyle get timerLargeStyle => GoogleFonts.sixCaps(
+    fontSize: 128.0,
+    fontWeight: FontWeight.w500,
+    letterSpacing: 12,
+    height: 1.0,
+    color: Colors.white.withAlpha((0.75 * 255).toInt()),
+  );
+
   static const _inputDecorationTheme = InputDecorationTheme(
     hintStyle: TextStyle(
       color: AppColors.grey3,

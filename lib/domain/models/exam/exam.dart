@@ -35,10 +35,10 @@ class Exam {
   set name(String value) => _name = value.isNotEmpty ? value : _name;
 
   int get maxHealth => _maxHealth;
-  set maxHealth(int value) => _maxHealth = value.isNegative ? 0 : _maxHealth;
+  set maxHealth(int value) => _maxHealth = value.isNegative ? 0 : value;
 
   int get health => _health;
-  set health(int value) => _health = value.isNegative ? 0 : health;
+  set health(int value) => _health = value.isNegative ? 0 : value;
 
   double get rotationX => _rotationX;
 

@@ -2,8 +2,10 @@ import '../../../domain/models/avatar/avatar.dart';
 import '../../../domain/models/animated_scene/animated_scene.dart';
 import '../../../domain/models/boss/boss.dart';
 import '../../../domain/models/exam/exam.dart';
+import 'local_data_service_interface.dart';
 
-class LocalDataService {
+class HardcodedLocalDataService implements LocalDataService {
+  @override
   List<Exam> getExams() {
     return [
       // Exam(
@@ -49,6 +51,7 @@ class LocalDataService {
     ];
   }
 
+  @override
   List<Boss> getBosses() {
     return [
       Boss(
@@ -103,6 +106,7 @@ class LocalDataService {
     ];
   }
 
+  @override
   Avatar getAvatar() {
     return Avatar(
       animatedScene: AnimatedScene(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../domain/models/health_bar/health_bar.dart';
 import '../../../domain/models/study_timer/study_timer.dart';
+import '../../../ui/core/themes/theme.dart';
 import '../../../ui/core/ui/animated_boss_section.dart';
 import '../../core/ui/frosted_glass_text_button.dart';
 import '../../core/ui/vertical_text.dart';
@@ -22,6 +22,7 @@ class ExamPageWidget extends StatefulWidget {
 class _ExamPageWidgetState extends State<ExamPageWidget> {
   late final StudyTimerViewModel _studyTimerViewModel;
   late final HealthBarViewModel _healthBarViewModel;
+  late final VoidCallback _minutesListener;
 
   @override
   void initState() {
@@ -34,12 +35,13 @@ class _ExamPageWidgetState extends State<ExamPageWidget> {
       health: widget.viewModel.model.exam.health,
     );
 
-    _studyTimerViewModel.minutes.addListener(_onMinutesChanged);
+    _minutesListener = _onStudyMinutesChanged;
+    _studyTimerViewModel.minutes.addListener(_minutesListener);
   }
 
   @override
   void dispose() {
-    _studyTimerViewModel.minutes.removeListener(_onMinutesChanged);
+    _studyTimerViewModel.minutes.removeListener(_minutesListener);
     _studyTimerViewModel.dispose();
     _healthBarViewModel.dispose();
 
@@ -121,44 +123,20 @@ class _ExamPageWidgetState extends State<ExamPageWidget> {
                                       _studyTimerViewModel.formattedMinutes,
                                       maxLines: 1,
                                       textAlign: TextAlign.end,
-                                      style: GoogleFonts.sixCaps(
-                                        letterSpacing: 12,
-                                        color: Colors.white.withAlpha(
-                                          (0.75 * 255).toInt(),
-                                        ),
-                                        fontWeight: FontWeight.w500,
-                                        height: 1.0,
-                                        fontSize: 128.0,
-                                      ),
+                                      style: AppTheme.timerLargeStyle,
                                     ),
                                   ),
                                   Text(
                                     ":",
                                     maxLines: 1,
-                                    style: GoogleFonts.sixCaps(
-                                      letterSpacing: 12,
-                                      color: Colors.white.withAlpha(
-                                        (0.75 * 255).toInt(),
-                                      ),
-                                      fontWeight: FontWeight.w500,
-                                      height: 1.0,
-                                      fontSize: 128.0,
-                                    ),
+                                    style: AppTheme.timerLargeStyle,
                                   ),
                                   Expanded(
                                     child: Text(
                                       _studyTimerViewModel.formattedSeconds,
                                       maxLines: 1,
                                       textAlign: TextAlign.start,
-                                      style: GoogleFonts.sixCaps(
-                                        letterSpacing: 12,
-                                        color: Colors.white.withAlpha(
-                                          (0.75 * 255).toInt(),
-                                        ),
-                                        fontWeight: FontWeight.w500,
-                                        height: 1.0,
-                                        fontSize: 128.0,
-                                      ),
+                                      style: AppTheme.timerLargeStyle,
                                     ),
                                   ),
                                 ],
@@ -230,16 +208,14 @@ class _ExamPageWidgetState extends State<ExamPageWidget> {
     );
   }
 
-  void _onMinutesChanged() {
-    _studyTimerViewModel.minutes.addListener(() {
-      if ([
-        StudyTimerState.studying,
-        StudyTimerState.paused,
-        StudyTimerState.finished,
-      ].contains(_studyTimerViewModel.state.value)) {
-        _healthBarViewModel.decreaseHealthComamand.execute();
-      }
-    });
+  void _onStudyMinutesChanged() {
+    if ([
+      StudyTimerState.studying,
+      StudyTimerState.paused,
+      StudyTimerState.finished,
+    ].contains(_studyTimerViewModel.state.value)) {
+      _healthBarViewModel.decreaseHealthComamand.execute();
+    }
   }
 
   void _onStudyTimerStart() => _studyTimerViewModel.startTimerCommand.execute();

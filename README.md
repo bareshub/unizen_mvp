@@ -13,11 +13,7 @@ UniZen is a productivity app that turns university study goals into gamified cha
 
 ### Requirements
 
-- Flutter (beta channel `3.35.6`)
-- Dart SDK
-- CMake (required for flutter_scene model building)
-
-> Note: The flutter_scene importer will automatically build itself using CMake when invoked. So be sure to install [CMake](https://cmake.org/download/).
+- Flutter stable channel `3.44.0` (Dart 3.9.0+)
 
 ### Clone & Run
 
@@ -25,22 +21,44 @@ UniZen is a productivity app that turns university study goals into gamified cha
 git clone https://github.com/bareshub/unizen.git
 cd unizen
 flutter pub get
-flutter config --enable-native-assets
 flutter run
+```
+
+### Running on a Specific Device
+
+```bash
+# List available emulators
+flutter emulators
+
+# Launch the iOS simulator
+flutter emulators --launch apple_ios_simulator
+
+# List connected devices (to find your device ID)
+flutter devices
+
+# Run in profile mode on a physical device (replace device ID with yours)
+flutter run -d 00008130-00114D1E3E38001C --profile
 ```
 
 ## 🧱 3D Model Integration
 
-I use the `flutter_scene` package to render interactive 3D bosses on the homepage.
+I use the `flutter_scene` package to render interactive 3D bosses on the homepage. All `.glb` models have been pre-compiled to `.model` files and are bundled with the app.
 
-### Importing a .glb Boss Model
+### Adding a New .glb Boss Model
 
-To import a new .glb model:
+To add and compile a new 3D model:
 
 1. Add the `.glb` file to the project root
-2. Run the build hook (through `flutter config --enable-native-assets` and `flutter run`)
-3. The processed model will be generated at `build/models/foo.model`
-4. After the build is complete, the original `.glb` can be removed from the root folder
+2. Enable native assets for this one-time build:
+
+   ```bash
+   flutter config --enable-native-assets
+   flutter run
+   ```
+
+3. The processed model will be auto-generated at `build/models/foo.model`
+4. After the build completes, remove the original `.glb` from the project root
+5. The new `.model` file will be included in future builds automatically
 
 > This system keeps the final app clean from raw assets while enabling fast prototyping with new models.
 

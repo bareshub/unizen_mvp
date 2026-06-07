@@ -118,9 +118,10 @@ class StudyTimerViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
-    minutes.dispose();
-    state.dispose();
     _timer?.cancel();
+    minutes.dispose();
+    seconds.dispose();
+    state.dispose();
     super.dispose();
   }
 }

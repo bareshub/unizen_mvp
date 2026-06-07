@@ -1,6 +1,6 @@
 import 'package:uuid/uuid.dart';
 
-import '../../../data/services/local/local_data_service.dart';
+import '../../../data/services/local/local_data_service_interface.dart';
 import '../../../domain/models/avatar/avatar.dart';
 import '../../../utils/result.dart';
 import 'avatar_repository.dart';
