@@ -6,9 +6,7 @@ void main(List<String> args) {
     buildModels(
       buildInput: input,
       inputFilePaths: [
-        // 'minecraft_sprunki_oren_after_blender.glb',
-        // 'zombie_after_blender.glb', //
-        // 'toilet_after_blender.glb', //
+        // 'minecraft_sprunki_tunner.glb',
         // 'tvman_supreme.glb',
         // 'cameraman_supreme_god.glb',
         // 'skibidi_yisus.glb',
