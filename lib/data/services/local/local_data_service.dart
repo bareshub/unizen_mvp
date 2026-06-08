@@ -110,10 +110,9 @@ class HardcodedLocalDataService implements LocalDataService {
   Avatar getAvatar() {
     return Avatar(
       animatedScene: AnimatedScene(
-        modelAssetPath: 'build/models/minecraft_sprunki_oren_after_blender.model',
+        modelAssetPath: 'build/models/minecraft_sprunki_tunner.model',
         defaultAnimation: SceneAnimation.walk,
-        cameraDistance: 6,
-        flip: true,
+        cameraDistance: 7,
       ),
     );
   }
