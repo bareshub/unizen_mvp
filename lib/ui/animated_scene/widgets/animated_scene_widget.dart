@@ -40,7 +40,7 @@ class _AnimatedSceneWidgetState extends State<AnimatedSceneWidget> {
       viewModel.update(elapsed);
     });
 
-    Future.wait([viewModel.loadCommand.executeWithFuture()]).then((_) {
+    Future.wait([viewModel.loadCommand.runAsync()]).then((_) {
       _ticker.start();
 
       setState(() {

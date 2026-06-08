@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_command/flutter_command.dart';
+import 'package:command_it/command_it.dart';
 
 import '../../../data/repositories/avatar/avatar_repository.dart';
 import '../../../data/repositories/exam/exam_repository.dart';

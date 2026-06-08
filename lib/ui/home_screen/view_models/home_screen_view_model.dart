@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_command/flutter_command.dart';
+import 'package:command_it/command_it.dart';
 
 import '../../../data/repositories/exam/exam_repository.dart';
 import '../../../domain/models/exam/exam.dart';

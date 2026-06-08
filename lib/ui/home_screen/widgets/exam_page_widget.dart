@@ -214,18 +214,18 @@ class _ExamPageWidgetState extends State<ExamPageWidget> {
       StudyTimerState.paused,
       StudyTimerState.finished,
     ].contains(_studyTimerViewModel.state.value)) {
-      _healthBarViewModel.decreaseHealthComamand.execute();
+      _healthBarViewModel.decreaseHealthComamand.run();
     }
   }
 
-  void _onStudyTimerStart() => _studyTimerViewModel.startTimerCommand.execute();
+  void _onStudyTimerStart() => _studyTimerViewModel.startTimerCommand.run();
 
   void _onStudyTimerEdit() {
     // TODO implement
   }
 
   void _onStudyTimerPause() =>
-      _studyTimerViewModel.togglePauseTimerCommand.execute();
+      _studyTimerViewModel.togglePauseTimerCommand.run();
 
-  void _onStudyTimerStop() => _studyTimerViewModel.stopTimerCommand.execute();
+  void _onStudyTimerStop() => _studyTimerViewModel.stopTimerCommand.run();
 }

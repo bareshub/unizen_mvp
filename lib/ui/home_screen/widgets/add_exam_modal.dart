@@ -84,7 +84,7 @@ class _AddExamModalHeaderState extends State<_AddExamModalHeader> {
 
   void _onConfirmPressed(BuildContext context, {required Boss boss}) {
     Navigator.of(context).pop();
-    widget.timelineScreenViewModel.addExamCommand.execute(
+    widget.timelineScreenViewModel.addExamCommand.run(
       Exam(boss: boss, name: widget.viewModel.examName.value),
     );
   }
@@ -129,7 +129,7 @@ class _AddExamModalTextFieldState extends State<_AddExamModalTextField> {
       child: TextField(
         controller: _textEditingController,
         focusNode: _textFieldFocusNode,
-        onChanged: widget.viewModel.setExamNameCommand.execute,
+        onChanged: widget.viewModel.setExamNameCommand.run,
         onSubmitted:
             (_) => _onSubmitted(
               context,
@@ -175,7 +175,7 @@ class _AddExamModalTextFieldState extends State<_AddExamModalTextField> {
   void _onSubmitted(BuildContext context, {required Boss boss}) {
     if (widget.viewModel.isExamNameValid) {
       Navigator.of(context).pop();
-      widget.timelineScreenViewModel.addExamCommand.execute(
+      widget.timelineScreenViewModel.addExamCommand.run(
         Exam(boss: boss, name: widget.viewModel.examName.value),
       );
     }

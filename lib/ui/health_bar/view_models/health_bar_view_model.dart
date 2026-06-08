@@ -1,7 +1,7 @@
 import 'dart:math' show max;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_command/flutter_command.dart';
+import 'package:command_it/command_it.dart';
 
 import '../../../domain/models/health_bar/health_bar.dart';
 

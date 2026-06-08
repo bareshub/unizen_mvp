@@ -58,12 +58,12 @@ class StudyTimerWidget extends StatelessWidget {
                           onPlusClick:
                               viewModel.incrementable
                                   ? () =>
-                                      viewModel.incrementTimerCommand.execute()
+                                      viewModel.incrementTimerCommand.run()
                                   : null,
                           onMinusClick:
                               viewModel.decrementable
                                   ? () =>
-                                      viewModel.decrementTimerCommand.execute()
+                                      viewModel.decrementTimerCommand.run()
                                   : null,
                         ),
                         Spacer(),

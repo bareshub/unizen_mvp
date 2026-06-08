@@ -51,7 +51,7 @@ class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget> {
     roadmapProgressViewModel = RoadmapProgressViewModel();
 
     if (widget.viewModel.state.value == RoadmapScreenState.initial) {
-      widget.viewModel.loadCommand.execute();
+      widget.viewModel.loadCommand.run();
     }
   }
 
@@ -169,10 +169,6 @@ class _RoadmapScreenWidgetState extends State<RoadmapScreenWidget> {
                       width: double.infinity,
                       padding: const EdgeInsets.fromLTRB(32.0, 0.0, 32.0, 80.0),
                       child: LiquidGlassBox(
-                        ambientStrength: 0.5,
-                        chromaticAberration: 10,
-                        lightIntensity: 0.95,
-                        refractiveIndex: 1.51,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: Column(

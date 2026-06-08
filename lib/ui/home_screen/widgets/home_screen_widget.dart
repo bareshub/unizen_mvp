@@ -28,8 +28,8 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
     super.initState();
 
     _pageController = PageController(initialPage: 0);
-    widget.viewModel.initCommand.execute(_pageController);
-    widget.viewModel.loadCommand.execute();
+    widget.viewModel.initCommand.run(_pageController);
+    widget.viewModel.loadCommand.run();
   }
 
   @override

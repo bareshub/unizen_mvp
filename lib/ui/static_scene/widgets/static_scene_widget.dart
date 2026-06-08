@@ -22,7 +22,7 @@ class _StaticSceneWidgetState extends State<StaticSceneWidget> {
     super.initState();
 
     viewModel = StaticSceneViewModel(model: widget.model);
-    Future.wait([viewModel.loadCommand.executeWithFuture()]).then((_) {
+    Future.wait([viewModel.loadCommand.runAsync()]).then((_) {
       setState(() {
         _sceneReady = true;
       });

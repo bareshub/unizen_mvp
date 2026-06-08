@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_command/flutter_command.dart';
+import 'package:command_it/command_it.dart';
 
 import '../../../domain/models/boss/boss.dart';
 import '../../../ui/core/ui/liquid_glass_box.dart';
@@ -20,7 +20,7 @@ class _BossSelectionCarouselState extends State<BossSelectionCarousel> {
 
   @override
   void initState() {
-    widget.viewModel.loadCommand.execute();
+    widget.viewModel.loadCommand.run();
 
     _carouselController = CarouselController(initialItem: 1);
     _carouselController.listen((_) {
@@ -34,7 +34,7 @@ class _BossSelectionCarouselState extends State<BossSelectionCarousel> {
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          widget.viewModel.setSelectedBossIndexCommand.execute(index.round());
+          widget.viewModel.setSelectedBossIndexCommand.run(index.round());
         }
       });
     });
@@ -45,9 +45,9 @@ class _BossSelectionCarouselState extends State<BossSelectionCarousel> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: widget.viewModel.loadCommand.isExecuting,
-      builder: (context, isExecuting, child) {
-        return isExecuting
+      valueListenable: widget.viewModel.loadCommand.isRunning,
+      builder: (context, isRunning, child) {
+        return isRunning
             ? Center(child: CircularProgressIndicator())
             : child!;
       },
